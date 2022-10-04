@@ -1,0 +1,51 @@
+{
+  "scripts": [
+    {
+      "output": "lib/jquery/dist/jquery.min.js",
+      "input": [
+        "node_modules/jquery/dist/jquery.min.js",
+        "node_modules/chosen-js/chosen.jquery.min.js"
+      ]
+    },
+    {
+      "output": "lib/sweetalert2/dist/sweetalert2.min.js",
+      "input": [
+        "node_modules/sweetalert2/dist/sweetalert2.min.js"
+      ]
+    },
+    {
+      "output": "lib/swiper/swiper-bundle.min.js",
+      "input": [
+        "node_modules/swiper/swiper-bundle.min.js"
+      ]
+    }
+  ],
+  "styles": [
+    {
+      "output": "lib/sweetalert2/dist/sweetalert2.min.css",
+      "input": [
+        "node_modules/sweetalert2/dist/sweetalert2.css"
+      ]
+    },
+    {
+      "output": "lib/fortawesome/css/all.min.css",
+      "input": [
+        "node_modules/@fortawesome/fontawesome-free/css/all.css"
+      ]
+    },
+    {
+      "output": "lib/swiper/swiper-bundle.min.css",
+      "input": [
+        "node_modules/swiper/swiper-bundle.css"
+      ]
+    }
+  ],
+  "scriptMappings": [
+    {
+      "outputFolder": "lib/swiper/",
+      "input": [
+        "node_modules/swiper/*.mi.map"
+      ]
+    }
+  ]
+}
