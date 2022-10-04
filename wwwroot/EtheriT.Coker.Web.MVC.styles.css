@@ -64,6 +64,9 @@ h2[b-vjoinbpj22] {
     .half .contents[b-vjoinbpj22] {
         width: 100%;
     }
+    footer[b-vjoinbpj22] {
+        position:relative;
+    }
 }
 
 .half .bg[b-vjoinbpj22] {
