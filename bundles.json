@@ -5,7 +5,20 @@
       "input": [
         "node_modules/jquery/dist/jquery.min.js",
         "node_modules/chosen-js/chosen.jquery.min.js",
-        "node_modules/jquery-ui-dist/jquery-ui.min.js"
+        "node_modules/jquery-ui-dist/jquery-ui.min.js",
+        "node_modules/jquery.cookie/jquery.cookie.js"
+      ]
+    },
+    {
+      "output": "lib/bootstrap/iconpicker/js/bootstrap-iconpicker.min.js",
+      "input": [
+        "wwwroot/lib/bootstrap/iconpicker/js/bootstrap-iconpicker.js"
+      ]
+    },
+    {
+      "output": "lib/jquery-menu-editor/jquery-menu-editor.min.js",
+      "input": [
+        "wwwroot/lib/jquery-menu-editor/jquery-menu-editor.js"
       ]
     },
     {
@@ -24,6 +37,30 @@
       "output": "lib/chart.js/chart.min.js",
       "input": [
         "node_modules/chart.js/dist/chart.min.js"
+      ]
+    },
+    {
+      "output": "lib/jquery-twzipcode/jquery.twzipcode.min.js",
+      "input": [
+        "node_modules/jquery-twzipcode/jquery.twzipcode.min.js"
+      ]
+    },
+    {
+      "output": "lib/daterangepicker/moment.min.js",
+      "input": [
+        "node_modules/daterangepicker/moment.min.js"
+      ]
+    },
+    {
+      "output": "lib/daterangepicker/daterangepicker.min.js",
+      "input": [
+        "node_modules/daterangepicker/daterangepicker.js"
+      ]
+    },
+    {
+      "output": "lib/masonry-layout/dist/masonry.pkgd.min.js",
+      "input": [
+        "node_modules/masonry-layout/dist/masonry.pkgd.js"
       ]
     }
   ],
@@ -45,13 +82,79 @@
       "input": [
         "node_modules/swiper/swiper-bundle.css"
       ]
+    },
+    {
+      "output": "lib/daterangepicker/daterangepicker.min.css",
+      "input": [
+        "node_modules/daterangepicker/daterangepicker.css"
+      ]
     }
   ],
   "scriptMappings": [
     {
       "outputFolder": "lib/swiper/",
       "input": [
-        "node_modules/swiper/*.mi.map"
+        "node_modules/swiper/*.map"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs",
+      "input": [
+        "node_modules/grapesjs/dist/*"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/css",
+      "input": [
+        "node_modules/grapesjs/dist/css/*"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/fonts",
+      "input": [
+        "node_modules/grapesjs/dist/fonts/*"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/plugin/grapesjs-preset-webpage",
+      "input": [
+        "node_modules/grapesjs-preset-webpage/dist/*"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/plugin/grapesjs-blocks-basic",
+      "input": [
+        "node_modules/grapesjs-blocks-basic/dist/*"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/plugin/grapesjs-style-bg",
+      "input": [
+        "node_modules/grapesjs-style-bg/dist/*"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/plugin/grapesjs-tabs",
+      "input": [
+        "node_modules/grapesjs-tabs/dist/*"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/plugin/grapesjs-custom-code",
+      "input": [
+        "node_modules/grapesjs-custom-code/dist/*"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/plugin/grapesjs-tui-image-editor",
+      "input": [
+        "node_modules/grapesjs-tui-image-editor/dist/*"
+      ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/plugin/grapesjs-blocks-table",
+      "input": [
+        "node_modules/grapesjs-blocks-table/dist/*"
       ]
     }
   ]

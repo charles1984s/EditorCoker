@@ -4,11 +4,23 @@
 // Write your JavaScript code.
 "use strict";
 var PreLoader;
-$(window).on("load",
-    function () {
-        $(".loader-wrapper").not(".incomponent").fadeOut(1000, function () { PreLoader = $(this).detach() })
-    });
 (function (a) {
+
+    var now = new Date();
+    var edt = !!co.Cookie.Get("endDateTime") ? parseInt(co.Cookie.Get("endDateTime")) : 0;
+    if (!!!co.Cookie.Get("token")) {
+        if (location.pathname != "/") location.href = "/";
+        else co.Page.Ready();
+    } else if (edt > (now.getTime() + co.Data.Time.ReCheckTime)) {
+        co.Page.Ready();
+    } else {
+        co.User.Check().done(function (result) {
+            if (result.success) co.Page.Ready();
+            else location.href = "/";
+        });
+    }
+    $(".loader-wrapper").not(".incomponent").fadeOut(1000, function () { PreLoader = $(this).detach() })
+
     var tooltipTriggerList = Array.prototype.slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -36,6 +48,10 @@ $(window).on("load",
         } else { localStorage.setItem("asideMode", "collapsed") }
         return false
     });
+    a("body").delegate(".logout", "click", function (e) {
+        e.preventDefault();
+        co.User.Logout();
+    });
     var b;
     a("body").delegate(".hide-sidebar", "click", function () {
         if (b) {
@@ -44,6 +60,18 @@ $(window).on("load",
         } else {
             b = a(".sidebar").detach()
         }
+    });
+    $(".app-switcher .webitem").on("click", function (e) {
+        e.preventDefault();
+        $(".active-app").removeClass("active-app");
+        $(".app-selected").remove();
+        $(this).find(".card").addClass("active-app");
+        $(this).find(".card-body").append(`<span class="material-icons app-selected md-16">check</span>`);
+    });
+    $("#switchApp .switch").on("click",function(){
+        co.WebSite.exchange($(".active-app").first().data("id")).done(function () {
+            location.reload()
+        });
     });
     a.fn.setAsideMode = function () {
         if (localStorage.getItem("asideMode") === null) {
@@ -141,6 +169,7 @@ $(window).on("load",
     };
     a.fn.setThemeTone()
 })(jQuery);
+
 function toggleFullScreen() {
     if ((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
         if (document.documentElement.requestFullScreen) { document.documentElement.requestFullScreen() } else {
