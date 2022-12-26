@@ -77,13 +77,8 @@ function PageReady() {
         window.location.hash = 0;
         HashDataEdit();
     });
-    $(".btn_save").on("click", function () {
-        disp_opt = false;
-        AddUp(disp_opt, "已存為草稿", "儲存草稿發生未知錯誤");
-    });
     $(".btn_expand").on("click", function () {
         var $self = $(this);
-        console.log($self)
         if ($self.children("span").text() == "expand_more") {
             $self.children("span").text("expand_less")
         } else {
@@ -183,7 +178,6 @@ function editButtonClicked(e) {
 }
 
 function FormDataSet(result) {
-    console.log(result)
     FormDataClear();
     keyId = result.id;
     startDate = result.startDate;
