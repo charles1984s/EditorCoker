@@ -125,16 +125,13 @@ var grapesInit = function (options) {
             Html: finalHtml,
             css: css
         }
-        //co.HtmlContent.AddUp(object).done(function () {
-            appendBlock(blockId, {
-                category: category,
-                attributes: { custom_block_template: true },
-                label: `${name}`,
-                media: `<i class="${icon} fa-5x"></i>`,
-                content: elementHtmlCss,
-            })
-        //});
-        
+        appendBlock(blockId, {
+            category: category,
+            attributes: { custom_block_template: true },
+            label: `${name}`,
+            media: `<i class="${icon} fa-5x"></i>`,
+            content: elementHtmlCss,
+        })
     }
     const appendBlock = function (id, obj) {
         const bm = editor.BlockManager
@@ -149,8 +146,10 @@ var grapesInit = function (options) {
             'name': name,
             'blockId': blockId
         }
-        console.log(blockId);
-        createBlockTemplate(selected, name_blockId)
+        //co.HtmlContent.AddUp(object).done(function (result) {
+            console.log(blockId);
+            createBlockTemplate(selected, name_blockId);
+        //});
         //this.blockTemplateForm.reset();
         //this.modalService.getModal('createBlockTemplate').close();
     }
