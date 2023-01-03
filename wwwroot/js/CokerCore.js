@@ -11,6 +11,11 @@ var Coker = {
             DataRetentionTime: 30 * MinutesSecond,
             DataRetentionLongTime: 3 * MonthSecond,
             ReCheckTime: 20 * MinutesSecond
+        },
+        HtmlDecode: function (str) {
+            var _h = $("<div />").html(str).text();
+            if (/[&].*[;]/.test(_h)) return _c.Data.HtmlDecode(_h);
+            else return _h;
         }
     },
     Cookie: {
@@ -185,23 +190,8 @@ var Coker = {
                 }
             })
         },
-        draft_or_publish: function (action_name, draft_action, action) {
-            Swal.fire({
-                icon: 'info',
-                title: "儲成草稿或" + action_name + "？",
-                showCancelButton: true,
-                confirmButtonColor: '#4B89FC',
-                cancelButtonColor: '#FBB357',
-                confirmButtonText: action_name,
-                cancelButtonText: "存成草稿",
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    action();
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    draft_action();
-                }
-            })
+        TitleHilight: function (string,title) {
+            return string.replace("{0}", `<span class='ConfirmKeyWord'>${title}</span>`);
         }
     },
     Picker: {
@@ -245,14 +235,13 @@ var Coker = {
                 data: { id: id },
             });
         },
-        Delete: function (data) {
+        Delete: function (id) {
             return $.ajax({
                 url: "/api/HtmlContent/Delete",
-                type: "POST",
+                type: "GET",
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
-                data: JSON.stringify(data),
-                dataType: "json"
+                data: { Id: id },
             });
         },
         GetTypeList: function () {
@@ -261,6 +250,25 @@ var Coker = {
                 type: "Get",
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
+                dataType: "json"
+            });
+        },
+        GetAllComponent: function () {
+            return $.ajax({
+                url: "/api/HtmlContent/GetAllComponent",
+                type: "Get",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                dataType: "json"
+            });
+        },
+        GetComponent: function (type) {
+            return $.ajax({
+                url: "/api/HtmlContent/GetComponent",
+                type: "Get",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify({ type: type }),
                 dataType: "json"
             });
         }

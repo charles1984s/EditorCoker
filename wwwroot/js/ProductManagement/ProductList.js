@@ -1,7 +1,10 @@
 ﻿var $btn_display, $name, $name_count, $introduction, $introduction_count, $illustrate, $illustrate_count, $marks, $tag, $price, $stock_number, $alert_number, $min_number, $date, $picker, $permanent
-var startDate, endDate, keyId, disp_opt = true
-var product_list, spec_num = 0, spec_price_num = 0, spec_remove_list = [], spec_price_remove_list = [], modal_price_list = [], techcert_list = []
-var $price_modal, priceModal;
+var startDate, endDate, keyId, disp_opt = true, price_tid, temp_psid
+var product_list, spec_num = 0, spec_price_num = 0, spec_remove_list = [], modal_price_list = [], techcert_list = [], tag_list = []
+var $price_modal, priceModal, $techcert_body, techcertModal;
+
+var techcert_changedBySelectBox, techcert_clearSelectionButton, tag_changedBySelectBox, tag_clearSelectionButton;
+var techcert_check_list = [], techcert_text, tag_check_list = [], tag_text
 
 function PageReady() {
     co.Product = {
@@ -35,15 +38,17 @@ function PageReady() {
                     data: JSON.stringify(data),
                     dataType: "json"
                 });
-            }
-        },
-        GetAll: {
-            TechCert: function () {
+            },
+            ProdPrice: function (data) {
                 return $.ajax({
-                    url: "/api/TechnicalCertificate/GetAll/",
-                    type: "GET",
+                    url: "/api/Product/ProdPriceAddUp",
+                    type: "POST",
+                    contentType: 'application/json; charset=utf-8',
+                    headers: _c.Data.Header,
+                    data: JSON.stringify(data),
+                    dataType: "json"
                 });
-            }
+            },
         },
         Get: {
             ProdOne: function (id) {
@@ -82,29 +87,76 @@ function PageReady() {
                     data: { PId: id },
                 });
             },
-        },
-        Delect: {
-            Prod: function (data) {
+            ProdPrice: function (id) {
                 return $.ajax({
-                    url: "/api/Product/ProdDelete",
-                    type: "POST",
+                    url: "/api/Product/GetPriceDataAll/",
+                    type: "GET",
                     contentType: 'application/json; charset=utf-8',
                     headers: _c.Data.Header,
-                    data: JSON.stringify(data),
-                    dataType: "json"
+                    data: { PSId: id },
                 });
             },
-            Stock: function (data) {
+        },
+        Delete: {
+            Prod: function (id) {
                 return $.ajax({
-                    url: "/api/Product/StockDelete",
-                    type: "POST",
+                    url: "/api/Product/ProdDelete/",
+                    type: "GET",
                     contentType: 'application/json; charset=utf-8',
                     headers: _c.Data.Header,
-                    data: JSON.stringify(data),
-                    dataType: "json"
+                    data: { Id: id },
+                });
+            },
+            Stock: function (id) {
+                return $.ajax({
+                    url: "/api/Product/StockDelete/",
+                    type: "GET",
+                    contentType: 'application/json; charset=utf-8',
+                    headers: _c.Data.Header,
+                    data: { Id: id },
+                });
+            },
+            Price: function (id) {
+                return $.ajax({
+                    url: "/api/Product/PriceDelete/",
+                    type: "GET",
+                    contentType: 'application/json; charset=utf-8',
+                    headers: _c.Data.Header,
+                    data: { Id: id },
                 });
             }
         }
+    };
+
+    co.Tag = {
+        //AddUp: function (data) {
+        //    return $.ajax({
+        //        url: "/api/Product/ProductAddUp",
+        //        type: "POST",
+        //        contentType: 'application/json; charset=utf-8',
+        //        headers: _c.Data.Header,
+        //        data: JSON.stringify(data),
+        //        dataType: "json"
+        //    });
+        //},
+        Get: function (id) {
+            return $.ajax({
+                url: "/api/Tag/GetProductDataAll/",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: { PId: id },
+            });
+        },
+        //Delete: function (id) {
+        //    return $.ajax({
+        //        url: "/api/Product/StockDelete/",
+        //        type: "GET",
+        //        contentType: 'application/json; charset=utf-8',
+        //        headers: _c.Data.Header,
+        //        data: { Id: id },
+        //    });
+        //}
     };
 
     ElementInit();
@@ -131,9 +183,26 @@ function PageReady() {
                     if (ISpecRepect()) {
                         co.sweet.error("錯誤", "商品規格不可重複", null, false);
                     } else {
-                        Coker.sweet.confirm("即將發布", "發布後將直接顯示於安排的位置", "發布", "取消", function () {
-                            AddUp(disp_opt, "已成功發布", "發布發生未知錯誤");
-                        });
+                        var price_null = false;
+                        var $null_input;
+                        $(".input_price").each(function () {
+                            if ($(this).val() == "") {
+                                price_null = true;
+                                $null_input = $(this);
+                                return false;
+                            }
+                        })
+                        if (price_null) {
+                            co.sweet.error("錯誤", "請確實填寫價格", function () {
+                                setTimeout(function () {
+                                    $('html, body').animate({ scrollTop: $null_input.offset().top - ($("header").height() * 2) }, 0);
+                                }, 500)
+                            }, false);
+                        } else {
+                            Coker.sweet.confirm("即將發布", "發布後將直接顯示於安排的位置", "發布", "取消", function () {
+                                AddUp("已成功發布", "發布發生未知錯誤", "List");
+                            });
+                        }
                     }
                 }
                 form.classList.add('was-validated')
@@ -165,14 +234,18 @@ function PageReady() {
     })
     $(".btn_expand_out").on("click", function () {
         var $self = $(this);
-        if ($self.children("span").text() == "expand_more") {
-            $self.children("span").text("expand_less")
-        } else {
+        if ($self.children("span").text() == "expand_less") {
             $self.children("span").text("expand_more")
+        } else {
+            $self.children("span").text("expand_less")
         }
     })
-    $(".btn_spec_add").on("click", SpecAdd);
-    $(".btn_spec_price_add").on("click", SpecPriceAdd);
+    $(".btn_spec_add").on("click", function () {
+        SpecAdd(null);
+    });
+    $(".btn_spec_price_add").on("click", function () {
+        SpecPriceAdd(null)
+    });
     $(".btn_price_save").on("click", SpecPriceSave);
 
     $name.on('keyup', function () {
@@ -202,37 +275,77 @@ function PageReady() {
         setInterval(hashChange, 1000);
     }
 
-    $(".markstest > button > .mark_display").text("哈哈測試耶耶耶")
-    co.Product.GetAll.TechCert().done(function (result) {
-        if (result.length > 0) {
-            $techcert_body.children(".isnull").addClass("d-none");
-            result.forEach(function (self) {
-                var item = $($("#TemplateCheck").html()).clone();
-                var item_input = item.find("input"),
-                    item_label = item.find("label");
-                item_input.attr("id", "TechCertCheck" + self.id);
-                item_input.val(self.id);
-                item_label.attr("for", "TechCertCheck" + self.id);
-                item_label.text(self.title);
-
-                $techcert_body.append(item)
-            })
-        }
-    })
-
     $(".btn_techcert_save").on("click", function () {
-        if ($techcert_body.children("div[class=form-check]").length > 0) {
-            var text = "";
-            $techcert_body.children("div[class=form-check]").each(function () {
-                var $self = $(this)
-                if ($self.children("input").prop('checked')) {
-                    techcert_list.push($self.children("input").val());
-                    text = text == "" ? $self.children("label").text() : text + "、" + $self.children("label").text();
-                    techcertModal.hide();
-                    $marks.val(text);
+        if (techcert_check_list.length > 0) {
+            techcert_list.forEach(function (item) {
+                var index = techcert_check_list.indexOf(item.FK_TCId)
+                if (index > -1) {
+                    item.Checked = true;
+                    techcert_check_list.splice(index, 1)
+                } else {
+                    item.Checked = false;
                 }
             })
+            if (techcert_check_list.length > 0) {
+                techcert_check_list.forEach(function (item) {
+                    var obj = {};
+                    obj["Id"] = 0;
+                    obj["FK_TCId"] = item;
+                    obj["Checked"] = true;
+                    techcert_list.push(obj);
+                })
+            }
         }
+        $marks.val(techcert_text);
+        techcertModal.hide();
+    })
+
+    $(".btn_tag_save").on("click", function () {
+        if (tag_check_list.length > 0) {
+            tag_list.forEach(function (item) {
+                var index = tag_check_list.indexOf(item.FK_TCId)
+                if (index > -1) {
+                    item.Checked = true;
+                    tag_check_list.splice(index, 1)
+                } else {
+                    item.Checked = false;
+                }
+            })
+            if (tag_check_list.length > 0) {
+                tag_check_list.forEach(function (item) {
+                    var obj = {};
+                    obj["Id"] = 0;
+                    obj["FK_TCId"] = item;
+                    obj["Checked"] = true;
+                    tag_list.push(obj);
+                })
+            }
+        }
+        $tag.val(tag_text);
+        tagModal.hide();
+    })
+
+    $(".btn_to_canvas").on("click", function (event) {
+        event.preventDefault()
+
+        Swal.fire({
+            icon: 'info',
+            title: "前往內容編輯頁",
+            html: "是否保存資料?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: "　是　",
+            cancelButtonText: "　否　",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                AddUp("已成功發布", "發布發生未知錯誤", "Canvas");
+            } else {
+                var hash = window.location.hash.replace("#", "") + "-1";
+                window.location.hash = hash;
+            }
+        })
     })
 }
 
@@ -255,6 +368,26 @@ function ElementInit() {
     $permanent = $("#PermanentCheck");
 
     techcertModal = new bootstrap.Modal(document.getElementById('TechCertModal'))
+    $("#TechCertModal").on("hidden.bs.modal", function () {
+        var temp_list = [];
+        techcert_list.forEach(function (item) {
+            if (item.Checked) {
+                temp_list.push(item.FK_TCId);
+            }
+        })
+        getTechCertListDataGridInstance().selectRows(temp_list);
+    })
+
+    tagModal = new bootstrap.Modal(document.getElementById('TagModal'))
+    $("#TagModal").on("hidden.bs.modal", function () {
+        var temp_list = [];
+        techcert_list.forEach(function (item) {
+            if (item.Checked) {
+                temp_list.push(item.FK_TCId);
+            }
+        })
+        getTagListDataGridInstance().selectRows(temp_list);
+    })
 
     $techcert_body = $("#TechCertModal > .modal-dialog > .modal-content > .modal-body");
     priceModal = new bootstrap.Modal(document.getElementById('PriceModal'))
@@ -262,10 +395,94 @@ function ElementInit() {
     document.getElementById('PriceModal').addEventListener('hidden.bs.modal', function (event) {
         $price_modal.children(".frame").each(function () {
             $(this).remove();
-            modal_price_list = [];
             spec_price_num = 0;
         })
+
+        $(".input_price").each(function () {
+            var $self = $(this)
+            var psid = $self.parents(".frame").data("psid")
+            var temppsid = $self.parents(".frame").data("temppsid")
+            var index = modal_price_list.findIndex(item => item["PSid"] == psid || (item["TempPSid"] != null && item["TempPSid"] == temppsid))
+            if (index > -1) {
+                text = "現金：" + modal_price_list[index]["Price"] + " 紅利：" + modal_price_list[index]["Bonus"]
+                $self.val(text);
+            } else {
+                $self.val("");
+            }
+        })
+
+        $(".alert_text").addClass("d-none");
     })
+}
+
+function getTechCertListDataGridInstance() {
+    return $("#TechCertList").dxDataGrid("instance");
+}
+
+function TechCertList_ClearBtnInit(e) {
+    techcert_clearSelectionButton = e.component;
+}
+
+function TechCertList_ClearBtnClick() {
+    if (techcert_list.length > 0) {
+        techcert_list.forEach(function (item) {
+            item.Checked = false;
+        })
+    }
+    getTechCertListDataGridInstance().clearSelection();
+}
+
+function TechCertList_SelectChange(selectedItems) {
+    var data = selectedItems.selectedRowsData;
+
+    techcert_check_list = [];
+    if (data.length > 0) {
+        techcert_text = data.map((value) => `${value.Title}`).join("、");
+
+        data.forEach(function (item) {
+            techcert_check_list.push(item.Id)
+        })
+    } else {
+        techcert_text = "無";
+    }
+
+    techcert_changedBySelectBox = false;
+    techcert_clearSelectionButton.option('disabled', !data.length);
+}
+
+function getTagListDataGridInstance() {
+    return $("#TagList").dxDataGrid("instance");
+}
+
+function TagList_ClearBtnInit(e) {
+    tag_clearSelectionButton = e.component;
+}
+
+function TagList_ClearBtnClick() {
+    if (tag_list.length > 0) {
+        tag_list.forEach(function (item) {
+            item.Checked = false;
+        })
+    }
+    getTagListDataGridInstance().clearSelection();
+}
+
+function TagList_SelectChange(selectedItems) {
+    var data = selectedItems.selectedRowsData;
+
+    tag_check_list = [];
+    if (data.length > 0) {
+        tag_text = data.map((value) => `${value.Title}`).join("、");
+
+        data.forEach(function (item) {
+            tag_check_list.push(item.Id)
+        })
+    } else {
+        tag_text = "無";
+    }
+
+    tag_changedBySelectBox = false;
+    tag_clearSelectionButton.option('disabled', !data.length);
 }
 
 function FormDataClear() {
@@ -297,8 +514,16 @@ function FormDataClear() {
 
     techcert_list = []
     $techcert_body.children("div[class=form-check]").each(function () {
-        $(this).children("input").prop("checked", false);
+        var $input = $(this).children("input");
+        $input.prop("checked", false);
+        $input.data("ptcid", 0);
     })
+    modal_price_list = []
+    price_tid = 0;
+    temp_psid = 0;
+
+    techcert_text = "";
+    TechCertList_ClearBtnClick();
 }
 
 function contentReady(e) {
@@ -320,18 +545,26 @@ function HashDataEdit() {
         if (window.currentHash != window.location.hash) {
             var hash = window.location.hash.replace("#", "");
             if (parseInt(hash) == 0) {
-                FormDataClear();
-                SpecAdd(null);
-                MoveToContent();
+                if (hash.includes('-1')) {
+                    MoveToCanvas();
+                } else {
+                    FormDataClear();
+                    SpecAdd(null);
+                    MoveToContent();
+                }
             } else {
-                co.Product.Get.ProdOne(parseInt(hash)).done(function (result) {
-                    if (result != null) {
-                        FormDataSet(result);
-                        MoveToContent();
-                    } else {
-                        window.location.hash = ""
-                    }
-                })
+                if (hash.includes('-1')) {
+                    MoveToCanvas();
+                } else {
+                    co.Product.Get.ProdOne(parseInt(hash)).done(function (result) {
+                        if (result != null) {
+                            FormDataSet(result);
+                            MoveToContent();
+                        } else {
+                            window.location.hash = ""
+                        }
+                    })
+                }
             }
         }
     } else {
@@ -345,11 +578,31 @@ function editButtonClicked(e) {
     window.location.hash = keyId
 }
 
+function paletteButtonClicked(e) {
+    keyId = e.row.key + "-1";
+    window.location.hash = keyId;
+}
+
 function FormDataSet(result) {
     FormDataClear();
     co.Product.Get.ProdStock(result.id).done(function (all_result) {
         all_result.forEach(function (result) {
-            SpecAdd(result);
+            co.Product.Get.ProdPrice(result.id).done(function (all_result) {
+                all_result.forEach(function (result) {
+                    var obj = {};
+                    obj["Id"] = result.id;
+                    obj["Tempid"] = price_tid;
+                    obj["PSid"] = result.fK_PSId;
+                    obj["TempPSid"] = 0;
+                    obj["Rid"] = result.fK_RId
+                    obj["Price"] = result.price
+                    obj["Bonus"] = result.bonus
+                    obj["IsDelete"] = false;
+                    price_tid += 1;
+                    modal_price_list.push(obj);
+                })
+                SpecAdd(result);
+            })
         })
     })
     startDate = result.startTime;
@@ -368,21 +621,44 @@ function FormDataSet(result) {
     var text = ""
     co.Product.Get.ProdTechCert(result.id).done(function (result) {
         if (result != null && result.length > 0) {
+            var temp_list = [];
             result.forEach(function (item) {
-                techcert_list.push(item.id)
-                $techcert_body.children("div[class=form-check]").each(function () {
-                    var $input = $(this).children("input")
-                    if ($input.val() == item.id) {
-                        $input.prop("checked", true);
-                    }
-                })
-                text = text == "" ? item.title : text + "、" + item.title;
+                var obj = {};
+                obj["Id"] = item.id;
+                obj["FK_TCId"] = item.fK_TCId;
+                obj["Checked"] = item.isChecked;
+                if (item.isChecked) {
+                    temp_list.push(item.fK_TCId);
+                    text = text == "" ? item.title : text + "、" + item.title;
+                }
+                techcert_list.push(obj)
             })
+            getTechCertListDataGridInstance().selectRows(temp_list);
         }
-        $marks.val(text);
+        $marks.val(text == "" ? "無" : text);
     })
 
-    $tag.val("");
+    text = ""
+    co.Tag.Get(result.id).done(function (result) {
+        console.log(result)
+        //if (result != null && result.length > 0) {
+        //    var temp_list = [];
+        //    result.forEach(function (item) {
+        //        var obj = {};
+        //        obj["Id"] = item.id;
+        //        obj["FK_TCId"] = item.fK_TCId;
+        //        obj["Checked"] = item.isChecked;
+        //        if (item.isChecked) {
+        //            temp_list.push(item.fK_TCId);
+        //            text = text == "" ? item.title : text + "、" + item.title;
+        //        }
+        //        tag_list.push(obj)
+        //    })
+        //    getTagListDataGridInstance().selectRows(temp_list);
+        //}
+        $tag.val(text == "" ? "無" : text);
+    })
+
     $date = $("#InputDate");
     if (result.permanent) {
         $date.val('');
@@ -396,10 +672,7 @@ function FormDataSet(result) {
 
 function deleteButtonClicked(e) {
     Coker.sweet.confirm("刪除資料", "刪除後不可返回", "確定刪除", "取消", function () {
-        co.Product.Delect.Prod({
-            Id: e.row.key,
-            TId: $.cookie('secret')
-        }).done(function () {
+        co.Product.Delete.Prod(e.row.key).done(function () {
             product_list.component.refresh();
         }).fail(function () {
             Coker.sweet.error("錯誤", "刪除資料發生錯誤", null, true);
@@ -413,52 +686,31 @@ function SpecPriceAdd(result) {
     var item_role = item.find(".select_role"),
         item_cash = item.find(".input_cash"),
         item_bonus = item.find(".input_bonus"),
-        item_btn_delect = item.find(".btn_price_delect");
+        item_btn_delete = item.find(".btn_price_delete");
 
-    //co.Product.Get.SpecType().done(function (type_result) {
-    //    if (type_result != null) {
-    //        type_result.forEach(function (type) {
-    //            var spec = $($("#TemplateSpecSelect").html()).clone();
-    //            var spec_select = spec.find("select");
-    //            co.Product.Get.Spec(type.id).done(function (spec_result) {
-    //                spec_select.attr("aria-label", type.title);
-    //                if (result != null) {
-    //                    spec_select.append('<option value="" disabled="disabled">' + type.title + '</option>')
-    //                    spec_select.append('<option value="0">無</option>')
-    //                    spec_result.forEach(function (spec) {
-    //                        if (spec.id == result.fK_S1id || spec.id == result.fK_S2id) {
-    //                            spec_select.append('<option selected value="' + spec.id + '">' + spec.title + '</option>')
-    //                        } else {
-    //                            spec_select.append('<option value="' + spec.id + '">' + spec.title + '</option>')
-    //                        }
-    //                    })
-    //                } else {
-    //                    spec_select.append('<option selected value="" disabled="disabled">' + type.title + '</option>')
-    //                    spec_select.append('<option value="0">無</option>')
-    //                    spec_result.forEach(function (spec) {
-    //                        spec_select.append('<option value="' + spec.id + '">' + spec.title + '</option>')
-    //                    })
-    //                }
-    //            });
-    //            item_select.append(spec);
-    //        })
-    //    }
-    //});
+    item.data("ppid", result == null ? 0 : result.Id);
+    item.data("tempid", result == null ? -1 : result.Tempid);
+    if (result != null) {
+        item_role.val(result.Rid);
+        item_cash.val(result.Price);
+        item_bonus.val(result.Bonus);
+    }
 
-    //item.data("psid", result != null ? result.id : "")
-    //item_price.val(result != null ? result.price : "");
-    //item_min.val(result != null ? result.min_Qty : "");
-    //item_stock.val(result != null ? result.stock : "");
-    //item_alert.val("");
-    //item_alert.val(result != null ? result.alert_Qty : "");
-
-    item_btn_delect.on("click", function () {
-        $self_p = $(this).parents(".frame").first();
+    item_btn_delete.on("click", function () {
+        var $self_p = $(this).parents(".frame").first();
         if (spec_price_num == 1) {
             co.sweet.error("商品至少需有一種價格", null, false);
         } else {
             co.sweet.confirm("移除價格", "確定要移除此項價格嗎?", "　是　", "　否　", function () {
-                spec_price_remove_list.push($self_p.data("ppid"));
+                if ($self_p.data("ppid") == 0) {
+                    if ($self_p.data("tempid") > -1) {
+                        var index = modal_price_list.findIndex(item => item["Tempid"] == $self_p.data("tempid"))
+                        modal_price_list[index]["IsDelete"] = true;
+                    }
+                } else {
+                    var index = modal_price_list.findIndex(item => item["Id"] == $self_p.data("ppid"))
+                    modal_price_list[index]["IsDelete"] = true;
+                }
                 spec_price_num -= 1;
                 $self_p.remove();
             })
@@ -467,52 +719,51 @@ function SpecPriceAdd(result) {
 
     $("#PriceModal > .modal-dialog > .modal-content > .modal-body > .price_option").append(item);
 
-    //$spec_select = $(".spec_select")
-    //$price = $(".input_price");
-    //$stock_number = $(".input_stock_number");
-    //$min_number = $(".input_min_number");
-    //$alert_number = $(".input_alert_number");
-
     $("input[type='number']").on("input", function () {
         $(this).val($(this).val() < 0 ? 0 : $(this).val())
     });
 }
 
 function SpecPriceSave() {
-    var save_success = true;
-    var obj = []
-    modal_price_list = []
+    var temp_list = []
+    var save_success = true
     $price_modal.children(".frame").each(function () {
         $self = $(this);
-        obj["PSid"] = $self.find(".select_role").val()
-        obj["Rid"] = $self.find(".select_role").val()
-        obj["Price"] = $self.find(".input_cash").val()
-        obj["Bonus"] = $self.find(".input_bonus").val()
-        if (obj["Price"] == "" && obj["Bonus"] == "") {
-            co.sweet.error("錯誤", "商品現金與紅利不可同時為空", null, false);
-            save_success = false;
-            return false;
+        var obj = {};
+        obj["Id"] = $self.data("ppid");
+        obj["Tempid"] = price_tid;
+        obj["PSid"] = $self.parents(".modal-body").first().data("psid");
+        obj["TempPSid"] = $self.parents(".modal-body").first().data("temppsid");
+        obj["Rid"] = $self.find(".select_role").val();
+        obj["Price"] = $self.find(".input_cash").val();
+        obj["Bonus"] = $self.find(".input_bonus").val();
+        obj["IsDelete"] = false;
+        if (obj["Price"] == 0 && obj["Bonus"] == 0) {
+            $(".alert_text").text("商品現金與紅利不可同時為空")
+            $(".alert_text").removeClass("d-none");
+            save_success = false
         } else {
-            if (modal_price_list.find(item => item[0] == obj[0] && item[1] == obj[1] && item[2] == obj[2]) != null) {
-                co.sweet.error("錯誤", "價格不可重複", null, false);
-                save_success = false;
-                return false;
+            if (temp_list.find(item => item["Rid"] == obj["Rid"] && item["Price"] == obj["Price"] && item["Bonus"] == obj["Bonus"]) != null) {
+                $(".alert_text").removeClass("d-none");
+                $(".alert_text").text("價格不可重複");
+                save_success = false
             } else {
-                modal_price_list.push(obj);
-                obj = [];
+                temp_list.push(obj)
+                $(".alert_text").addClass("d-none");
+                if ($self.data("tempid") < 0) {
+                    modal_price_list.push(obj)
+                    price_tid += 1;
+                } else {
+                    var index = modal_price_list.findIndex(item => item["Tempid"] == $self.data("tempid"))
+                    modal_price_list[index]["Rid"] = $self.find(".select_role").val();
+                    modal_price_list[index]["Price"] = $self.find(".input_cash").val();
+                    modal_price_list[index]["Bonus"] = $self.find(".input_bonus").val();
+                }
             }
         }
-        //if (modal_price_list.find(item => item["Rid"] == obj["Rid"] && item["Price"] == obj["Price"] && item["Bonus"] == obj["Bonus"]) != null) {
-        //    isRepect = true;
-        //} else {
-        //    modal_price_list.push(obj);
-        //    obj = [];
-        //}
     })
     if (save_success) {
         priceModal.hide();
-        //console.log(modal_price_list)
-        //console.log($price_modal.data("psid"))
     }
 }
 
@@ -530,7 +781,7 @@ function SpecAdd(result) {
         item_alert = item.find(".input_alert_number"),
         item_collapse = item.find(".collapse"),
         item_btn_expand = item.find(".btn_expand"),
-        item_btn_delect = item.find(".btn_delect");
+        item_btn_delete = item.find(".btn_delete");
 
     item_topline.children(".spec").each(function () {
         var spectype = $($("#TemplateSpecType").html()).clone();
@@ -592,8 +843,20 @@ function SpecAdd(result) {
         }
     }
 
-    item.data("psid", result != null ? result.id : "")
-    item_price.val(result != null ? result.price : "");
+    if (result != null) {
+        item.data("psid", result.id);
+    } else {
+        temp_psid += 1;
+        item.data("temppsid", temp_psid);
+    }
+
+    var index = modal_price_list.findIndex(mitem => mitem["PSid"] == item.data("psid") || (mitem["TempPSid"] != null && mitem["TempPSid"] == item.data("temppsid")))
+    if (index > -1) {
+        text = "現金：" + modal_price_list[index]["Price"] + " 紅利：" + modal_price_list[index]["Bonus"]
+        item_price.val(text);
+    } else {
+        item_price.val("");
+    }
     item_min.val(result != null ? result.min_Qty : "");
     item_stock.val(result != null ? result.stock : "");
     item_alert.val("");
@@ -606,23 +869,41 @@ function SpecAdd(result) {
     item_select_list_1.attr("id", "SpecListOpt" + spec_num + "-1");
     item_select_list_2.attr("id", "SpecListOpt" + spec_num + "-2");
 
-    //item_price.on("click", function () {
-    //    SpecPriceAdd(null);
-    //    var psid = $(this).parents(".frame").data("psid")
-    //    $price_modal.data("psid", psid != null ? psid : "")
-    //    priceModal.show()
-    //})
+    item_price.on("click", function () {
+        var isnull = true;
+        var $self = $(this)
+        var psid = $self.parents(".frame").data("psid")
+        var temppsid = $self.parents(".frame").data("temppsid")
+        $price_modal.parents(".modal-body").first().data("psid", psid != null ? psid : "")
+        $price_modal.parents(".modal-body").first().data("temppsid", temppsid != null ? temppsid : "")
+        modal_price_list.forEach(function (item) {
+            if (item.PSid == psid || (item.TempPsid != null && item.TempPsid == temppsid)) {
+                SpecPriceAdd(item)
+                isnull = false;
+            }
+        })
+        if (isnull) {
+            SpecPriceAdd(null)
+        }
+        priceModal.show();
+    })
+
+    if (result != null) {
+        item_btn_expand.children("span").text("expand_more");
+        item_btn_expand.parents("div").first().prev().removeClass("show")
+
+    }
 
     item_btn_expand.on("click", function () {
         var $self = $(this);
-        if ($self.children("span").text() == "expand_more") {
-            $self.children("span").text("expand_less")
-        } else {
+        if ($self.children("span").text() == "expand_less") {
             $self.children("span").text("expand_more")
+        } else {
+            $self.children("span").text("expand_less")
         }
     })
 
-    item_btn_delect.on("click", function () {
+    item_btn_delete.on("click", function () {
         $self_p = $(this).parents(".frame").first();
         if (spec_num == 1) {
             co.sweet.error("商品至少需有一種規格", null, false);
@@ -706,21 +987,17 @@ function ISpecRepect() {
     return isRepect;
 }
 
-function AddUp(display, success_text, error_text) {
+function AddUp(success_text, error_text, target) {
     if (spec_remove_list.length > 0) {
         spec_remove_list.forEach(function (item) {
-            co.Product.Delect.Stock({
-                Id: item,
-                TId: $.cookie('secret')
-            });
+            co.Product.Delete.Stock(item);
         })
     }
 
     co.Product.AddUp.Product({
-        TId: $.cookie('secret'),
         Id: keyId,
         Title: $name.val(),
-        Disp_Opt: display,
+        Disp_Opt: disp_opt,
         Ser_No: 500,
         Introduction: $introduction.val(),
         Description: $illustrate.val(),
@@ -731,11 +1008,13 @@ function AddUp(display, success_text, error_text) {
         if (result.success) {
             keyId = result.message == null ? keyId : result.message;
 
+            var stock_addup_list = []
             $("#Spec_Frame > .frame").each(function () {
-                var fk_sid = []
                 var $self = $(this);
-                var $spec_input = $self.find(".input_spec");
-                $spec_input.each(function () {
+
+                var obj = {};
+                var fk_sid = [];
+                $self.find(".input_spec").each(function () {
                     var id = -1;
                     $self_input = $(this);
                     $self_input.siblings("datalist").children("option").each(function () {
@@ -747,34 +1026,86 @@ function AddUp(display, success_text, error_text) {
                     fk_sid.push(id > -1 ? id : 0)
                 })
 
-                co.Product.AddUp.Stock({
-                    TId: $.cookie('secret'),
-                    Id: $self.data("psid") == "" ? 0 : $self.data("psid"),
-                    Pid: keyId,
-                    FK_S1id: fk_sid[0],
-                    FK_S2id: fk_sid[1],
-                    Price: $self.find(".input_price").val(),
-                    Stock: $self.find(".input_stock_number").val(),
-                    Min_Qty: $self.find(".input_min_number").val(),
-                    Alert_Qty: $self.find(".input_alert_number").val()
-                }).done(function () {
-                    if (techcert_list != null) {
-                        techcert_list.forEach(function (item) {
-                            co.Product.AddUp.ProdTechCert({
-                                Id: 0,
-                                FK_PId: keyId,
-                                FK_TCId: item,
+                obj["Id"] = $self.data("psid") == "" ? 0 : $self.data("psid");
+                obj["Pid"] = keyId;
+                obj["FK_S1id"] = fk_sid[0];
+                obj["FK_S2id"] = fk_sid[1];
+                obj["Stock"] = $self.find(".input_stock_number").val();
+                obj["Min_Qty"] = $self.find(".input_min_number").val();
+                obj["Alert_Qty"] = $self.find(".input_alert_number").val();
+
+                stock_addup_list.push(obj);
+            })
+
+            co.Product.AddUp.Stock(stock_addup_list).done(function (result) {
+                if (result.success) {
+                    var new_index = result.message.split(",");
+                    var price_addup_list = [];
+                    modal_price_list.forEach(function (item) {
+                        if (!item.IsDelete) {
+                            var obj = {};
+                            obj["Id"] = item.Id;
+                            if (item.PSid != null) {
+                                obj["FK_PSId"] = item.PSid;
+                            } else {
+                                obj["FK_PSId"] = new_index[item.TempPSid - 1];
+                            }
+                            obj["FK_RId"] = item.Rid;
+                            obj["Price"] = item.Price;
+                            obj["Bonus"] = item.Bonus;
+                            price_addup_list.push(obj)
+                        } else {
+                            if (item.PSid != null && item.Id != null) {
+                                co.Product.Delete.Price(item.Id);
+                            }
+                        }
+                    })
+
+                    co.Product.AddUp.ProdPrice(price_addup_list).done(function () {
+                        if (result.success) {
+                            var techcert_addup_list = [];
+                            if (techcert_list != null) {
+                                techcert_list.forEach(function (item) {
+                                    var obj = {};
+                                    obj["Id"] = item.Id;
+                                    obj["FK_PId"] = keyId;
+                                    obj["FK_TCId"] = item.FK_TCId;
+                                    obj["IsChecked"] = item.Checked;
+                                    techcert_addup_list.push(obj);
+                                })
+                            }
+                            co.Product.AddUp.ProdTechCert(techcert_addup_list).done(function (result) {
+                                if (result.success) {
+                                    if (target == "List") {
+                                        Coker.sweet.success(success_text, null, true);
+                                        setTimeout(function () {
+                                            BackToList();
+                                            product_list.component.refresh();
+                                        }, 1000);
+                                    } else if (target == "Canvas") {
+                                        Coker.sweet.success(success_text, null, true);
+                                        setTimeout(function () {
+                                            var hash = window.location.hash.replace("#", "") + "-1";
+                                            window.location.hash = hash;
+                                        }, 1000);
+                                    }
+                                } else {
+                                    Coker.sweet.error("錯誤", error_text, null, true);
+                                }
+                            }).fail(function () {
+                                Coker.sweet.error("錯誤", error_text, null, true);
                             })
-                        })
-                    }
-                    Coker.sweet.success(success_text, null, true);
-                    setTimeout(function () {
-                        BackToList();
-                        product_list.component.refresh();
-                    }, 1000);
-                }).fail(function () {
+                        } else {
+                            Coker.sweet.error("錯誤", error_text, null, true);
+                        }
+                    }).fail(function () {
+                        Coker.sweet.error("錯誤", error_text, null, true);
+                    })
+                } else {
                     Coker.sweet.error("錯誤", error_text, null, true);
-                });
+                }
+            }).fail(function () {
+                Coker.sweet.error("錯誤", error_text, null, true);
             })
         } else {
             Coker.sweet.error("錯誤", error_text, null, true);
@@ -787,11 +1118,19 @@ function AddUp(display, success_text, error_text) {
 function MoveToContent() {
     $("#ProductForm").removeClass("was-validated");
     $("#ProductList").addClass("d-none");
+    $("#ProductCanvas").addClass("d-none");
     $("#ProductContent").removeClass("d-none");
+}
+
+function MoveToCanvas() {
+    $("#ProductList").addClass("d-none");
+    $("#ProductContent").addClass("d-none");
+    $("#ProductCanvas").removeClass("d-none");
 }
 
 function BackToList() {
     $("#ProductList").removeClass("d-none");
+    $("#ProductCanvas").addClass("d-none");
     $("#ProductContent").addClass("d-none");
     window.location.hash = ""
 }
