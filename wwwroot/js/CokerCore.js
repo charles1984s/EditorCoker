@@ -12,11 +12,15 @@ var Coker = {
             DataRetentionLongTime: 3 * MonthSecond,
             ReCheckTime: 20 * MinutesSecond
         },
+        ReplaceAndSinge: function (str) {
+            var s = str.replace(/&amp;/g, "&");   
+            if (s.indexOf("&amp;") > 0) return _c.Data.ReplaceAndSinge(s);
+            else return s
+        },
         HtmlDecode: function (str) {
             var ele = document.createElement('span');
-            ele.innerHTML = str;
-            if (/[&]{1}.*[;]{1}/.test(ele.innerHTML)) return _c.Data.HtmlDecode(ele.textContent || ele.innerText);
-            else return ele.innerHTML;
+            ele.innerHTML = _c.Data.ReplaceAndSinge(str);
+            return ele.textContent || ele.innerText;
         },
         HtmlEncode: function (str) {
             var ele = document.createElement('span');

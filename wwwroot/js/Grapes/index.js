@@ -92,21 +92,52 @@ var grapesInit = function (options) {
             processor: (obj) => {
                 if (!!obj.classes) {
                     const iframe = document.getElementsByClassName("gjs-frame")[0].contentWindow;
+                    let checkClass = [
+                        { key: "SwiperInit", state: false, run: true,class:[] },
+                        { key: "FrameInit", state: false, run: true, class: [] },
+                        { key: "ViewTypeChangeInit", state: false, run: true, class: [] }
+                    ];
+                    const setConfig = function (index,str) {
+                        checkClass[index].state = true;
+                        checkClass[index].run = false;
+                        checkClass[index].class.push(`.${str}`);
+                    }
                     $(obj.classes).each(function () {
-                        switch (this) {
+                        var s = this.toString();
+                        switch (s) {
                             case "one_swiper":
                             case "two_swiper":
                             case "four_swiper":
-                                iframe.SwiperInit();
+                                setConfig(0, s);
                                 break;
                             case "masonry":
-                                iframe.FrameInit();
+                                setConfig(1, s);
                                 break;
                             case "frame":
-                                iframe.ViewTypeChangeInit();
+                                setConfig(2, s);
                                 break;
                         }
                     });
+                    const checkEle = function () {
+                        var runAll = true;
+                        $(checkClass).each(function () {
+                            var item = this;
+                            if (item.state) {
+                                let c = true;
+                                $(item.class).each(function () {
+                                    var str = this;
+                                    if (iframe.$(str).length == 0) c = false;
+                                });
+                                if (c) {
+                                    iframe[item.key]();
+                                    item.run = true;
+                                } 
+                            }
+                            runAll = runAll && this.run
+                        });
+                        if (!runAll) setTimeout(checkEle, 300);
+                    }
+                    setTimeout(checkEle, 300);
                 }
             }
         },
