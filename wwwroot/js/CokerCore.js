@@ -13,13 +13,22 @@ var Coker = {
             ReCheckTime: 20 * MinutesSecond
         },
         HtmlDecode: function (str) {
-            var _h = $("<div />").html(str).text();
-            if (/[&].*[;]/.test(_h)) return _c.Data.HtmlDecode(_h);
-            else return _h;
+            var ele = document.createElement('span');
+            ele.innerHTML = str;
+            console.log(ele.innerHTML);
+            console.log(ele.innerHTML.match(/[&]{1}.*[;]{1}/));
+            if (/[&]{1}.*[;]{1}/.test(ele.innerHTML)) return _c.Data.HtmlDecode(ele.textContent || ele.innerText);
+            else return ele.innerHTML;
+        },
+        HtmlEncode: function (str) {
+            var ele = document.createElement('span');
+            ele.appendChild(document.createTextNode(str));
+            return ele.innerHTML;
         }
+
     },
     Cookie: {
-        EffectiveTime : 0,
+        EffectiveTime: 0,
         Add: function (key, value) {
             var expDate = new Date();
             expDate.setTime(expDate.getTime() + co.Cookie.EffectiveTime);
@@ -190,7 +199,7 @@ var Coker = {
                 }
             })
         },
-        TitleHilight: function (string,title) {
+        TitleHilight: function (string, title) {
             return string.replace("{0}", `<span class='ConfirmKeyWord'>${title}</span>`);
         }
     },
@@ -236,12 +245,13 @@ var Coker = {
             });
         },
         Delete: function (id) {
+            const myId = parseInt(id);
             return $.ajax({
                 url: "/api/HtmlContent/Delete",
-                type: "GET",
+                type: "Delete",
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
-                data: { Id: id },
+                data: JSON.stringify({ Id: myId }),
             });
         },
         GetTypeList: function () {
@@ -329,7 +339,7 @@ var Coker = {
                 type: "Post",
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
-                data: JSON.stringify({id:id}),
+                data: JSON.stringify({ id: id }),
                 dataType: "json"
             });
         },
@@ -340,6 +350,50 @@ var Coker = {
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
                 data: JSON.stringify({ list: list }),
+                dataType: "json"
+            });
+        },
+        GetPageTypeList: function () {
+            return $.ajax({
+                url: "/api/WebMenu/GetPageTypeList",
+                type: "Get",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                dataType: "json"
+            });
+        },
+    },
+    File: {
+        Upload: function (formData) {
+            return $.ajax({
+                url: '/api/FileUpload/uploadFiles',
+                type: 'POST',
+                data: formData,
+                headers: _c.Data.Header,
+                contentType: false,
+                crossDomain: true,
+                dataType: 'json',
+                mimeType: "multipart/form-data",
+                processData: false
+            });
+        },
+        getFileList: function (type) {
+            return $.ajax({
+                url: "/api/FileUpload/getFileList",
+                type: "Post",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify({ type: type }),
+                dataType: "json"
+            });
+        },
+        Delete: function (key) {
+            return $.ajax({
+                url: "/api/FileUpload/DeleteFile",
+                type: "Delete",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify({ key: key }),
                 dataType: "json"
             });
         }
