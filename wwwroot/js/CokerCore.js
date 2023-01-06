@@ -15,8 +15,6 @@ var Coker = {
         HtmlDecode: function (str) {
             var ele = document.createElement('span');
             ele.innerHTML = str;
-            console.log(ele.innerHTML);
-            console.log(ele.innerHTML.match(/[&]{1}.*[;]{1}/));
             if (/[&]{1}.*[;]{1}/.test(ele.innerHTML)) return _c.Data.HtmlDecode(ele.textContent || ele.innerText);
             else return ele.innerHTML;
         },
