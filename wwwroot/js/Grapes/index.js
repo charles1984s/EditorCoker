@@ -7,7 +7,7 @@ var grapesInit = function (options) {
         save: function () { return false; },
         import: function () { return false; },
         getComponer: function () { return false; },
-        asset:[]
+        asset: []
     };
     $.extend(true, settings, options);
     var editor = grapesjs.init({
@@ -97,7 +97,7 @@ var grapesInit = function (options) {
                         { key: "FrameInit", state: false, run: true, class: [], parameter: {} },
                         { key: "ViewTypeChangeInit", state: false, run: true, class: [], parameter: {} }
                     ];
-                    const setConfig = function (index,str) {
+                    const setConfig = function (index, str) {
                         checkClass[index].state = true;
                         checkClass[index].run = false;
                         checkClass[index].class.push(`.${str}`);
@@ -132,7 +132,7 @@ var grapesInit = function (options) {
                                 if (c) {
                                     iframe[item.key](item.parameter);
                                     item.run = true;
-                                } 
+                                }
                             }
                             runAll = runAll && this.run
                         });
@@ -148,7 +148,7 @@ var grapesInit = function (options) {
     editor.on("asset:remove", (asset) => {
         let guid;
         var filename = asset.get('src').split('/').reverse()[0].split('.')[0];
-        settings.asset.every(function (item,index) {
+        settings.asset.every(function (item, index) {
             if (item.path.indexOf(filename) > 0) {
                 guid = item.guid
                 return false;
@@ -158,8 +158,46 @@ var grapesInit = function (options) {
             console.log(result);
         });
     });
+    editor.DomComponents.addType('超連結', {
+        isComponent: el => el.tagName == 'A',
+        model: {
+            defaults: {
+                traits: [
+                    // Strings are automatically converted to text types
+                    { name: 'title', type: 'text', label: '名稱', placeholder: '請輸入連結名稱' },
+                    { name: 'href', type: 'text', label: '超連結', placeholder: '請輸入連結位子' },
+                    {
+                        name: 'file', type: 'button',
+                        text: "選擇檔案",
+                        command: editor => {
+                            console.log(AssetManager);
+                            AssetManager.open();
+                            AssetManager.onSelect((resule) => {
+                                editor.getSelected().set("attributes", { "href": resule.id });
+                                AssetManager.close();
+                            });
+                        },
+                    },
+                    {
+                        name: 'target', type: 'select', label: '開啟方式',
+                        options: [
+                            { id: '_self', name: '直接連結' },
+                            { id: '_blank', name: '另開視窗', label: '另開視窗' }
+                        ]
+                    }
+                ]
+            },
+            init() {
+                this.on('change:attributes:href', this.handleHrefChange);
+            },
+            handleHrefChange() {
+                //console.log('Input file changed to: ', this.getAttributes().file);
+            }
+        },
+    });
     var panelManager = editor.Panels;
     const BlockManager = editor.BlockManager;
+    const AssetManager = editor.AssetManager;
     var categories = editor.BlockManager.getCategories();
     var blockControl = function () {
         $(categories.models).each(function (index, category) {
@@ -331,6 +369,7 @@ var grapesInit = function (options) {
     const appendBlock = function (id, obj) {
         const blockId = `customBlockTemplate_${id}`;
         var mySetting = {
+            type: "default",
             render: ({ model, el }) => {
                 el.addEventListener('dblclick', () => {
                     co.sweet.confirm('即將刪除', co.sweet.TitleHilight(`是否要確認將{0}刪除?`, obj.label), '確認', "取消", function () {

@@ -51,6 +51,24 @@
                 Refresh: '#btnRefresh',
             },
             on: {
+                ready: function () {
+                    co.WebMesnus.GetPageTypeList().done(function (result) {
+                        if (result.success) {
+                            const $s = $("#PageType");
+                            $(result.type).each(function () {
+                                $s.append(`<option value="${this.value}">${this.key}</option>`);
+                            });
+                            $s.on("change", function () {
+                                const $self = $(this);
+                                if ($self.val() == 2) {
+                                    $("#RouterNameBlock").addClass("d-none").val("Home");
+                                } else {
+                                    $("#RouterNameBlock").removeClass("d-none").val("");
+                                }
+                            })
+                        }
+                    });
+                },
                 edit: function () {
                     openEditForm();
                     $("#btnUpdate").removeClass("d-none");
@@ -120,6 +138,7 @@
                     
                     ul.children("li").each(function (index, element) {
                         var s = $(element).data("serNO");
+                        console.log(s,index+1, element);
                         if (s != (index + 1)) {
                             /*console.log(element, s, (index + 1));*/
                             s = index + 1;
@@ -138,7 +157,8 @@
                     $("#gjs + .emptyList").addClass("d-none");
                     co.WebMesnus.getConten(data.id).done(function (result) {
                         if (result.success) {
-                            editor.setComponents(co.Data.HtmlDecode(result.conten.saveHtml));
+                            var html = co.Data.HtmlDecode(result.conten.saveHtml);
+                            editor.setComponents(html);
                             editor.setStyle(result.conten.saveCss);
                         } else {
                             co.sweet.error(result.error);
@@ -170,12 +190,20 @@
 
     co.WebMesnus.getAll().done(function (result) {
         if (result.success) {
+            const myOffcanvas = new bootstrap.Offcanvas('#offcanvasSite');
             menuEditor.setData(result.maps);
             $("#myEditor").removeClass("d-none");
             if (result.maps.length > 0) $("#myEditor + .emptyList").addClass("d-none");
             else $("#myEditor").addClass("d-none");
+            myOffcanvas.show();
         } else {
             menuEditor.setData([]);
         }
     });
+    /*$(".material-symbols-outlined").each(function () {
+        console.log(`"${$(this).text().trim()}"`);
+    });*/
+    /*$($.iconset_fontawesome_6.icons).each(function () {
+        console.log(`"${this.replace(/[-]{3}[\w]{2,4}$/g,"")}"`);
+    });*/
 }
