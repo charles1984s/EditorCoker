@@ -93,9 +93,9 @@ var grapesInit = function (options) {
                 if (!!obj.classes) {
                     const iframe = document.getElementsByClassName("gjs-frame")[0].contentWindow;
                     let checkClass = [
-                        { key: "SwiperInit", state: false, run: true,class:[] },
-                        { key: "FrameInit", state: false, run: true, class: [] },
-                        { key: "ViewTypeChangeInit", state: false, run: true, class: [] }
+                        { key: "SwiperInit", state: false, run: true, class: [], parameter: {} },
+                        { key: "FrameInit", state: false, run: true, class: [], parameter: {} },
+                        { key: "ViewTypeChangeInit", state: false, run: true, class: [], parameter: {} }
                     ];
                     const setConfig = function (index,str) {
                         checkClass[index].state = true;
@@ -109,6 +109,7 @@ var grapesInit = function (options) {
                             case "two_swiper":
                             case "four_swiper":
                                 setConfig(0, s);
+                                checkClass[0].parameter.autoplay = false;
                                 break;
                             case "masonry":
                                 setConfig(1, s);
@@ -129,7 +130,7 @@ var grapesInit = function (options) {
                                     if (iframe.$(str).length == 0) c = false;
                                 });
                                 if (c) {
-                                    iframe[item.key]();
+                                    iframe[item.key](item.parameter);
                                     item.run = true;
                                 } 
                             }
