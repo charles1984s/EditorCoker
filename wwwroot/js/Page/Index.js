@@ -1,4 +1,5 @@
 ﻿function PageReady() {
+    const myOffcanvas = new bootstrap.Offcanvas('#offcanvasSite');
     var editor = grapesInit({
         save: function (html, css) {
             var _dfr = $.Deferred();
@@ -160,6 +161,7 @@
                             var html = co.Data.HtmlDecode(result.conten.saveHtml);
                             editor.setComponents(html);
                             editor.setStyle(result.conten.saveCss);
+                            myOffcanvas.hide();
                         } else {
                             co.sweet.error(result.error);
                         }
@@ -190,7 +192,6 @@
 
     co.WebMesnus.getAll().done(function (result) {
         if (result.success) {
-            const myOffcanvas = new bootstrap.Offcanvas('#offcanvasSite');
             menuEditor.setData(result.maps);
             $("#myEditor").removeClass("d-none");
             if (result.maps.length > 0) $("#myEditor + .emptyList").addClass("d-none");
