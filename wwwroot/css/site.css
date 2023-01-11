@@ -33,6 +33,12 @@
     --font-family-sans-serif: "GTWalsheim";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
 /* line 21, ../../scss/bootstrap/_reboot.scss */
 .ConfirmKeyWord {
     color: #933;
@@ -11876,3 +11882,10 @@ a.bg-dark-light25:hover, a.bg-dark-light25:focus, button.bg-dark-light25:hover, 
         .custom-context-menu > li:not(:first-child) {
             border-top:none;
         }
+.table-icons .material-symbols-outlined {
+    color: #fff;
+    opacity: 1;
+}
+.gjs-block__media > i.material-symbols-outlined.credit_card.fa-5x {
+    font-size: 5em;
+}
