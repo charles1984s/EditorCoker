@@ -970,7 +970,7 @@
     $.fn.iconOpen = function(setting){
         this.removeClass('sortableListsClosed').addClass('sortableListsOpen');
         this.children('ul').css('display', 'block');
-        var opener = this.children('div').children('.sortableListsOpener').first();
+        var opener = this.find('.float-left').children('.sortableListsOpener').first();
         if (setting.opener.as === 'html'){
             opener.html(setting.opener.close);
         } else if (setting.opener.as === 'class') {
@@ -984,7 +984,7 @@
     $.fn.iconClose = function(setting) {
         this.removeClass('sortableListsOpen').addClass('sortableListsClosed');
         this.children('ul').css('display', 'none');
-        var opener = this.children('div').children('.sortableListsOpener').first();
+        var opener = this.find('.float-left').children('.sortableListsOpener').first();
         if (setting.opener.as === 'html') {
             opener.html(setting.opener.open);
         } else if (setting.opener.as === 'class') {
@@ -1071,12 +1071,14 @@
 function MenuEditor(idSelector, options) {
     var self = this;
     var $main = $("#" + idSelector).data("level", "0");
+    var lastcheck = true;
     var settings = {
         labelEdit: '<i class="fas fa-edit clickable"></i>',
         labelRemove: '<i class="fas fa-trash-alt clickable"></i>',
         textConfirmDelete: 'This item {0} will be deleted. Are you sure?',
-        iconPicker: { cols: 4, rows: 4, footer: false, iconset: "fontawesome5" },
+        iconPicker: { cols: 4, rows: 4, footer: false, iconset: "GoogleMaterialSymbolsOutlined" },
         maxLevel: -1,
+        levelChang: true,
         listOptions: { 
             hintCss: { border: '1px dashed #13981D'}, 
             opener: {
@@ -1090,17 +1092,32 @@ function MenuEditor(idSelector, options) {
             ignoreClass: 'clickable',
             listsClass: "pl-0",
             listsCss: {"padding-top": "10px"},
-            complete: function (cEl) {
-                MenuEditor.updateButtons($main);
-                $main.updateLevels(0);
-                !!settings.on.drop && settings.on.drop(cEl);
+            complete: function () {
+                if (!lastcheck) co.sweet.error("操作錯誤", "該項目無法至此階層。");
+                lastcheck = true;
                 return true;
             },
-            isAllowed: function(currEl, hint, target) {
-                return isValidLevel(currEl, target);
+            onChange: function (cEl) {
+                self.updateButtons($main);
+                $main.updateLevels(0);
+                !!settings.on.drop && settings.on.drop(cEl);
+            },
+            isAllowed: function (currEl, hint, target) {
+                lastcheck = isValidLevel(currEl, target);
+                return lastcheck;
             }
         },
         on: {}
+    };
+    /* STATIC METHOD */
+    /**
+     * Update the buttons on the list. Only the buttons 'Up', 'Down', 'In', 'Out'
+     * @param {jQuery} $mainList The unorder list 
+     **/
+    self.updateButtons = function ($mainList) {
+        $mainList.find('.btnMove').show();
+        if(!settings.levelChang) $mainList.find('.levelMove').hide();
+        $mainList.updateButtons();
     };
     $.extend(true, settings, options);
     var itemEditing = null;
@@ -1134,7 +1151,7 @@ function MenuEditor(idSelector, options) {
                 list.remove();
             }
             !!settings.on.del && settings.on.del(data);
-            MenuEditor.updateButtons($main);
+            self.updateButtons($main);
         });
     });
     $main.on('click', '.btnPage', function (e) {
@@ -1155,14 +1172,14 @@ function MenuEditor(idSelector, options) {
         e.preventDefault();
         var $li = $(this).closest('li');
         $li.prev('li').before($li);
-        MenuEditor.updateButtons($main);
+        self.updateButtons($main);
         !!settings.on.drop && settings.on.drop($li);
     });
     $main.on('click', '.btnDown', function (e) {
         e.preventDefault();
         var $li = $(this).closest('li');
         $li.next('li').after($li);
-        MenuEditor.updateButtons($main);
+        self.updateButtons($main);
         !!settings.on.drop && settings.on.drop($li);
     });
     $main.on('click', '.btnOut', function (e) {
@@ -1175,7 +1192,7 @@ function MenuEditor(idSelector, options) {
             list.prev('div').children('.sortableListsOpener').first().remove();
             list.remove();
         }
-        MenuEditor.updateButtons($main);
+        self.updateButtons($main);
         $main.updateLevels();
         !!settings.on.drop && settings.on.drop($li);
     });
@@ -1198,7 +1215,7 @@ function MenuEditor(idSelector, options) {
                 TOpener($prev);
             }
         }
-        MenuEditor.updateButtons($main);
+        self.updateButtons($main);
         $main.updateLevels();
         !!settings.on.drop && settings.on.drop($li);
     });
@@ -1262,8 +1279,8 @@ function MenuEditor(idSelector, options) {
         var $btnRemv = TButton({classCss: 'btn btn-danger btn-sm btnRemove', text: settings.labelRemove});
         var $btnUp = TButton({classCss: 'btn btn-secondary btn-sm btnUp btnMove', text: '<i class="fas fa-angle-up clickable"></i>'});
         var $btnDown = TButton({classCss: 'btn btn-secondary btn-sm btnDown btnMove', text: '<i class="fas fa-angle-down clickable"></i>'});
-        var $btnOut = TButton({classCss: 'btn btn-secondary btn-sm btnOut btnMove', text: '<i class="fas fa-level-down-alt clickable"></i>'});
-        var $btnIn = TButton({ classCss: 'btn btn-secondary btn-sm btnIn btnMove', text: '<i class="fas fa-level-up-alt clickable"></i>' });
+        var $btnOut = TButton({ classCss: 'btn btn-secondary btn-sm btnOut btnMove levelMove', text: '<i class="fas fa-level-down-alt clickable"></i>'});
+        var $btnIn = TButton({ classCss: 'btn btn-secondary btn-sm btnIn btnMove levelMove', text: '<i class="fas fa-level-up-alt clickable"></i>' });
         var $btnCont = TButton({ classCss: 'btn btn-success btn-sm btnPage', text: '<i class="fa fa-paint-roller clickable"></i>' });
         $divbtn.append($btnUp).append($btnDown).append($btnIn).append($btnOut).append($btnEdit).append($btnRemv).append($btnCont);
         return $divbtn;
@@ -1290,8 +1307,12 @@ function MenuEditor(idSelector, options) {
             var $div = $('<div>').css('overflow', 'auto');
             var $i = $('<i>').addClass(v.icon);
             var $span = $('<span>').addClass('txt font-weight-bold').append(v.text).css('margin-right', '5px');
-            var $divbtn =  TButtonGroup();
-            $div.append($i).append("&nbsp;").append($span).append($divbtn);
+            var $divTitle = $("<div class='d-flex align-items-center float-left' />");
+            var $divbtn = TButtonGroup();
+            if (!v.canEdit) $divbtn.find(".btnEdit ,.btnRemove, .btnPage").addClass("d-none");
+            if ($i.hasClass("material-symbols-outlined")) $i.text(v.icon.replace("material-symbols-outlined", "").trim());
+            $divTitle.append($i).append("&nbsp;").append($span);
+            $div.append($divTitle).append($divbtn);
             $li.append($div);
             if (isParent) {
                 $li.append(createMenu(v.children, level + 1));
@@ -1312,7 +1333,7 @@ function MenuEditor(idSelector, options) {
                     }
                     return false; // Prevent default
                 });
-        opener.prependTo(li.children('div').first());
+        opener.prependTo(li.find('div.float-left').first());
         if ( !li.hasClass('sortableListsOpen') ) {
             li.iconClose(options);
         } else {
@@ -1340,8 +1361,9 @@ function MenuEditor(idSelector, options) {
         } else {
             targetLevel = parseInt($liTarget.parent().data("level")) + 1;
         }
-        console.log((targetLevel + liCount));
-        return ((targetLevel + liCount)<=settings.maxLevel)
+        var newLevel = (targetLevel + liCount);
+        if ($li.data("minLevel") > newLevel || ($li.data("maxLevel") > 0 && $li.data("maxLevel") < newLevel)) return false
+        else return (newLevel <=settings.maxLevel)
     }
 
     /* PUBLIC METHODS */
@@ -1397,13 +1419,15 @@ function MenuEditor(idSelector, options) {
             var btnGroup = TButtonGroup();
             var textItem = $('<span>').addClass('txt font-weight-bold').text(data.title);
             var iconItem = $('<i>').addClass(data.icon);
-            var div = $('<div>').css({ "overflow": "auto" }).append(iconItem).append("&nbsp;").append(textItem).append(btnGroup);
+            var title = $("<div class='d-flex align-items-center float-left'>").append(iconItem).append("&nbsp;").append(textItem);
+            var div = $('<div>').css({ "overflow": "auto" }).append(title).append(btnGroup);
             var $li = $("<li>").data(data);
+            if (iconItem.hasClass("material-symbols-outlined")) iconItem.text(data.icon.replace("material-symbols-outlined", "").trim());
             $li.addClass('list-group-item pr-0').append(div);
             $main.append($li);
-            MenuEditor.updateButtons($main);
+            self.updateButtons($main);
             resetForm();
-            //!!settings.on.add && settings.on.add($li);
+            !!settings.on.add && settings.on.add($li);
         }
     };
 
@@ -1433,7 +1457,7 @@ function MenuEditor(idSelector, options) {
             } else {
                 setOpeners();
             }
-            MenuEditor.updateButtons($main);
+            self.updateButtons($main);
         }
     };
 
@@ -1447,13 +1471,5 @@ function MenuEditor(idSelector, options) {
         $(e.Add).click(self.add);
         $(e.Refresh).click(self.refresh);
     }
-};
-/* STATIC METHOD */
-/**
- * Update the buttons on the list. Only the buttons 'Up', 'Down', 'In', 'Out'
- * @param {jQuery} $mainList The unorder list 
- **/
-MenuEditor.updateButtons = function($mainList) {
-    $mainList.find('.btnMove').show();
-    $mainList.updateButtons();
+    !!settings.on.ready && settings.on.ready();
 };

@@ -84,19 +84,22 @@ var grapesInit = function (options) {
                 '/lib/jquery/dist/jquery.min.js',
                 '/lib/bootstrap/dist/js/bootstrap.bundle.min.js',
                 '/lib/swiper/swiper-bundle.min.js',
+                '/lib/masonry-layout/dist/masonry.pkgd.min.js',
                 '/shared/js/Frame.min.js',
                 '/shared/js/Swiper.min.js',
-                '/shared/js/ViewTypeChange.min.js'
+                '/shared/js/ViewTypeChange.min.js',
+                '/shared/js/Sitemap.min.js'
             ],
         },
         domComponents: {
-            processor: (obj) => {
+            processor: (obj) => {                
                 if (!!obj.classes) {
                     const iframe = document.getElementsByClassName("gjs-frame")[0].contentWindow;
                     let checkClass = [
                         { key: "SwiperInit", state: false, run: true, class: [], parameter: {} },
                         { key: "FrameInit", state: false, run: true, class: [], parameter: {} },
-                        { key: "ViewTypeChangeInit", state: false, run: true, class: [], parameter: {} }
+                        { key: "ViewTypeChangeInit", state: false, run: true, class: [], parameter: {} },
+                        { key: "SitemapInit", state: false, run: true, class: [], parameter: {} }
                     ];
                     const setConfig = function (index, str) {
                         checkClass[index].state = true;
@@ -117,6 +120,9 @@ var grapesInit = function (options) {
                                 break;
                             case "frame":
                                 setConfig(2, s);
+                                break;
+                            case "sitemap_hierarchical_frame":
+                                setConfig(3, s);
                                 break;
                         }
                     });

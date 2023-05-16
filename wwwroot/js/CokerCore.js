@@ -340,7 +340,7 @@ var Coker = {
         delete: function (id) {
             return $.ajax({
                 url: "/api/WebMenu/Delete",
-                type: "Post",
+                type: "Delete",
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
                 data: JSON.stringify({ id: id }),
@@ -367,6 +367,62 @@ var Coker = {
             });
         },
     },
+    ObjectType: {
+        GetAll: function () {
+            return $.ajax({
+                url: "/api/ObjectType/GetAll",
+                type: "Get",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                dataType: "json"
+            });
+        }, createOrEdit: function (data) {
+            return $.ajax({
+                url: "/api/ObjectType/CreateOrEdit",
+                type: "Post",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify(data),
+                dataType: "json"
+            });
+        }, delete: function (id) {
+            return $.ajax({
+                url: "/api/ObjectType/DeleteHtmlContent",
+                type: "Delete",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify({ id: id }),
+                dataType: "json"
+            });
+        }, updateSerNo: function (list) {
+            return $.ajax({
+                url: "/api/ObjectType/UpdateSerNo",
+                type: "Post",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify({ list: list }),
+                dataType: "json"
+            });
+        }, getConten: function (id) {
+            return $.ajax({
+                url: "/api/ObjectType/GetConten",
+                type: "Post",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify({ id: id }),
+                dataType: "json"
+            });
+        }, SaveConten: function (data) {
+            return $.ajax({
+                url: "/api/ObjectType/saveConten",
+                type: "Post",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify(data),
+                dataType: "json"
+            });
+        }
+    },
     File: {
         Upload: function (formData) {
             return $.ajax({
@@ -391,6 +447,26 @@ var Coker = {
                 dataType: "json"
             });
         },
+        getImgThumbnail: function (imgid) {
+            return $.ajax({
+                url: "/api/FileUpload/getImgThumbnail",
+                type: "Get",
+                contentType: 'application/json; charset=utf-8',
+                data: { imgid: imgid },
+                headers: _c.Data.Header,
+                dataType: "json"
+            });
+        },
+        DeleteImg: function (imgid) {
+            return $.ajax({
+                url: "/api/FileUpload/DeleteImage",
+                type: "Get",
+                contentType: 'application/json; charset=utf-8',
+                data: { imgid: imgid },
+                headers: _c.Data.Header,
+                dataType: "json"
+            });
+        },
         Delete: function (key) {
             return $.ajax({
                 url: "/api/FileUpload/DeleteFile",
@@ -400,7 +476,39 @@ var Coker = {
                 data: JSON.stringify({ key: key }),
                 dataType: "json"
             });
-        }
+        },
+        UploadImageInit: function (elementId, label_text) {
+            const upload = new FileUploadWithPreview.FileUploadWithPreview(elementId, Option = {
+                text: {
+                    browse: "　瀏 覽　",
+                    chooseFile: "選擇圖片...",
+                    label: "圖片上傳",
+                },
+            });
+            return upload;
+        },
+        Upload360Init: function (elementId, label_text) {
+            const upload = new FileUploadWithPreview.FileUploadWithPreview(elementId, Option = {
+                multiple: true,
+                text: {
+                    browse: "　瀏 覽　",
+                    chooseFile: "選擇多張圖片...",
+                    label: "360圖片上傳(檔名請按編號排序 ex: image-1.jpg、image-2.jpg...)",
+                    selectedCount: "張圖片已選擇",
+                },
+            });
+            return upload;
+        },
+        UploadVideoInit: function (elementId, label_text) {
+            const upload = new FileUploadWithPreview.FileUploadWithPreview(elementId, Option = {
+                text: {
+                    browse: "　瀏 覽　",
+                    chooseFile: "選擇檔案...",
+                    label: "影片上傳",
+                },
+            });
+            return upload;
+        },
     }
 }
 var _c = Coker;

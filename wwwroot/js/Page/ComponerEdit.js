@@ -1,24 +1,13 @@
 ﻿function PageReady() {
     const myOffcanvas = new bootstrap.Offcanvas('#offcanvasSite');
     var editor = grapesInit({
-        save: function (html, css) {
-            var _dfr = $.Deferred();
-            co.WebMesnus.saveConten({
-                Id: $("#gjs").data("id"),
-                SaveHtml: html,
-                SaveCss: css
-            }).done(function (resutlt) {
-                if (resutlt.success) _dfr.resolve();
-                else co.sweet.error(resutlt.error);
-            });
-            return _dfr.promise();
-        },
+        save: null,
         import: function (html, css) {
             var _dfr = $.Deferred();
-            co.WebMesnus.importConten({
+            co.ObjectType.SaveConten({
                 Id: $("#gjs").data("id"),
-                SaveHtml: html,
-                SaveCss: css
+                Html: html,
+                Css: css
             }).done(function (resutlt) {
                 if (resutlt.success) _dfr.resolve();
                 else co.sweet.error(resutlt.error);
@@ -37,14 +26,15 @@
 
     var menuEditor = new MenuEditor('myEditor',
         {
-            textConfirmDelete: "是否確認將<span class='ConfirmKeyWord'>{0}</span>選單刪除?",
+            textConfirmDelete: "是否確認將<span class='ConfirmKeyWord'>{0}</span>分類刪除?",
             listOptions: {
                 placeholderCss: { 'background-color': "#cccccc" }
             },
             iconPicker: {
                 searchText: "Buscar...", labelHeader: "{0}/{1}"
             },
-            maxLevel: -1, // (Optional) Default is -1 (no level limit)
+            maxLevel: 1, // (Optional) Default is -1 (no level limit)
+            levelChang:false,
             element: {
                 Form: "#frmEdit",
                 Update: "#btnUpdate",
@@ -80,10 +70,9 @@
                         $("#myEditor").addClass("d-none");
                         $("#myEditor + .emptyList").removeClass("d-none");
                     }
-                    co.WebMesnus.delete(data.id).done(function (result) {
+                    co.ObjectType.delete(data.id).done(function (result) {
                         if (result.success) co.sweet.success("已成功刪除");
                         else co.sweet.error(result.error);
-                        /*console.log(data);*/
                     });
                 },
                 add: function (cEl) {
@@ -99,13 +88,10 @@
                     });
                 },
                 update: function (data) {
-                    co.WebMesnus.createOrEdit(data).done(function (result) {
+                    co.ObjectType.createOrEdit(data).done(function (result) {
                         if (!result.success) co.sweet.error(result.error);
                         else co.sweet.success("更新成功");
                     });
-                    //editor.setComponents("<span>Hi<span>");
-                    //editor.setStyle("");
-                    /*console.log(data);*/
                 },
                 save: function () {
 
@@ -136,19 +122,17 @@
                         isAdd = true;
                         saveList.push($(cEl).data());
                     }
-
+                    console.log(cEl);
                     ul.children("li").each(function (index, element) {
                         var s = $(element).data("serNO");
-                        console.log(s, index + 1, element);
                         if (s != (index + 1)) {
-                            /*console.log(element, s, (index + 1));*/
                             s = index + 1;
                             $(element).data("serNO", s);
                             if ($(element).data("id") != cEl.data("id")) saveList.push($(element).data());
                             else if (!isAdd) saveList.push($(element).data());
                         }
                     });
-                    co.WebMesnus.updateLevelAndSerNo(saveList).done(function (result) {
+                    co.ObjectType.updateSerNo(saveList).done(function (result) {
                         if (!result.success) co.sweet.error(result.error);
                     });
                 },
@@ -156,11 +140,11 @@
                     $("#gjs").data("id", data.id);
                     $("#gjs").removeClass("d-none");
                     $("#gjs + .emptyList").addClass("d-none");
-                    co.WebMesnus.getConten(data.id).done(function (result) {
+                    co.ObjectType.getConten(data.id).done(function (result) {
                         if (result.success) {
-                            var html = co.Data.HtmlDecode(result.conten.saveHtml);
+                            var html = co.Data.HtmlDecode(result.conten.html);
                             editor.setComponents(html);
-                            editor.setStyle(result.conten.saveCss);
+                            editor.setStyle(result.conten.css);
                             myOffcanvas.hide();
                         } else {
                             co.sweet.error(result.error);
@@ -190,21 +174,15 @@
         $("#btnRefresh").trigger("click");
     });
 
-    co.WebMesnus.getAll().done(function (result) {
+    co.ObjectType.GetAll().done(function (result) {
         if (result.success) {
-            menuEditor.setData(result.maps);
+            menuEditor.setData(result.list);
             $("#myEditor").removeClass("d-none");
-            if (result.maps.length > 0) $("#myEditor + .emptyList").addClass("d-none");
+            if (result.list.length > 0) $("#myEditor + .emptyList").addClass("d-none");
             else $("#myEditor").addClass("d-none");
             myOffcanvas.show();
         } else {
             menuEditor.setData([]);
         }
     });
-    /*$(".material-symbols-outlined").each(function () {
-        console.log(`"${$(this).text().trim()}"`);
-    });*/
-    /*$($.iconset_fontawesome_6.icons).each(function () {
-        console.log(`"${this.replace(/[-]{3}[\w]{2,4}$/g,"")}"`);
-    });*/
 }
