@@ -185,7 +185,7 @@ function HashDataEdit() {
                 co.TechnicalCertificate.Get(parseInt(hash)).done(function (result) {
                     MoveToContent();
                     if (result != null) {
-                        co.File.getImgThumbnail(result.id).done(function (img_result) {
+                        co.File.getImgFile({ Sid: result.id, Type: 4, Size: 3 }).done(function (img_result) {
                             FormDataSet(result, img_result);
                         });
                     } else {
@@ -268,7 +268,6 @@ function FormDataSet(result, img_result) {
             })
 
             item_input.change(function () {
-                console.log(img_start_index)
                 if (img_start_index == null) {
                     uploadImage(this.files[0]);
                 } else {
@@ -358,7 +357,6 @@ function uploadImage(this_file) {
     })
 
     item_input.change(function () {
-        console.log(img_start_index)
         if (img_start_index == null) {
             uploadImage(this.files[0]);
         } else {
@@ -384,7 +382,6 @@ function reuploadImage(this_file, this_input) {
         var reader = new FileReader();
         reader.readAsDataURL(img_file[img_start_index + 2]);
         reader.onload = (function (e) {
-            console.log()
             this_input.next("div").children(".btn_input_pic").children("img").attr("src", e.target.result);
         });
     }).catch(function (err) {
@@ -428,7 +425,7 @@ function AddUp(display, success_text, error_text) {
 
             if (img_delete_list.length > 0) {
                 img_delete_list.forEach(function (imgid) {
-                    co.File.DeleteImg(imgid).done(function (result) {
+                    co.File.DeleteImgByImgId(imgid).done(function (result) {
                     });
                 })
             }

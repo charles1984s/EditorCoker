@@ -1,4 +1,4 @@
-var $btn_display, $btn_pop_visible, $title, $title_text, $describe, $describe_text, $sort, $sort_input, $sort_checkbox
+﻿var $btn_display, $btn_pop_visible, $title, $title_text, $describe, $describe_text, $sort, $sort_input, $sort_checkbox
 var keyId, disp_opt = true, pop_visible = true;
 var article_list;
 var setPage;
@@ -7,7 +7,7 @@ function PageReady() {
     co.Articles = {
         AddUp: function (data) {
             return $.ajax({
-                url: "/api/Article/AddUp_Simple",
+                url: "/api/Article/AddUp",
                 type: "POST",
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
@@ -15,9 +15,9 @@ function PageReady() {
                 dataType: "json"
             });
         },
-        GetSimple: function (Id) {
+        GetDataOne: function (Id) {
             return $.ajax({
-                url: "/api/Article/GetSimple/",
+                url: "/api/Article/GetDataOne/",
                 type: "GET",
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
@@ -114,6 +114,8 @@ function PageReady() {
     }
 
     ElementInit();
+    ImageUploadInit("single", $(".image_upload"));
+    TagListModalInit();
 
     const forms = $('#ArticletForm');
     (() => {
@@ -257,14 +259,16 @@ function HashDataEdit() {
                 FormDataClear();
                 MoveToContent();
             } else {
-                co.Articles.GetSimple(parseInt(hash)).done(function (result) {
+                co.Articles.GetDataOne(parseInt(hash)).done(function (result) {
                     if (result != null) {
                         keyId = parseInt(hash);
                         if (hash.indexOf("-") > 0) {
                             MoveToCanvas();
                         } else {
                             MoveToContent();
-                            FormDataSet(result);
+                            co.File.getImgFile({ Sid: result.id, Type: 6, Size: 3 }).done(function (img_result) {
+                                FormDataSet(result, img_result[0]);
+                            });
                         }
                     } else {
                         window.location.hash = ""
@@ -284,8 +288,24 @@ function editButtonClicked(e) {
     window.location.hash = keyId;
 }
 
-function FormDataSet(result) {
+function FormDataClear() {
+    TagDataClear();
+    SingleImageClear();
+    keyId = 0;
+    $btn_display.children("span").text("visibility");
+    $btn_pop_visible.children("span").text("group");
+    $title_text.val("");
+    $title.children("div").children(".count").text(0);
+    $describe_text.val("");
+    $describe.children("div").children(".count").text(0);
+    $sort_input.val("");
+    $sort_input.attr("disabled", "disabled");
+    $sort_checkbox.prop("checked", false);
+}
+
+function FormDataSet(result, img_result) {
     FormDataClear();
+    SingleSetImage(img_result);
     keyId = result.id;
 
     if (!result.visible) {
@@ -307,19 +327,8 @@ function FormDataSet(result) {
         $sort_checkbox.prop("checked", true);
     }
 
-}
+    TagDataSet(result.tagDatas);
 
-function FormDataClear() {
-    keyId = 0;
-    $btn_display.children("span").text("visibility");
-    $btn_pop_visible.children("span").text("group");
-    $title_text.val("");
-    $title.children("div").children(".count").text(0);
-    $describe_text.val("");
-    $describe.children("div").children(".count").text(0);
-    $sort_input.val("");
-    $sort_input.attr("disabled", "disabled");
-    $sort_checkbox.prop("checked", false);
 }
 
 function paletteButtonClicked(e) {
@@ -339,6 +348,7 @@ function deleteButtonClicked(e) {
 }
 
 function AddUp(success_text, error_text, place) {
+
     co.Articles.AddUp({
         Id: keyId,
         Title: $title_text.val(),
@@ -346,18 +356,63 @@ function AddUp(success_text, error_text, place) {
         Visible: disp_opt,
         SerNO: $sort_checkbox.is(":checked") ? $sort_input.val() : 500,
         PopularVisible: pop_visible,
-    }).done(function () {
-        Coker.sweet.success(success_text, null, true);
-        if (place == "canvas") {
-            setTimeout(function () {
-                window.location.hash += "-1";
-                MoveToCanvas();
-            }, 1000);
+        TagSelected: tag_list,
+    }).done(function (result) {
+        if (result.success) {
+
+            if (img_delete_list.length > 0) {
+                img_delete_list.forEach(function (imgid) {
+                    co.File.DeleteImgByImgId(imgid).done(function (result) {
+                    });
+                })
+            }
+
+            if (img_file.length > 0) {
+                var formData = new FormData();
+                formData.append("type", 6);
+                formData.append("sid", result.message);
+                for (var i = 0; i < img_file.length; i += 3) {
+                    for (var j = i; j < i + 3; j++) {
+                        formData.append('files', img_file[j]);
+                    }
+                    co.File.Upload(formData).done(function (result) {
+                        if (result.success) {
+                            Coker.sweet.success(success_text, null, true);
+                            setTimeout(function () {
+                                if (place == "canvas") {
+                                    setTimeout(function () {
+                                        window.location.hash += "-1";
+                                        MoveToCanvas();
+                                    }, 1000);
+                                } else {
+                                    setTimeout(function () {
+                                        article_list.component.refresh();
+                                        BackToList();
+                                    }, 1000);
+                                }
+                            }, 1000);
+                        } else {
+                            Coker.sweet.error("錯誤", error_text, null, true);
+                        }
+                    });
+                    formData.delete('files');
+                }
+            } else {
+                Coker.sweet.success(success_text, null, true);
+                if (place == "canvas") {
+                    setTimeout(function () {
+                        window.location.hash += "-1";
+                        MoveToCanvas();
+                    }, 1000);
+                } else {
+                    setTimeout(function () {
+                        article_list.component.refresh();
+                        BackToList();
+                    }, 1000);
+                }
+            }
         } else {
-            setTimeout(function () {
-                article_list.component.refresh();
-                BackToList();
-            }, 1000);
+            Coker.sweet.error("錯誤", error_text, null, true);
         }
     }).fail(function () {
         Coker.sweet.error("錯誤", error_text, null, true);

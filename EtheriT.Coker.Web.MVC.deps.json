@@ -807,6 +807,14 @@
           }
         }
       },
+      "MiniExcel/1.30.3": {
+        "runtime": {
+          "lib/netstandard2.0/MiniExcel.dll": {
+            "assemblyVersion": "1.30.3.0",
+            "fileVersion": "1.30.3.0"
+          }
+        }
+      },
       "Newtonsoft.Json/13.0.1": {
         "runtime": {
           "lib/netstandard2.0/Newtonsoft.Json.dll": {
@@ -1648,6 +1656,7 @@
           "DevExtreme.AspNet.Data": "2.8.6",
           "EtheriT.Coker.Application.Shared": "1.0.0",
           "EtheriT.Coker.EntityFrameworkCore": "1.0.0",
+          "MiniExcel": "1.30.3",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
@@ -2337,6 +2346,13 @@
       "sha512": "sha512-mtVirZr++rq+XCDITMUdnETD59XoeMxSpLRIII7JRI6Yj0LEDiO1pPn0ktlnIj12Ix8bfvQqQDMMIF9wC98oCA==",
       "path": "microsoft.win32.systemevents/4.7.0",
       "hashPath": "microsoft.win32.systemevents.4.7.0.nupkg.sha512"
+    },
+    "MiniExcel/1.30.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-l4Qy9ggBebo59WgORYUVrjcrQdL/SSLud4KdahSBrT8i1CrVnL9bXZY80bBi+JBfsOOypUjPQtac7Wh4TksOSg==",
+      "path": "miniexcel/1.30.3",
+      "hashPath": "miniexcel.1.30.3.nupkg.sha512"
     },
     "Newtonsoft.Json/13.0.1": {
       "type": "package",
