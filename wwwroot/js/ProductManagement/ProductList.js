@@ -1,8 +1,8 @@
 ﻿var $btn_display, $name, $name_count, $introduction, $introduction_count, $illustrate, $illustrate_count, $marks, $price, $stock_number, $alert_number, $min_number, $date, $picker, $permanent
 var startDate, endDate, keyId, disp_opt = true, price_tid, temp_psid
-var product_list, spec_num = 0, spec_price_num = 0, spec_remove_list = [], modal_price_list = []
+var product_list, spec_num = 0, spec_price_num = 0, spec_remove_list = [], modal_price_list = [], spec_pick_list
 var $price_modal, priceModal
-var file_num = 0;
+var file_num = 0, total_files = [];
 let importProdPopup = null;
 function ImportProd() {
     var formData = new FormData($(`[name="fileUploadForm"]`)[0]);
@@ -12,8 +12,9 @@ function ImportProd() {
     }).fail(function () {
         co.sweet.error("檔案格式錯誤，無法解讀。");
     });
-    
+
 }
+
 function showImportProdPopup() {
     importProdPopup = $("#importProdPopup").dxPopup("instance");
     importProdPopup.option("contentTemplate", $("#importProdPopup-template"));
@@ -41,16 +42,9 @@ function PageReady() {
     TagListModalInit();
 
     /* File Upload */
-    $(".upload_list").on("click", function () {
-        UploadFile($(this));
-    })
-    $(".upload_list > .btn_remove").on("click", function () {
-        $(this).parents("li").first().remove();
-        file_num -= 1;
-    })
     $(".btn_upload_add > button").on("click", function (e) {
         e.preventDefault();
-        UploadListAdd(true);
+        UploadListAdd(null);
     })
 
     $(window).on("fileUploadWithPreview:imagesAdded", function (event) {
@@ -59,28 +53,132 @@ function PageReady() {
         $("#ProductForm > .data_upload > ul > li").each(function () {
             var $self = $(this);
             if ($self.data("edit")) {
-                if ($self.data("uploadtype") == 1 || $self.data("uploadtype") == 3) {
-                    var file_name = cachedFile[0].name.substring(0, cachedFile[0].name.indexOf(":"));
-                    var file_type = cachedFile[0].type;
-                    $self.data("file", new File(cachedFile, file_name, { type: file_type }));
-                    $self.find(".title").text(file_name);
-                } else if ($self.data("uploadtype") == 2) {
-                    var new_file_list = [];
-                    var file_name, file_type;
-                    cachedFile.forEach(function (file, index) {
-                        file_name = file.name.substring(0, file.name.indexOf(":"));
-                        file_type = file.type;
-                        new_file_list.push(new File(cachedFile.slice(index, index + 1), file_name, { type: file_type }));
-                    })
-                    $self.data("file", new_file_list);
-                    var display_filename = file_name.substring(0, cachedFile[0].name.lastIndexOf("-")) + "-n" + file_name.substring(cachedFile[0].name.lastIndexOf("."));
-                    $self.find(".title").text(display_filename);
+                switch ($self.data("uploadtype")) {
+                    //圖片上傳
+                    case 1:
+                        var new_file_list = [];
+                        var file_name, file_type;
+                        cachedFile.forEach(function (file, index) {
+                            file_name = file.name.substring(0, file.name.indexOf(":"));
+                            file_type = file.type;
+                            new_file_list.push(new File(cachedFile.slice(index, index + 1), file_name, { type: file_type }));
+                        })
+                        var temp_files = [];
+                        file_num--;
+                        new_file_list.forEach(function (file, index) {
+                            var img_file = [];
+                            img_file.push(file);
+                            var obj = {};
+                            obj["TempId"] = $self.data("tempid") + index;
+                            obj["Type"] = $self.data("uploadtype");
+                            var reader = new FileReader();
+                            reader.readAsDataURL(img_file[0]);
+                            reader.onload = (function (e) {
+                                obj["Link"] = e.target.result;
+                            });
+                            htmlImageCompress = new HtmlImageCompress(img_file[0], { quality: 0.7, width: 500, height: 500, imageType: img_file[0].type })
+                            htmlImageCompress.then(function (result) {
+                                img_file.push(new File([result.file], result.origin.name, { type: result.file.type }));
+
+                                htmlImageCompress = new HtmlImageCompress(img_file[0], { quality: 0.3, width: 150, height: 150, imageType: img_file[0].type })
+                                htmlImageCompress.then(function (result) {
+                                    img_file.push(new File([result.file], result.origin.name, { type: result.file.type }));
+                                    obj["File"] = img_file;
+                                    obj["IsDelete"] = false;
+                                    obj["Name"] = result.origin.name;
+                                    total_files.push(obj);
+                                    UploadListAdd(obj);
+                                }).catch(function (err) {
+                                    UploadPreviewFrameClear();
+                                    console.log($`發生錯誤：${err}`);
+                                    co.sweet.error("資料上傳失敗", "請重新上傳", null, null);
+                                })
+
+                            }).catch(function (err) {
+                                UploadPreviewFrameClear();
+                                console.log($`發生錯誤：${err}`);
+                                co.sweet.error("資料上傳失敗", "請重新上傳", null, null);
+                            })
+                        })
+
+                        break;
+                    //360圖片上傳
+                    case 2:
+                        var new_file_list = [];
+                        var file_name, file_type;
+                        cachedFile.forEach(function (file, index) {
+                            file_name = file.name.substring(0, file.name.indexOf(":"));
+                            file_type = file.type;
+                            new_file_list.push(new File(cachedFile.slice(index, index + 1), file_name, { type: file_type }));
+                        })
+
+                        new_file_list.forEach(function (file, index) {
+                            var img_file = [];
+                            img_file.push(file);
+                            htmlImageCompress = new HtmlImageCompress(img_file[0], { quality: 0.7 })
+                            htmlImageCompress.then(function (result) {
+                                img_file.push(new File([result.file], result.origin.name, { type: result.file.type }));
+
+                                htmlImageCompress = new HtmlImageCompress(img_file[0], { quality: 0.3 })
+                                htmlImageCompress.then(function (result) {
+                                    var obj = {};
+                                    img_file.push(new File([result.file], result.origin.name, { type: result.file.type }));
+                                    obj["File"] = img_file;
+                                    obj["TempId"] = $self.data("tempid");
+                                    obj["Name"] = result.origin.name;
+                                    obj["Type"] = $self.data("uploadtype");
+                                    obj["IsDelete"] = false;
+                                    total_files.push(obj);
+                                }).catch(function (err) {
+                                    console.log($`發生錯誤：${err}`);
+                                    UploadPreviewFrameClear();
+                                    co.sweet.error("資料上傳失敗", "請重新上傳", null, null);
+                                })
+
+                            }).catch(function (err) {
+                                console.log($`發生錯誤：${err}`);
+                                UploadPreviewFrameClear();
+                                co.sweet.error("資料上傳失敗", "請重新上傳", null, null);
+                            })
+                        })
+
+                        $self.find(".title").text(`${new_file_list[0].name}...共${new_file_list.length}張圖`);
+                        break;
+                    //影片上傳
+                    case 3:
+                        var new_file_list = [];
+                        var file_name, file_type;
+                        cachedFile.forEach(function (file, index) {
+                            file_name = file.name.substring(0, file.name.indexOf(":"));
+                            file_type = file.type;
+                            new_file_list.push(new File(cachedFile.slice(index, index + 1), file_name, { type: file_type }));
+                        })
+
+                        var temp_files = [];
+                        new_file_list.forEach(function (file, index) {
+                            var obj = {};
+                            obj["File"] = file;
+                            obj["TempId"] = $self.data("tempid") + index;
+                            obj["Type"] = $self.data("uploadtype");
+                            obj["IsDelete"] = false;
+                            obj["Name"] = file.name;
+                            total_files.push(obj);
+                            temp_files.push(obj)
+                        })
+
+                        file_num--;
+                        temp_files.forEach(function (file) {
+                            UploadListAdd(file);
+                        })
+
+                        break;
                 }
             }
         })
     })
 
     $(window).on("fileUploadWithPreview:imageDeleted", function (event) {
+        //console.log("fileUploadWithPreview:imageDeleted")
         $("#ProductForm > .data_upload > ul > li").each(function () {
             var $self = $(this);
             if ($self.data("edit")) {
@@ -105,8 +203,20 @@ function PageReady() {
         $("#ProductForm > .data_upload > ul > li").each(function () {
             var $self = $(this);
             if ($self.data("edit")) {
-                $self.data("file", "");
-                $self.find(".title").text("");
+                if ($self.data("serno") < file_num) { SortChange("bigger", $self.data("serno"), file_num); }
+                if (typeof ($self.data("id")) != "undefined") {
+                    total_files.find(item => item["Id"] == $self.data("id"))["IsDelete"] = true;
+                } else if (typeof ($self.data("tempid")) != "undefined") {
+                    var tempid = $self.data("tempid");
+                    var index = total_files.findIndex(item => item["TempId"] == tempid);
+                    total_files.splice(index, 1);
+                    total_files.forEach(file => {
+                        file["TempId"] = file["TempId"] > tempid ? file["TempId"] - 1 : file["TempId"];
+                    })
+                }
+                UploadPreviewFrameClear();
+                $self.remove();
+                file_num -= 1;
             }
         })
     })
@@ -126,7 +236,22 @@ function PageReady() {
             var iframe_html = `<iframe class="yt_preview w-100 h-100" src="${url}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
             $(".youtube_preview").append(iframe_html);
             $self_list.find(".title").text(value);
-            $self_list.data("file", value.substring(index));
+            if (typeof (total_files.find(item => item["Id"] == $self_list.data("id"))) != "undefined") {
+                if (total_files.find(item => item["Id"] == $self_list.data("id"))["File"] != value.substring(index)) {
+                    total_files.find(item => item["Id"] == $self_list.data("id"))["File"] = value.substring(index)
+                }
+            } else if (typeof (total_files.find(item => item["TempId"] == $self_list.data("tempid"))) != "undefined") {
+                if (total_files.find(item => item["TempId"] == $self_list.data("tempid"))["File"] != value.substring(index)) {
+                    total_files.find(item => item["TempId"] == $self_list.data("tempid"))["File"] = value.substring(index)
+                }
+            } else {
+                var obj = {};
+                obj["File"] = value.substring(index);
+                obj["TempId"] = $self_list.data("tempid");
+                obj["Type"] = $self_list.data("uploadtype");
+                obj["IsDelete"] = false;
+                total_files.push(obj);
+            }
         } else {
             var error_html = "<div class='w-100 h-100 d-flex justify-content-center align-items-center bg-black bg-opacity-25 fw-bold'>請輸入正確的Youtube連結</div>"
             $(".youtube_preview").append(error_html);
@@ -272,11 +397,7 @@ function PageReady() {
         }
     })
 
-    if ("onhashchange" in window) {
-        window.onhashchange = hashChange;
-    } else {
-        setInterval(hashChange, 1000);
-    }
+    if ("onhashchange" in window) { window.onhashchange = hashChange; } else { setInterval(hashChange, 1000); }
 
     $(".btn_to_canvas").on("click", function (event) {
         event.preventDefault()
@@ -382,6 +503,7 @@ function FormDataClear() {
     UploadPreviewFrameClear();
     $("#ProductForm > .data_upload > ul").children(".upload_list").remove();
     file_num = 0;
+    total_files = [];
 }
 
 function contentReady(e) {
@@ -416,8 +538,11 @@ function HashDataEdit() {
                 } else {
                     co.Product.Get.ProdOne(parseInt(hash)).done(function (result) {
                         if (result != null) {
-                            FormDataSet(result);
-                            MoveToContent();
+                            co.Spec.GetPickSpecList().done(function (pick_result) {
+                                spec_pick_list = pick_result;
+                                FormDataSet(result);
+                                MoveToContent();
+                            });
                         } else {
                             window.location.hash = ""
                         }
@@ -442,8 +567,14 @@ function paletteButtonClicked(e) {
 }
 
 function FormDataSet(result) {
+    //console.log(result)
+
     TagDataSet(result.tagDatas);
     TechCertDataSet(result.techCertDatas);
+
+    result.files.forEach(file => {
+        UploadListAdd(file);
+    })
 
     result.stocks.forEach(function (stock) {
         stock.prices.forEach(function (price) {
@@ -584,6 +715,7 @@ function SpecPriceSave() {
 }
 
 function SpecAdd(result) {
+
     spec_num += 1;
     var item = $($("#TemplateSpecification").html()).clone();
     var item_topline = item.find(".topline"),
@@ -620,16 +752,17 @@ function SpecAdd(result) {
                 }
             })
             item_select_input_1.removeAttr("disabled")
-            co.Product.Get.ProdSpec(item_select_1.val()).done(function (spec1_result) {
-                if (spec1_result != null) {
-                    spec1_result.forEach(function (spec1) {
-                        item_select_list_1.append('<option value="' + spec1.title + '" data-sid="' + spec1.id + '"></option>')
-                        if (spec1.id == result.fK_S1id) {
-                            item_select_input_1.val(spec1.title);
-                        }
-                    })
-                }
-            });
+
+            var temp_spec_list = spec_pick_list.find(item => item.id == item_select_1.val())
+            if (temp_spec_list.specs.length > 0) {
+                temp_spec_list.specs.forEach(item => {
+                    item_select_list_1.append(`<option value="${item.title}" data-sid="${item.id}"></option>`)
+                    if (item.id == result.fK_S1id) {
+                        item_select_input_1.val(item.title);
+                        item_select_input_1.data("id", item.id);
+                    }
+                })
+            }
         }
     }
 
@@ -646,16 +779,17 @@ function SpecAdd(result) {
                 }
             })
             item_select_input_2.removeAttr("disabled")
-            co.Product.Get.ProdSpec(item_select_2.val()).done(function (spec2_result) {
-                if (spec2_result != null) {
-                    spec2_result.forEach(function (spec2) {
-                        item_select_list_2.append('<option value="' + spec2.title + '" data-sid="' + spec2.id + '"></option>')
-                        if (spec2.id == result.fK_S2id) {
-                            item_select_input_2.val(spec2.title);
-                        }
-                    })
-                }
-            });
+
+            var temp_spec_list = spec_pick_list.find(item => item.id == item_select_2.val())
+            if (temp_spec_list.specs.length > 0) {
+                temp_spec_list.specs.forEach(item => {
+                    item_select_list_2.append(`<option value="${item.title}" data-sid="${item.id}"></option>`)
+                    if (item.id == result.fK_S2id) {
+                        item_select_input_2.val(item.title);
+                        item_select_input_2.data("id", item.id);
+                    }
+                })
+            }
         }
     }
 
@@ -673,6 +807,7 @@ function SpecAdd(result) {
     } else {
         item_price.val("");
     }
+
     item_min.val(result != null ? result.min_Qty : "");
     item_stock.val(result != null ? result.stock : "");
     item_alert.val("");
@@ -740,7 +875,6 @@ function SpecAdd(result) {
         $self.on("change", function () {
             var $spec_type = $(this);
             var $spec_bro = $spec_type.parents(".spec").first().siblings(".spec");
-            var $spec_input = $spec_type.siblings(".input_spec");
             var $spec_list = $spec_type.siblings("datalist");
 
             $spec_input.val("");
@@ -764,16 +898,44 @@ function SpecAdd(result) {
                     }
                 })
                 $spec_input.removeAttr("disabled")
-                co.Product.Get.ProdSpec($spec_type.val()).done(function (spec_result) {
-                    if (spec_result != null) {
-                        spec_result.forEach(function (spec) {
-                            $spec_list.append('<option value="' + spec.title + '" data-sid="' + spec.id + '"></option>')
-                        })
-                    }
-                });
+                var temp_spec_list = spec_pick_list.find(item => item.id == $spec_type.val())
+                if (temp_spec_list.specs.length > 0) {
+                    temp_spec_list.specs.forEach(item => {
+                        $spec_list.append(`<option value="${item.title}" data-sid="${item.id}"></option>`)
+                    })
+                }
+            }
+        })
+
+        var $spec_input = $self.siblings(".input_spec");
+
+        $spec_input.blur(function () {
+            var $option; var id;
+            if ($spec_input.val() != "") {
+                id = 0;
+                $spec_input.each(function () {
+                    $self_input = $(this);
+                    $self_input.siblings("datalist").children("option").each(function () {
+                        $option = $(this);
+                        if ($option.val() == $self_input.val()) {
+                            id = $option.data("sid");
+                        }
+                    })
+                })
+                if (id == 0) {
+                    co.Spec.SpecAddUp({ FK_Tid: $spec_input.prev("select").val(), Title: $spec_input.val(), }).done(function (result) {
+                        if (result.success) {
+                            co.Spec.GetPickSpecList().done(function (pick_result) {
+                                spec_pick_list = pick_result;
+                                $self_input.siblings("datalist").append(`<option value="${$spec_input.val()}" data-sid="${result.message}"></option>`)
+                            });
+                        }
+                    });
+                }
             }
         })
     })
+
     $price = $(".input_price");
     $stock_number = $(".input_stock_number");
     $min_number = $(".input_min_number");
@@ -825,7 +987,7 @@ function UploadFile($self) {
                 var $li_self = $(this);
                 if ($li_self.hasClass("upload_list") && $li_self.find(".title").text() == "") {
                     $li_self.remove();
-                    file_num -= 1;
+                    file_num = $self.siblings(".upload_list").length + 1;
                 }
             })
         }
@@ -853,32 +1015,73 @@ function UploadFile($self) {
                 })
                 break;
             case 1:
-                upload_file = co.File.UploadImageInit("FileUpload");
-                if ($self.data("file")) {
-                    upload_file.addFileToPreviewPanel($self.data("file"));
-                    $parent.find(".upload_frame").find("span").text($self.data("file").name);
+                if ($self.find(".title").text() == "") {
+                    upload_file = co.File.UploadImageInit("FileUpload");
+                    $parent.find(".upload_frame").removeClass("d-none");
+                } else {
+                    if (typeof ($self.data("id")) != "undefined") {
+                        var name = total_files.find(item => item["Id"] == $self.data("id"))["Name"];
+                        var file = total_files.find(item => item["Id"] == $self.data("id"))["File"];
+                        $parent.find(".media_frame").addClass("d-flex");
+                        $parent.find(".media_frame").find("input").val(name);
+                        $parent.find(".media_preview > div").children().remove();
+                        $parent.find(".media_preview > div").children().remove();
+                        $parent.find(".media_preview > div").append(`<img src="${file}" class=""></img>`);
+                    } else if (typeof ($self.data("tempid")) != "undefined") {
+                        var data = total_files.find(item => item["TempId"] == $self.data("tempid"));
+                        if (typeof (data) != "undefined") {
+                            $parent.find(".upload_frame").find("span").text(data["File"].name);
+                            $parent.find(".media_frame").find("input").val(data["Name"]);
+                            $parent.find(".media_preview > div").children().remove();
+                            var link = data["Link"];
+                            $parent.find(".media_preview > div").append(`<img src="${link}" class=""></img>`);
+                        }
+                        $parent.find(".media_frame").addClass("d-flex");
+                    }
                 }
-                $parent.find(".upload_frame").removeClass("d-none");
                 break;
             case 2:
                 upload_file = co.File.Upload360Init("FileUpload");
                 if ($self.data("file")) {
                     upload_file.addFiles($self.data("file"));
+                    //console.log(upload_file);
                     $parent.find(".upload_frame").find("span").text($self.data("file").length + " 張圖片已選擇");
                 }
                 $parent.find(".upload_frame").removeClass("d-none");
                 break;
             case 3:
-                upload_file = co.File.UploadVideoInit("FileUpload");
-                if ($self.data("file")) {
-                    upload_file.addFileToPreviewPanel($self.data("file"));
-                    $parent.find(".upload_frame").find("span").text($self.data("file").name);
+                if ($self.find(".title").text() == "") {
+                    upload_file = co.File.UploadVideoInit("FileUpload");
+                    $parent.find(".upload_frame").removeClass("d-none");
+                } else {
+                    if (typeof ($self.data("id")) != "undefined") {
+                        var name = total_files.find(item => item["Id"] == $self.data("id"))["Name"];
+                        var file = total_files.find(item => item["Id"] == $self.data("id"))["File"];
+                        $parent.find(".media_frame").addClass("d-flex");
+                        $parent.find(".media_frame").find("input").val(name);
+                        $parent.find(".media_preview > div").children().remove();
+                        $parent.find(".media_preview > div").append(`<video src="${file}" class="h-100 w-100" controls preload="metadata"></video>`);
+                    } else if (typeof ($self.data("tempid")) != "undefined") {
+                        var data = total_files.find(item => item["TempId"] == $self.data("tempid"));
+                        var file;
+                        if (typeof (data) != "undefined") {
+                            file = total_files.find(item => item["TempId"] == $self.data("tempid"))["File"];
+                            $parent.find(".upload_frame").find("span").text(file.name);
+                            $parent.find(".media_frame").find("input").val(total_files.find(item => item["TempId"] == $self.data("tempid"))["Name"]);
+                        }
+                        $parent.find(".media_frame").addClass("d-flex");
+                    }
                 }
-                $parent.find(".upload_frame").removeClass("d-none");
                 break;
             case 4:
-                if ($self.data("file")) {
-                    var url = "https://www.youtube.com/watch?v=" + $self.data("file");
+                if (typeof (total_files.find(item => item["Id"] == $self.data("id"))) != "undefined") {
+                    var file = total_files.find(item => item["Id"] == $self.data("id"))["File"];
+                    var url = "https://www.youtube.com/watch?v=" + file;
+                    $parent.find(".youtube_frame").find("input").val(url);
+                    $("#BtnConnect").click();
+                } else if (typeof (total_files.find(item => item["TempId"] == $self.data("tempid"))) != "undefined") {
+                    var file = total_files.find(item => item["TempId"] == $self.data("tempid"))["File"];
+                    var url = "https://www.youtube.com/watch?v=" + file;
                     $parent.find(".youtube_frame").find("input").val(url);
                     $("#BtnConnect").click();
                 } else {
@@ -893,12 +1096,14 @@ function UploadFile($self) {
     }
 }
 
-function UploadListAdd(IsNew) {
+function UploadListAdd(result) {
+    //console.log("UploadListAdd");
+    //console.log(result);
     var item = $($("#TemplateUploadList").html()).clone();
     var item_serno = item.find(".ser_no"),
         item_btn_remove = item.find(".btn_remove");
 
-    if (IsNew) {
+    if (result == null) {
         $("#ProductForm > .data_upload > ul > li").each(function () {
             var $self = $(this);
             if ($self.hasClass("upload_list") && $self.find(".title").text() == "") {
@@ -916,8 +1121,44 @@ function UploadListAdd(IsNew) {
         item.on("click", function () {
             UploadFile($(this));
         })
-    } else {
+    } else if (typeof (result.id) == "undefined") {
+        file_num += 1;
+        item.data("tempid", result.TempId);
+        item.data("serno", file_num);
+        item_serno.val(file_num);
+        item.data("uploadtype", result.Type);
+        item.data("edit", false);
+        item.find(".title").text(result.Name);
 
+        item.on("click", function () {
+            UploadFile($(this));
+        })
+    } else {
+        file_num += 1;
+
+        item.data("id", result.id);
+        item.data("serno", file_num);
+        item_serno.val(file_num);
+        item.data("uploadtype", result.fileType);
+        item.data("edit", false);
+        item.find(".title").text(result.name);
+
+        var obj = {};
+        obj["Id"] = result.id;
+        obj["Name"] = result.name;
+        var link = result.link[0];
+        if (result.fileType == 4) {
+            obj["File"] = result.name;
+        } else {
+            obj["File"] = link;
+        }
+        obj["Type"] = result.fileType;
+        obj["IsDelete"] = false;
+        total_files.push(obj);
+
+        item.on("click", function () {
+            UploadFile($(this));
+        })
     }
 
     item_serno.blur(function () {
@@ -941,15 +1182,25 @@ function UploadListAdd(IsNew) {
 
     item_btn_remove.on("click", function (e) {
         e.preventDefault();
-        if (item.data("serno") < file_num) {
-            SortChange("bigger", item.data("serno"), file_num);
+        var $self = $(this).parents("li").first();
+        if (item.data("serno") < file_num) { SortChange("bigger", item.data("serno"), file_num); }
+        if (typeof ($self.data("id")) != "undefined") {
+            total_files.find(item => item["Id"] == $self.data("id"))["IsDelete"] = true;
+        } else if (typeof ($self.data("tempid")) != "undefined") {
+            var tempid = $self.data("tempid");
+            var index = total_files.findIndex(item => item["TempId"] == tempid);
+            total_files.splice(index, 1);
+            total_files.forEach(file => {
+                file["TempId"] = file["TempId"] > tempid ? file["TempId"] - 1 : file["TempId"];
+            })
         }
-        item.data("edit") && UploadPreviewFrameClear();
-        item.remove();
+        UploadPreviewFrameClear();
+        $self.remove();
         file_num -= 1;
     })
 
     $("#ProductForm > .data_upload > ul > .btn_upload_add").before(item);
+
     UploadFile(item);
 }
 
@@ -957,6 +1208,7 @@ function UploadPreviewFrameClear() {
     var $self = $("#ProductForm > .data_upload > .preview_frame");
     $self.find(".default_frame").addClass("d-flex");
     $self.find(".upload_frame").addClass("d-none");
+    $self.find(".media_frame").removeClass("d-flex");
     $self.find(".youtube_frame").removeClass("d-flex");
     $self.find(".select_frame").removeClass("d-flex");
 }
@@ -980,6 +1232,8 @@ function SortChange(change, minindex, maxindex) {
 }
 
 function AddUp(success_text, error_text, target) {
+    //console.log(total_files);
+
     var stock_addup_list = []
     var temp_serno = 1;
     $("#Spec_Frame > .frame").each(function () {
@@ -987,7 +1241,7 @@ function AddUp(success_text, error_text, target) {
         var obj = {};
         var fk_sid = [];
         $self.find(".input_spec").each(function () {
-            var id = -1;
+            var id = 0;
             $self_input = $(this);
             $self_input.siblings("datalist").children("option").each(function () {
                 var $option = $(this);
@@ -995,17 +1249,17 @@ function AddUp(success_text, error_text, target) {
                     id = $option.data("sid");
                 }
             })
-            fk_sid.push(id > -1 ? id : 0)
+            fk_sid.push(id)
         })
 
         obj["Id"] = $self.data("psid") == "" ? 0 : $self.data("psid");
         obj["FK_S1id"] = fk_sid[0];
         obj["FK_S2id"] = fk_sid[1];
         obj["Stock"] = $self.find(".input_stock_number").val();
-        obj["Ser_No"] = temp_serno;
-        temp_serno++;
         obj["Alert_Qty"] = $self.find(".input_alert_number").val();
         obj["Min_Qty"] = $self.find(".input_min_number").val();
+        obj["Ser_No"] = temp_serno;
+        temp_serno++;
 
         var price_list = [];
         modal_price_list.forEach(function (item) {
@@ -1040,19 +1294,135 @@ function AddUp(success_text, error_text, target) {
         TechCertSelected: techcert_list,
         Stocks: stock_addup_list
     }).done(function (result) {
+        //console.log(result)
+        var pid = parseInt(result.message);
         if (result.success) {
-            if (target == "List") {
-                Coker.sweet.success(success_text, null, true);
-                setTimeout(function () {
-                    BackToList();
-                    product_list.component.refresh();
-                }, 1000);
-            } else if (target == "Canvas") {
-                Coker.sweet.success(success_text, null, true);
-                setTimeout(function () {
-                    var hash = window.location.hash.replace("#", "") + "-1";
-                    window.location.hash = hash;
-                }, 1000);
+            if (total_files.length > 0) {
+
+                $("#ProductForm > .data_upload > ul > li").each(function () {
+                    var $self = $(this);
+
+                    if (!$self.hasClass("btn_upload_add")) {
+                        var data = [];
+                        total_files.forEach(file => {
+                            if ((typeof (file["Id"]) != "undefined" && file["Id"] == $self.data("id")) || (typeof (file["TempId"]) != "undefined" && file["TempId"] == $self.data("tempid"))) {
+                                data.push(file);
+                            }
+                        })
+
+                        switch (data[0]["Type"]) {
+                            case 1:
+                                if (typeof (data[0]["File"]) == "string") {
+                                    co.File.fileSortChange({
+                                        Id: data[0]["Id"],
+                                        SerNo: $self.find(".ser_no").val(),
+                                    });
+                                } else {
+                                    var formData = new FormData();
+                                    formData.append("type", 1);
+                                    formData.append("sid", pid);
+                                    formData.append("serno", $self.find(".ser_no").val());
+                                    data.forEach(item => {
+                                        for (var i = 0; i < item["File"].length; i++) {
+                                            formData.append("files", item["File"][i]);
+                                        }
+                                        co.File.Upload(formData);
+                                        formData.delete('files');
+                                    })
+                                }
+                                break;
+                            case 2:
+                                var formData = new FormData();
+                                formData.append("type", 1);
+                                formData.append("sid", pid);
+                                formData.append("serno", $self.find(".ser_no").val());
+                                for (var i = 0; i < data.length; i += 3) {
+                                    for (var j = i; j < i + 3; j++) {
+                                        formData.append('files', data[j]);
+                                    }
+                                    //console.log(formData.get("files"));
+                                    formData.delete('files');
+                                }
+                                break;
+                            case 3:
+                                if (typeof (data[0]["File"]) == "string") {
+                                    co.File.fileSortChange({
+                                        Id: data[0]["Id"],
+                                        SerNo: $self.find(".ser_no").val(),
+                                    });
+                                } else {
+                                    var formData = new FormData();
+                                    formData.append("files", data[0]["File"]);
+                                    formData.append("type", 1);
+                                    formData.append("sid", pid);
+                                    formData.append("serno", $self.find(".ser_no").val());
+                                    co.File.Upload(formData);
+                                }
+                                break;
+                            case 4:
+                                var Id = typeof (data[0]["Id"]) == "undefined" ? 0 : data[0]["Id"];
+                                co.File.UploadYTLink({
+                                    Id: Id,
+                                    File: data[0]["File"] + "",
+                                    SId: pid,
+                                    Type: 1,
+                                    SerNo: $self.find(".ser_no").val(),
+                                });
+                                break;
+                        }
+                    }
+                })
+
+                total_files.forEach(file => {
+                    if (typeof (file["IsDelete"]) != "undefined" && file["IsDelete"] == true) {
+                        switch (file["Type"]) {
+                            case 2:
+                                break;
+                            case 1:
+                            case 3:
+                            case 4:
+                                if (typeof (file["Id"]) != "undefined") {
+                                    co.File.DeleteFileById({
+                                        Sid: parseInt(result.message),
+                                        Type: 1,
+                                        Fid: file["Id"],
+                                    });
+                                }
+                                break;
+                        }
+                    }
+                });
+
+                if (target == "List") {
+                    Coker.sweet.success(success_text, null, true);
+                    setTimeout(function () {
+                        BackToList();
+                        product_list.component.refresh();
+                    }, 1000);
+                } else if (target == "Canvas") {
+                    Coker.sweet.success(success_text, null, true);
+                    setTimeout(function () {
+                        var hash = window.location.hash.replace("#", "") + "-1";
+                        window.location.hash = hash;
+                    }, 1000);
+                }
+
+            } else {
+
+                if (target == "List") {
+                    Coker.sweet.success(success_text, null, true);
+                    setTimeout(function () {
+                        BackToList();
+                        product_list.component.refresh();
+                    }, 1000);
+                } else if (target == "Canvas") {
+                    Coker.sweet.success(success_text, null, true);
+                    setTimeout(function () {
+                        var hash = window.location.hash.replace("#", "") + "-1";
+                        window.location.hash = hash;
+                    }, 1000);
+                }
+
             }
         } else {
             Coker.sweet.error("錯誤", error_text, null, true);

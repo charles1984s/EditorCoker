@@ -423,7 +423,7 @@ var Coker = {
             });
         }
     },
-    Product : {
+    Product: {
         AddUp: {
             Product: function (data) {
                 return $.ajax({
@@ -496,15 +496,6 @@ var Coker = {
                     contentType: 'application/json; charset=utf-8',
                     headers: _c.Data.Header,
                     data: { PId: id },
-                });
-            },
-            ProdSpec: function (id) {
-                return $.ajax({
-                    url: "/api/Product/GetSpecDetail/",
-                    type: "GET",
-                    contentType: 'application/json; charset=utf-8',
-                    headers: _c.Data.Header,
-                    data: { typeid: id },
                 });
             },
             ProdTechCert: function (id) {
@@ -591,6 +582,29 @@ var Coker = {
                 processData: false
             });
         },
+        Upload360: function (formData) {
+            return $.ajax({
+                url: '/api/FileUpload/upload360Files',
+                type: 'POST',
+                data: formData,
+                headers: _c.Data.Header,
+                contentType: false,
+                crossDomain: true,
+                dataType: 'json',
+                mimeType: "multipart/form-data",
+                processData: false
+            });
+        },
+        UploadYTLink: function (data) {
+            return $.ajax({
+                url: "/api/FileUpload/uploadYTLink",
+                type: "Post",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify(data),
+                dataType: "json"
+            });
+        },
         getFileList: function (type) {
             return $.ajax({
                 url: "/api/FileUpload/getFileList",
@@ -611,28 +625,40 @@ var Coker = {
                 dataType: "json"
             });
         },
-        DeleteImgByImgId: function (imgid) {
+        fileSortChange: function (data) {
             return $.ajax({
-                url: "/api/FileUpload/DeleteImageByImgId",
-                type: "Get",
+                url: "/api/FileUpload/fileSortChange",
+                type: "Post",
                 contentType: 'application/json; charset=utf-8',
-                data: { imgid: imgid },
                 headers: _c.Data.Header,
+                data: JSON.stringify(data),
                 dataType: "json"
             });
         },
-        Delete: function (key) {
+        Delete: function (data) {
             return $.ajax({
                 url: "/api/FileUpload/DeleteFile",
-                type: "Delete",
+                type: "Post",
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
-                data: JSON.stringify({ key: key }),
+                data: JSON.stringify(data),
+                dataType: "json"
+            });
+        },
+        DeleteFileById: function (data) {
+            return $.ajax({
+                url: "/api/FileUpload/DeleteFileById",
+                type: "Post",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify(data),
                 dataType: "json"
             });
         },
         UploadImageInit: function (elementId, label_text) {
             const upload = new FileUploadWithPreview.FileUploadWithPreview(elementId, Option = {
+                accept: "image/*",
+                multiple: true,
                 text: {
                     browse: "　瀏 覽　",
                     chooseFile: "選擇圖片...",
@@ -643,6 +669,7 @@ var Coker = {
         },
         Upload360Init: function (elementId, label_text) {
             const upload = new FileUploadWithPreview.FileUploadWithPreview(elementId, Option = {
+                accept: "image/*",
                 multiple: true,
                 text: {
                     browse: "　瀏 覽　",
@@ -655,6 +682,19 @@ var Coker = {
         },
         UploadVideoInit: function (elementId, label_text) {
             const upload = new FileUploadWithPreview.FileUploadWithPreview(elementId, Option = {
+                accept: "video/*",
+                multiple: true,
+                text: {
+                    browse: "　瀏 覽　",
+                    chooseFile: "選擇檔案...",
+                    label: "影片上傳",
+                },
+            });
+            return upload;
+        },
+        UploadVideoPreviewInit: function (elementId, label_text) {
+            const upload = new FileUploadWithPreview.FileUploadWithPreview(elementId, Option = {
+                accept: "video/*",
                 text: {
                     browse: "　瀏 覽　",
                     chooseFile: "選擇檔案...",
@@ -663,6 +703,44 @@ var Coker = {
             });
             return upload;
         }
+    },
+    Spec: {
+        SpecAddUp: function (data) {
+            return $.ajax({
+                url: "/api/Specification/SpecAddUp_Data",
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify(data),
+                dataType: "json"
+            });
+        },
+        TypeDelect: function (id) {
+            return $.ajax({
+                url: "/api/Specification/TypeDelete/",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: { Id: id },
+            });
+        },
+        SpecDelect: function (id) {
+            return $.ajax({
+                url: "/api/Specification/SpecDelete/",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: { Id: id },
+            });
+        },
+        GetPickSpecList: function () {
+            return $.ajax({
+                url: "/api/Specification/GetPickSpecList/",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+            });
+        },
     }
 }
 var _c = Coker;
