@@ -149,6 +149,50 @@
         },
     });
 
+    editor.DomComponents.addType('輪播', {
+        isComponent: el => el.classList?.contains('one_swiper') || el.classList?.contains('two_swiper') || el.classList?.contains('four_swiper') || el.classList?.contains('six_swiper'),
+        model: {
+            defaults: {
+                traits: [
+                    // Strings are automatically converted to text types
+                    {
+                        name: 'swiper-slide', type: 'button',
+                        text: "新增一欄",
+                        command: editor => {
+                            var $selected = editor.getSelected();
+                            var swiper = $selected.find(".swiper")[0].getEl().swiper;
+                            var new_slide = $("<div>").append($($selected.find(".template_slide")[0].toHTML()).removeClass("d-none").addClass("swiper-slide")).html();
+                            $selected.find(".swiper-wrapper")[0].append(new_slide);
+                            swiper.update();
+                        },
+                    }
+                ],
+            },
+            init() {
+                var component = editor.getSelected();
+            }
+        },
+    });
+
+    editor.DomComponents.addType('頁內錨點', {
+        isComponent: el => el.classList?.contains('anchor_inpage'),
+        model: {
+            defaults: {
+                traits: [
+                    { name: 'data-anchorid', type: 'text', label: '錨點id', placeholder: 'ex: #123, #456' },
+                ]
+            },
+            init() {
+                this.on('change:attributes:data-anchorid', function () {
+                    setTimeout(() => {
+                        var AnchorPointInit = $(".gjs-frame")[0].contentWindow.AnchorPointInit;
+                        AnchorPointInit();
+                    }, "100");
+                });
+            }
+        },
+    });
+
     //關閉所有元件分類夾，僅開啟一個
     var blockControl = function () {
         $(categories.models).each(function (index, category) {
