@@ -154,41 +154,18 @@
         model: {
             defaults: {
                 traits: [
-                    // Strings are automatically converted to text types
                     {
                         name: 'swiper-slide', type: 'button',
                         text: "新增一欄",
                         command: editor => {
                             var $selected = editor.getSelected();
                             var swiper = $selected.find(".swiper")[0].getEl().swiper;
-                            var new_slide = $("<div>").append($($selected.find(".template_slide")[0].toHTML()).removeClass("d-none").addClass("swiper-slide")).html();
+                            var new_slide = $("<div>").append($($selected.find(".template_slide")[0].find(".swiper-slide")[0].toHTML())).html();
                             $selected.find(".swiper-wrapper")[0].append(new_slide);
                             swiper.update();
                         },
                     }
                 ],
-            },
-            init() {
-                var component = editor.getSelected();
-            }
-        },
-    });
-
-    editor.DomComponents.addType('頁內錨點', {
-        isComponent: el => el.classList?.contains('anchor_inpage'),
-        model: {
-            defaults: {
-                traits: [
-                    { name: 'data-anchorid', type: 'text', label: '錨點id', placeholder: 'ex: #123, #456' },
-                ]
-            },
-            init() {
-                this.on('change:attributes:data-anchorid', function () {
-                    setTimeout(() => {
-                        var AnchorPointInit = $(".gjs-frame")[0].contentWindow.AnchorPointInit;
-                        AnchorPointInit();
-                    }, "100");
-                });
             }
         },
     });
@@ -260,7 +237,7 @@
             if (/^fa/.test(this.icon)) {
                 media = `<i class="${this.icon} fa-5x"></i>`;
             } else if (/material-symbols-outlined/.test(this.icon)) {
-                media = `<i class="material-icons material-symbols-outlined fa-5x">${iconText}</i>`;
+                media = `<i class="material-symbols-outlined fa-5x">${iconText}</i>`;
             }
             appendBlock(blockId, {
                 category: this.typeName,
@@ -552,6 +529,78 @@
             active: false,
         });
     }
+
+    // 複製事件監聽
+    editor.on('component:clone', (obj) => {
+        const iframe = document.getElementsByClassName("gjs-frame")[0].contentWindow;
+        const classList = obj.getClasses();
+        obj.setAttributes({ id: 'id', 'data-key': '' });
+
+        if (classList.indexOf("anchor_title") > -1) {
+            var cont = iframe.document.getElementsByClassName("anchor_title").length;
+            const timmer = function () {
+                if (iframe.document.getElementsByClassName("anchor_title").length != cont) iframe.AnchorPointInit();
+                else setTimeout(timmer, 100);
+            }
+            setTimeout(timmer, 100);
+        } else if (classList.indexOf("swiper-slide") > -1) {
+            var swiper = editor.getSelected().parent().parent().getEl().swiper;
+            if (typeof (swiper) != "undefined") {
+                var cont = iframe.document.getElementsByClassName("swiper-slide").length;
+                const timmer = function () {
+                    if (iframe.document.getElementsByClassName("swiper-slide").length != cont) swiper.update();
+                    else setTimeout(timmer, 100);
+                }
+                setTimeout(timmer, 100);
+            }
+        } else if (classList.indexOf("one_swiper") > -1 || classList.indexOf("two_swiper") > -1 || classList.indexOf("four_swiper") > -1 || classList.indexOf("six_swiper") > -1) {
+            var cont = iframe.document.getElementsByClassName("swiper").length;
+            const timmer = function () {
+                if (iframe.document.getElementsByClassName("swiper").length != cont) iframe.SwiperInit({ autoplay: false });
+                else setTimeout(timmer, 100);
+            }
+            setTimeout(timmer, 100);
+        }
+    });
+
+    // 刪除事件監聽
+    editor.on('component:remove', (obj) => {
+        const iframe = document.getElementsByClassName("gjs-frame")[0].contentWindow;
+        const classList = obj.getClasses();
+        obj.setAttributes({ id: 'id', 'data-key': '' });
+
+        if (classList.indexOf("anchor_title") > -1) {
+            var cont = iframe.document.getElementsByClassName("anchor_title").length;
+            const timmer = function () {
+                if (iframe.document.getElementsByClassName("anchor_title").length != cont) iframe.AnchorPointInit();
+                else setTimeout(timmer, 100);
+            }
+            setTimeout(timmer, 100);
+        } else if (classList.indexOf("swiper-slide") > -1) {
+            if (typeof (editor.getSelected()) != "undefined") {
+                var swiper = editor.getSelected().parent().parent().getEl().swiper;
+                if (typeof (swiper) != "undefined") {
+                    var cont = iframe.document.getElementsByClassName("swiper-slide").length;
+                    const timmer = function () {
+                        if (iframe.document.getElementsByClassName("swiper-slide").length != cont) swiper.update();
+                        else setTimeout(timmer, 100);
+                    }
+                    setTimeout(timmer, 100);
+                }
+            }
+        }
+    });
+
+    // 挪動事件監聽
+    editor.on('component:drag:end', (obj) => {
+        const classList = obj.target.getClasses();
+        const iframe = document.getElementsByClassName("gjs-frame")[0].contentWindow;
+        if (classList.indexOf("anchor_title") > -1) iframe.AnchorPointInit();
+        else if (classList.indexOf("swiper-slide") > -1) {
+            var swiper = obj.target.parent().parent().getEl().swiper;
+            swiper.update();
+        } else if (classList.indexOf("one_swiper") > -1 || classList.indexOf("two_swiper") > -1 || classList.indexOf("four_swiper") > -1 || classList.indexOf("six_swiper") > -1) iframe.SwiperInit({ autoplay: false });
+    });
     /**************
      * 指令參考
      * ***********/
