@@ -25,9 +25,14 @@ function PageReady() {
                     event.stopPropagation()
                 } else {
                     event.preventDefault();
-                    Coker.sweet.confirm("即將發布", "發布後將直接顯示於安排的位置", "發布", "取消", function () {
-                        AddUp(disp_opt, "已成功發布", "發布發生未知錯誤");
-                    });
+
+                    if (typeof ($("#ImageUpload .img_input_frame > .img_input").data("file")) == "undefined" || $("#ImageUpload .img_input_frame > .img_input").data("file") == null) {
+                        co.sweet.error("資料有誤", "圖示不可為空", null, false);
+                    } else {
+                        Coker.sweet.confirm("即將發布", "發布後將直接顯示於安排的位置", "發布", "取消", function () {
+                            AddUp(disp_opt, "已成功發布", "發布發生未知錯誤");
+                        });
+                    }
                 }
                 form.classList.add('was-validated')
                 WasValidated();
@@ -137,8 +142,8 @@ function editButtonClicked(e) {
 
 function FormDataSet(result) {
     FormDataClear();
-    co.File.getImgFile({Sid: result.id,  Type: 5, Size: 1, }).done(function (file) {
-        ImageUploadModalDataInsert($("#ImageUpload"), file[0].id, file[0].link, file[0].name)
+    co.File.getImgFile({ Sid: result.id, Type: 5, Size: 1, }).done(function (file) {
+        if (file.length > 0) ImageUploadModalDataInsert($("#ImageUpload"), file[0].id, file[0].link, file[0].name)
     })
     keyId = result.id;
     startDate = result.startDate;
@@ -196,11 +201,12 @@ function deleteButtonClicked(e) {
 }
 
 function AddUp(display, success_text, error_text) {
-    if ($("#ImageUpload").data("delectList") != null) {
+    var delectList = $("#ImageUpload").find(".img_input_frame").data("delectList")
+    if (typeof (delectList) != "undefined" && delectList != null) {
         co.File.DeleteFileById({
-            Sid: keyId,
-            Type: 5,
-            Fid: $("#ImageUpload").data("delectList")[0]
+            sid: keyId,
+            type: 5,
+            fid: delectList
         });
     }
 
@@ -220,9 +226,11 @@ function AddUp(display, success_text, error_text) {
         permanent: $permanent.is(":checked")
     }).done(function (result) {
         if (result.success) {
-            if ($("#ImageUpload").data("file") != null && $("#ImageUpload").data("file").File != null && $("#ImageUpload").data("file").Id == 0) {
+            var file = $("#ImageUpload .img_input_frame > .img_input").data("file").File;
+            console.log(file);
+            if (file != null) {
                 var formData = new FormData();
-                formData.append("files", $("#ImageUpload").data("file").File);
+                formData.append("files", file);
                 formData.append("type", 5);
                 formData.append("sid", result.message);
                 formData.append("serno", 500);

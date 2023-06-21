@@ -99,95 +99,131 @@
                         if (!result.success) co.sweet.error(result.error);
                         else {
                             data.id = parseInt(result.message);
+                            var img_success = 0, overimg_success = 0;
 
-                            if ($("#ImageUpload").data("file").File != null) {
+                            var $file = $("#ImageUpload .img_input_frame > .img_input");
+                            if (typeof ($file.data("file")) != "undefined" && $file.data("file") != null) {
                                 var formData = new FormData();
-                                formData.append("files", $("#ImageUpload").data("file").File);
+                                formData.append("files", $file.data("file").File);
                                 formData.append("type", 2);
                                 formData.append("sid", data.id);
                                 formData.append("serno", 500);
                                 co.File.Upload(formData).done(function (result) {
-                                    if (result.success) {
-                                        menuReload(menuEditor, myOffcanvas);
-                                    }
+                                    if (result.success) img_success = 1;
+                                    else img_success = -1;
                                 });
-                            }
+                            } else img_success = 1;
 
-                            if ($("#OverImageUpload").data("file").File != null) {
+                            var $over_file = $("#OverImageUpload .img_input_frame > .img_input");
+                            if (typeof ($over_file.data("file")) != "undefined" && $over_file.data("file") != null) {
                                 var formData = new FormData();
-                                formData.append("files", $("#OverImageUpload").data("file").File);
+                                formData.append("files", $over_file.data("file").File);
                                 formData.append("type", 3);
                                 formData.append("sid", data.id);
                                 formData.append("serno", 500);
                                 co.File.Upload(formData).done(function (result) {
-                                    if (result.success) {
-                                        menuReload(menuEditor, myOffcanvas);
-                                    }
+                                    if (result.success) overimg_success = 1;
+                                    else overimg_success = -1;
                                 });
-                            }
+                            } else overimg_success = 1;
 
-                            co.sweet.success("新增成功");
-                            ImageUploadModalClear($("#ImageUpload"));
-                            ImageUploadModalClear($("#OverImageUpload"));
+                            const timmer = function () {
+                                if (img_success != 0 && overimg_success != 0) {
+                                    ImageUploadModalClear($("#ImageUpload"));
+                                    ImageUploadModalClear($("#OverImageUpload"));
+                                    menuReload(menuEditor, myOffcanvas);
+                                    if (!result.success) co.sweet.error(result.error);
+                                    else {
+                                        if (img_success == -1 || overimg_success == -1) co.sweet.erro("圖片上傳失敗");
+                                        else co.sweet.success("新增成功");
+                                    }
+                                } else setTimeout(timmer, 100);
+                            };
+                            setTimeout(timmer, 100);
                         }
                     });
                 },
                 update: function (data) {
-                    if ($("#ImageUpload").data("delectList") != null) {
-                        co.File.DeleteFileById({
-                            Sid: data.id,
-                            Type: 2,
-                            Fid: $("#ImageUpload").data("delectList")[0]
-                        }).done(function (result) {
-                            if (result.success) {
-                                menuReload(menuEditor, myOffcanvas);
-                            }
-                        });
-                    }
+                    var img_success = 0, overimg_success = 0, delimg_success = 0, deloverimg_success = 0;
 
-                    if ($("#OverImageUpload").data("delectList") != null) {
+                    var $del_list = $("#ImageUpload .img_input_frame").data("delectList");
+                    if ($del_list != null) {
                         co.File.DeleteFileById({
-                            Sid: data.id,
-                            Type: 3,
-                            Fid: $("#OverImageUpload").data("delectList")[0]
+                            sid: data.id,
+                            type: 2,
+                            fid: $del_list,
                         }).done(function (result) {
-                            if (result.success) {
-                                menuReload(menuEditor, myOffcanvas);
-                            }
+                            if (result.success) delimg_success = 1
+                            else delimg_success = -1
                         });
-                    }
+                    } else delimg_success = 1
+
+                    var $over_del_list = $("#OverImageUpload .img_input_frame").data("delectList");
+                    if ($over_del_list != null) {
+                        co.File.DeleteFileById({
+                            sid: data.id,
+                            type: 3,
+                            fid: $over_del_list,
+                        }).done(function (result) {
+                            if (result.success) deloverimg_success = 1
+                            else deloverimg_success = -1
+                        });
+                    } else deloverimg_success = 1
 
                     co.WebMesnus.createOrEdit(data).done(function (result) {
-                        if ($("#ImageUpload").data("file") != null && $("#ImageUpload").data("file").File != null && $("#ImageUpload").data("file").Id == 0) {
-                            var formData = new FormData();
-                            formData.append("files", $("#ImageUpload").data("file").File);
-                            formData.append("type", 2);
-                            formData.append("sid", data.id);
-                            formData.append("serno", 500);
-                            co.File.Upload(formData).done(function (result) {
-                                if (result.success) {
-                                    menuReload(menuEditor, myOffcanvas);
-                                }
-                            });
+                        const imgdel_timmer = function () {
+                            if (delimg_success != 0) {
+                                if (delimg_success == 1) {
+                                    var $file = $("#ImageUpload .img_input_frame > .img_input");
+                                    if (typeof ($file.data("file")) != "undefined" && $file.data("file") != null && $file.data("file").File != null) {
+                                        var formData = new FormData();
+                                        formData.append("files", $file.data("file").File);
+                                        formData.append("type", 2);
+                                        formData.append("sid", data.id);
+                                        formData.append("serno", 500);
+                                        co.File.Upload(formData).done(function (result) {
+                                            if (result.success) img_success = 1;
+                                            else img_success = -1;
+                                        });
+                                    } else img_success = 1;
+                                } else img_success = -1;
+                            } else setTimeout(imgdel_timmer, 100);
                         }
+                        setTimeout(imgdel_timmer, 100);
 
-                        if ($("#OverImageUpload").data("file") != null && $("#OverImageUpload").data("file").File != null && $("#OverImageUpload").data("file").Id == 0) {
-                            var formData = new FormData();
-                            formData.append("files", $("#OverImageUpload").data("file").File);
-                            formData.append("type", 3);
-                            formData.append("sid", data.id);
-                            formData.append("serno", 500);
-                            co.File.Upload(formData).done(function (result) {
-                                if (result.success) {
-                                    menuReload(menuEditor, myOffcanvas);
-                                }
-                            });
+                        const overdel_timmer = function () {
+                            if (delimg_success != 0) {
+                                if (delimg_success == 1) {
+                                    var $over_file = $("#OverImageUpload .img_input_frame > .img_input");
+                                    if (typeof ($over_file.data("file")) != "undefined" && $over_file.data("file") != null && $over_file.data("file").File != null) {
+                                        var formData = new FormData();
+                                        formData.append("files", $over_file.data("file").File);
+                                        formData.append("type", 3);
+                                        formData.append("sid", data.id);
+                                        formData.append("serno", 500);
+                                        co.File.Upload(formData).done(function (result) {
+                                            if (result.success) overimg_success = 1;
+                                            else overimg_success = -1;
+                                        });
+                                    } else overimg_success = 1;
+                                } else overimg_success = -1;
+                            } else setTimeout(overdel_timmer, 100);
                         }
+                        setTimeout(overdel_timmer, 100);
 
-                        if (!result.success) co.sweet.error(result.error);
-                        else co.sweet.success("更新成功");
-                        ImageUploadModalClear($("#ImageUpload"));
-                        ImageUploadModalClear($("#OverImageUpload"));
+                        const timmer = function () {
+                            if (img_success == 1 && overimg_success == 1) {
+                                menuReload(menuEditor, myOffcanvas);
+                                ImageUploadModalClear($("#ImageUpload"));
+                                ImageUploadModalClear($("#OverImageUpload"));
+                                if (!result.success) co.sweet.error(result.error);
+                                else {
+                                    if (img_success == -1 || overimg_success == -1) co.sweet.erro("圖片上傳失敗");
+                                    else co.sweet.success("新增成功");
+                                }
+                            } else setTimeout(timmer, 100);
+                        }
+                        setTimeout(timmer, 100);
                     });
                     //editor.setComponents("<span>Hi<span>");
                     //editor.setStyle("");
@@ -289,6 +325,7 @@
 function menuReload(menuEditor, myOffcanvas) {
     co.WebMesnus.getAll().done(function (result) {
         if (result.success) {
+            console.log(result.maps)
             menuEditor.setData(result.maps);
             $("#myEditor").removeClass("d-none");
             if (result.maps.length > 0) $("#myEditor + .emptyList").addClass("d-none");
