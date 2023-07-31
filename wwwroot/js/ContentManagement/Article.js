@@ -348,7 +348,7 @@ function deleteButtonClicked(e) {
 }
 
 function AddUp(success_text, error_text, place) {
-    if ($("#ImageUpload").data("delectList") != null) {
+    if ($("#ImageUpload .img_input_frame").data("delectList") != null) {
         co.File.DeleteFileById({
             Sid: keyId,
             Type: 5,
@@ -366,9 +366,9 @@ function AddUp(success_text, error_text, place) {
         TagSelected: tag_list,
     }).done(function (result) {
         if (result.success) {
-            if ($("#ImageUpload").data("file") != null && $("#ImageUpload").data("file").File != null && $("#ImageUpload").data("file").Id == 0) {
+            if ($("#ImageUpload .img_input").data("file") != null && $("#ImageUpload .img_input").data("file").File != null && $("#ImageUpload .img_input").data("file").Id == 0) {
                 var formData = new FormData();
-                formData.append("files", $("#ImageUpload").data("file").File);
+                formData.append("files", $("#ImageUpload .img_input").data("file").File);
                 formData.append("type", 6);
                 formData.append("sid", result.message);
                 formData.append("serno", 500);
