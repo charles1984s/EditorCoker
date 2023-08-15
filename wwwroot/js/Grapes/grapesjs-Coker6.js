@@ -85,6 +85,10 @@
     });
 
     //元件參數設定
+    /***********************************************************************
+     * 注意事項
+     * 元件名稱需為小寫，否則欄位會無法對應
+     * ********************************************************************* */
     editor.DomComponents.addType('link', {
         isComponent: el => el.tagName == 'A',
         model: {
@@ -169,7 +173,6 @@
                         type: 'button', text: "開啟編輯",
                         command: editor => {
                             var $selected = $(editor.getSelected().getEl());
-                            console.log()
                             if ($selected.find(".swiper-slide").length > 0 && $("#SwiperModal").length < 1) {
                                 $(`<div class="modal fade" id="SwiperModal" tabindex="-1" aria-labelledby="SwiperModalLabel" aria-hidden="true">
                                           <div class="modal-dialog">
@@ -210,18 +213,18 @@
                             $selected.find(".swiper-slide").each(function () {
                                 var $self = $(this);
                                 if (!$self.parent().hasClass("template_slide")) {
-                                    var obj = {};
-                                    obj["href"] = $self.find("a").attr("href");
-                                    obj["title"] = $self.find("a").attr("title");
-                                    obj["src"] = $self.find("img").attr("src");
-                                    obj["alt"] = $self.find("img").attr("alt");
+                                    var obj = {
+                                        "href": $self.find("a").attr("href"),
+                                        "title": $self.find("a").attr("title"),
+                                        "src": $self.find("img").attr("src"),
+                                        "alt": $self.find("img").attr("alt")
+                                    };
                                     datas.push(obj);
                                 }
                             });
                             $.each(datas, function (index, data) {
                                 var content = $($("#TemplateSwiperList").html()).clone();
-                                content.find("img").attr("src", data.src);
-                                content.find("img").attr("alt", data.alt);
+                                content.find("img").attr({ "src": data.src, "alt": data.alt });
                                 content.find(".img_alt").text(data.alt);
                                 content.find(".a_href").text(data.href);
                                 content.find(".a_title").text(data.title);
@@ -236,6 +239,133 @@
             }
         },
     });
+
+    editor.DomComponents.addType('QA元件', {
+        isComponent: el => el.classList?.contains('qa'),
+        model: {
+            defaults: {
+                droppable: false,
+                copyable: false
+            },
+            init() {
+                const ccid = this.ccid;
+                const c = $(".gjs-frame")[0].contentWindow.$;
+                window.setTimeout(function () {
+                    c(`#${ccid} a`).attr({ "href": `#${ccid}_content`, "Title": "展開QA" });
+                    c(`#${ccid} .collapse`).attr("id", `${ccid}_content`);
+                }, 200)
+            }
+        },
+    });
+    editor.DomComponents.addType('格列切換控制', {
+        isComponent: el => el.classList?.contains('switch_control'),
+        model: {
+            defaults: {
+                droppable: false,
+                copyable: false,
+                traits: [
+                    {
+                        type: 'checkbox',
+                        label: '文字',
+                        name: 'btn_text',
+                        valueTrue: "1",
+                        valueFalse: "0"
+                    }, {
+                        type: 'checkbox',
+                        label: '圖片',
+                        name: 'btn_grid',
+                        valueTrue: "1",
+                        valueFalse: "0"
+                    }, {
+                        type: 'checkbox',
+                        label: '圖文',
+                        name: 'btn_list',
+                        valueTrue: "1",
+                        valueFalse: "0"
+                    }
+                ]
+            },
+            init() {
+                var self = this;
+
+                var list = ["btn_text", "btn_grid", "btn_list"];
+                for (var i = 0; i < list.length; i++){
+                    const myClass = list[i];
+                    self.on(`change:attributes:${myClass}`, () => {
+                        editor.getSelected().components().models.forEach(function (item) {
+                            if (item.getClasses().indexOf(myClass) >= 0) {
+                                console.log(myClass);
+                                if (item.getClasses().indexOf('d-none') >= 0) {
+                                    item.removeClass("d-none");
+                                    setTimeout(() => {
+                                        var content = $(".gjs-frame")[0].contentWindow.namecontrol;
+                                        content(editor.getSelected().getId());
+                                    }, 200);
+                                }
+                                else {
+                                    item.addClass("d-none");
+                                    setTimeout(() => {
+                                        var content = $(".gjs-frame")[0].contentWindow.namecontrol;
+                                        content(editor.getSelected().getId());
+                                    }, 200);
+                                }
+                            }
+                        });
+
+                    });
+                }
+            }
+        },
+    });
+    editor.DomComponents.addType('活動列表', {
+        isComponent: el => el.classList?.contains('articletype'),
+        model: {
+            defaults: {
+                droppable: false,
+                copyable: false,
+                traits: [
+                    { name: 'data-strat-end-date', type: 'date-range', label: '起訖日期' },
+                    { name: 'data-location', type: 'text', label: '地點', placeholder: '請輸入地點' },
+                    { name: 'data-addr', type: 'text', label: '地址', placeholder: '請輸入地址' },
+                    { name: 'data-link', type: 'text', label: '連結', placeholder: '請輸入連結' },
+                    { name: 'data-organizer', type: 'text', label: '主辦單位', placeholder: '請輸入主辦單位' },
+                    { name: 'data-a-organizer', type: 'text', label: '協辦單位', placeholder: '請輸入協辦單位' },
+                    { name: 'data-tel', type: 'text', label: '電話', placeholder: '請輸入電話' }
+                ]
+            },
+            init() {
+                var self = this;
+                self.on(`change:attributes`, () => {
+                    setTimeout(() => {
+                        var content = $(".gjs-frame")[0].contentWindow.date_input_change;
+                        editor.getSelected().components(content(editor.getSelected().getId()));
+                    }, 200);
+                });
+            }
+        }
+    });
+    editor.TraitManager.addType("date-range", {
+        
+        createInput({ trait }) {
+            const self = this;
+            const el = document.createElement('div');
+            el.innerHTML = `
+              <div class="date-range_start-inputs">
+                <input type="date" class="date-range_strat-date" />
+              </div>
+              <div class="date-range_end-inputs">
+                <input type="date" class="date-range_end-date" />
+              </div>
+            `;
+            return el;
+        },
+        onEvent({ elInput, component, event }) {
+            const inputstrat = elInput.querySelector('.date-range_strat-date');
+            const inputsend = elInput.querySelector('.date-range_end-date');
+            component.addAttributes({ "date-date-strat-date": inputstrat.value,"data-date-end": inputsend.value })
+        }
+    });
+
 
     editor.DomComponents.addType('子頁內容', {
         isComponent: el => el.classList?.contains('subpage_content'),
@@ -255,8 +385,8 @@
                 droppable: false,
                 editable: false,
                 traits: [
-                    //{ name: 'data-dirid', type: 'text', label: '關聯目錄', placeholder: '請輸入目錄Id' },
-                    { name: 'data-diridName', type: 'text', label: '目錄名稱', placeholder: '尚未關聯目錄' },
+                    { name: 'id', type: 'text', label: 'ID', placeholder: '元件ID名稱' },
+                    { name: 'data-diridname', type: 'text', label: '目錄名稱', placeholder: '尚未關聯目錄' },
                     {
                         name: 'data-dirid', type: 'button',
                         text: "設置目錄",
@@ -276,7 +406,7 @@
                                     $("#PopupDirectory .Sure").on("click", function () {
                                         editor.getSelected().set("attributes", {
                                             "data-dirid": data.Id,
-                                            "data-diridName": data.Title
+                                            "data-diridname": data.Title
                                         });
                                         PopupDirectory.hide();
                                         $(".gjs-frame")[0].contentWindow.DirectoryGetDataInit();
