@@ -108,6 +108,7 @@ function PageReady() {
                 $("body").addClass("grapesEdit");
                 editor.setStyle(result.conten.saveCss);
                 editor.setComponents(html);
+                if (!!result.title) $("#TopLine .title").text(result.title);
             } else {
                 co.sweet.error(result.error);
             }
@@ -490,6 +491,7 @@ function BackToList() {
     $("#ArticleContent").addClass("d-none");
     $("#ArticleCanvas").addClass("d-none");
     $("body").removeClass("grapesEdit");
+    $("#TopLine .title").text("文章管理");
     window.location.hash = ""
 }
 

@@ -17,7 +17,8 @@ body.grapesEdit {
         transition: top 0.5s 2s;
         position: absolute;
         display: block;
-        width:auto;
+        width: auto;
+        max-width: 30rem;
 
         &:after {
             content: '\f078';
@@ -39,6 +40,12 @@ body.grapesEdit {
 
         .title {
             margin-right: 1rem;
+            max-width: 20rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 
