@@ -22,6 +22,14 @@
         }
     });
 
+    // Wait for CKEDITOR load
+    setInterval(() => {
+        if (typeof (CKEDITOR) != "undefined") {
+            CKEDITOR.dtd.$editable.a = 1;
+            CKEDITOR.dtd.$editable.span = 1;
+        }
+    }, 200);
+
     editor.on('asset:add', (option) => {
         //console.log(option);
     });

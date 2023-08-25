@@ -43,7 +43,6 @@ var grapesInit = function (options) {
             'grapesjs-tui-image-editor',
             'grapesjs-blocks-table',
             'grapesjs-parser-postcss',
-            'grapesjs-preset-newsletter',
             'grapesjs-plugin-ckeditor',
             'grapesjs-preset-webpage',
             'grapesjs-Coker6'

@@ -393,7 +393,7 @@ function AddUp(success_text, error_text, place) {
     if ($("#ImageUpload .img_input_frame").data("delectList") != null) {
         co.File.DeleteFileById({
             Sid: keyId,
-            Type: 5,
+            Type: 6,
             Fid: $("#ImageUpload").data("delectList")
         });
     }
