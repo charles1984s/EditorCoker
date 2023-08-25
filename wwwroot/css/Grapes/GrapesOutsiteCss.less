@@ -1,37 +1,46 @@
 ﻿#TopLine {
-    z-index: 1024;
-    margin-left: calc(50% - 26rem);
-    background: #000;
-    color: #FFF;
-    border-radius: 2rem;
-    top: -3.5rem;
-    transition: top 0.5s 2s;
+    display: flex;
 
-    &:after {
-        content: '\f078';
-        display: block;
-        text-align: center;
-        font-weight: bold;
-        font-family: 'Font Awesome 6 Free';
-        font-size: 2rem;
-    }
-
-    &:hover {
-        top: 1rem;
-        transition: top 0.5s;
-
-        &:after {
-            content: "\f077";
-        }
-    }
-
-    .title {
-        margin-right: 1rem;
+    >.d-flex {
+        width: 100%;
+        justify-content: space-between;
     }
 }
-
 body.grapesEdit {
-    #gjs{ height:100vh;}
+    #TopLine {
+        z-index: 1024;
+        margin-left: calc(50% - 26rem);
+        background: #000;
+        color: #FFF;
+        border-radius: 2rem;
+        top: -3.5rem;
+        transition: top 0.5s 2s;
+        position: absolute;
+        display: block;
+        width:auto;
+
+        &:after {
+            content: '\f078';
+            display: block;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Font Awesome 6 Free';
+            font-size: 2rem;
+        }
+
+        &:hover {
+            top: 1rem;
+            transition: top 0.5s;
+
+            &:after {
+                content: "\f077";
+            }
+        }
+
+        .title {
+            margin-right: 1rem;
+        }
+    }
 
     header {
         display: none;
