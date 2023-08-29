@@ -442,9 +442,37 @@
                             }
                             PopupDirectory.show();
                         }
-                    }
+                    },
+
+                    { name: 'data-maxlen', type: 'text', label: '最大筆數', placeholder: '該目錄僅抓幾筆資料' },
+                    { name: 'data-shownum', type: 'text', label: '分頁筆數', placeholder: '一個分頁幾筆資料' },
                 ],
             },
+            init() {
+                var self = this;
+                self.on(`change:attributes:data-shownum`, component => {
+                    setTimeout(() => {
+                        const fWindow = $(".gjs-frame")[0].contentWindow;
+                        let attr = component.getAttributes();
+                        fWindow.$(`#${component.getId()}`).data({
+                            "prevdirid": attr["data-prevdirid"],
+                            "shownum": attr["data-shownum"]
+                        });
+                        fWindow.DirectoryGetDataInit();
+                    }, 200);
+                });
+                self.on(`change:attributes:data-maxlen`, component => {
+                    setTimeout(() => {
+                        const fWindow = $(".gjs-frame")[0].contentWindow;
+                        let attr = component.getAttributes();
+                        fWindow.$(`#${component.getId()}`).data({
+                            "prevdirid": attr["data-prevdirid"],
+                            "maxlen": attr["data-maxlen"]
+                        });
+                        fWindow.DirectoryGetDataInit();
+                    }, 200);
+                });
+            }
         },
     });
     //目錄內容
