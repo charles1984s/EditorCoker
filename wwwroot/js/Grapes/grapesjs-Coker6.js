@@ -26,7 +26,11 @@
     setInterval(() => {
         if (typeof (CKEDITOR) != "undefined") {
             CKEDITOR.dtd.$editable.a = 1;
+            CKEDITOR.dtd.$editable.p = 1;
             CKEDITOR.dtd.$editable.span = 1;
+            CKEDITOR.dtd.$editable.li = 1;
+            CKEDITOR.dtd.$editable.strong = 1;
+            CKEDITOR.dtd.$editable.div = 1;
         }
     }, 200);
 
