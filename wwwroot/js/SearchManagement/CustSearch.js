@@ -35,20 +35,22 @@ function PageReady() {
     };
 
     ElementInit();
-    TagListModalInit();
     WebmenuListModalInit();
+    $('.tag.input-group').each(function () {
+        $(this).TagListModalInit();
+    });
 
     $bind_type.on("change", function () {
         switch (parseInt($bind_type.val())) {
             case 1:
             case 2:
-                $(".webmenu > input").attr("disabled", "disabled")
-                $(".tag > input").removeAttr("disabled");
+                //$(".webmenu > input").attr("disabled", "disabled")
+                //$(".tag > input").removeAttr("disabled");
                 WebmenuDataClear();
                 break;
             case 3:
-                $(".tag > input").attr("disabled", "disabled");
-                $(".webmenu > input").removeAttr("disabled", "disabled")
+                //$(".tag > input").attr("disabled", "disabled");
+                //$(".webmenu > input").removeAttr("disabled", "disabled")
                 TagDataClear();
                 break;
         }
@@ -88,7 +90,7 @@ function PageReady() {
         BackToList();
     });
 
-    $btn_display.on("click", function () {
+   /* $btn_display.on("click", function () {
         if (disp_opt) {
             $btn_display.children("span").text("visibility_off");
             disp_opt = !disp_opt;
@@ -96,7 +98,7 @@ function PageReady() {
             $btn_display.children("span").text("visibility");
             disp_opt = !disp_opt;
         }
-    })
+    })*/
 
     $title_text.on('keyup', function () {
         var $self = $(this);
@@ -116,15 +118,15 @@ function PageReady() {
 }
 
 function ElementInit() {
-    $btn_display = $(".btn_display");
+    //$btn_display = $(".btn_display");
     $bind_type = $("#BindType");
     $title = $(".title");
     $title_text = $title.children("textarea");
     $description = $(".description");
     $description_text = $description.children("textarea");
 
-    $(".tag > input").attr("disabled", "disabled")
-    $(".webmenu > input").attr("disabled", "disabled")
+    //$(".tag > input").attr("disabled", "disabled")
+    //$(".webmenu > input").attr("disabled", "disabled")
 }
 
 
@@ -192,7 +194,7 @@ function FormDataClear() {
     TagDataClear();
     WebmenuDataClear();
     keyId = 0;
-    $btn_display.children("span").text("visibility");
+    //$btn_display.children("span").text("visibility");
     $bind_type.val(null);
     $title_text.val("");
     $description_text.val("");
@@ -203,24 +205,24 @@ function FormDataSet(result) {
     FormDataClear();
     keyId = result.id;
     disp_opt = result.visible;
-    if (disp_opt) {
+    /*if (disp_opt) {
         $btn_display.children("span").text("visibility");
     } else {
         $btn_display.children("span").text("visibility_off");
-    }
+    }*/
     $bind_type.val(result.type);
 
     switch (parseInt($bind_type.val())) {
         case 1:
         case 2:
-            $(".webmenu > input").attr("disabled", "disabled")
-            $(".tag > input").removeAttr("disabled")
+            //$(".webmenu > input").attr("disabled", "disabled")
+            //$(".tag > input").removeAttr("disabled")
             TagDataSet(result.tagDatas);
             WebmenuDataClear();
             break;
         case 3:
-            $(".tag > input").attr("disabled", "disabled")
-            $(".webmenu > input").removeAttr("disabled", "disabled")
+            //$(".tag > input").attr("disabled", "disabled")
+            //$(".webmenu > input").removeAttr("disabled", "disabled")
             WebmenuDataSet(result.fK_MId);
             TagDataClear();
             break;

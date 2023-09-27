@@ -36,3 +36,49 @@ input[type="number"] {
         content: '/150';
     }
 }
+
+.tag {
+    > input {
+        padding-left: 4.5rem;
+    }
+}
+.selectedItem {
+    + label {
+        cursor: pointer;
+        color: gray;
+    }
+
+    &:checked {
+        + label {
+            color: #4B89FC;
+        }
+    }
+
+    &.visibe {
+        + label {
+            > span:first-child {
+                display: none
+            }
+
+            > span:last-child {
+                display: initial;
+            }
+
+            color: gray;
+        }
+
+        &:checked {
+            + label {
+                > span:first-child {
+                    display: initial;
+                }
+
+                > span:last-child {
+                    display: none;
+                }
+
+                color: #4B89FC;
+            }
+        }
+    }
+}
