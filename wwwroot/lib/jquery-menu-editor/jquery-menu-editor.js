@@ -1404,7 +1404,7 @@ function MenuEditor(idSelector, options) {
         $cEl.children().children('i').removeClass(oldIcon).addClass($cEl.data('icon'));
         $cEl.find('span.txt').first().text($cEl.data('text'));
         !!settings.on.update && settings.on.update($cEl.data());
-        resetForm();
+        //resetForm();
     };
    
     self.add = function(){
