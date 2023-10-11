@@ -205,6 +205,10 @@
         isComponent: el => el.classList?.contains('one_swiper') || el.classList?.contains('two_swiper') || el.classList?.contains('four_swiper') || el.classList?.contains('six_swiper'),
         model: {
             defaults: {
+                draggable: false,
+                droppable: false,
+                editable: false,
+                copyable: false,
                 traits: [
                     {
                         name: 'swiper-slide', type: 'button',
@@ -212,7 +216,7 @@
                         command: editor => {
                             var $selected = editor.getSelected();
                             var swiper = $selected.find(".swiper")[0].getEl().swiper;
-                            var new_slide = $("<div>").append($($selected.find(".template_slide")[0].find(".swiper-slide")[0].toHTML())).html();
+                            var new_slide = $("<div>").append($($selected.find(".template_slide>.swiper-slide")[0].toHTML())).html();
                             $selected.find(".swiper-wrapper")[0].append(new_slide);
                             swiper.update();
                         },
@@ -270,6 +274,7 @@
                                     datas.push(obj);
                                 }
                             });
+                            $body.empty();
                             $.each(datas, function (index, data) {
                                 var content = $($("#TemplateSwiperList").html()).clone();
                                 content.find("img").attr({ "src": data.src, "alt": data.alt });
@@ -286,6 +291,14 @@
                 ],
             }
         },
+    });
+    editor.DomComponents.addType('輪播容器', {
+        isComponent: el => el.classList?.contains('image_link_slide'),
+        model: {
+            defaults: {
+                removable: true,
+            }
+        }
     });
     //QA元件
     editor.DomComponents.addType('QA元件', {
@@ -386,6 +399,7 @@
             }
         },
     });
+    //名片介紹
     editor.DomComponents.addType('名片介紹', {
         isComponent: el => el.classList?.contains('frame_type_2'),
         model: {
@@ -459,14 +473,18 @@
             }
         },
     });
+
     var PopupDirectory = null;
     //目錄
     editor.DomComponents.addType('目錄', {
         isComponent: el => el.classList?.contains('menu_directory') || el.classList?.contains('catalog_frame'),
         model: {
             defaults: {
+                removable: false,
+                draggable: false,
                 droppable: false,
                 editable: false,
+                copyable: false,
                 traits: [
                     { name: 'id', type: 'text', label: 'ID', placeholder: '元件ID名稱' },
                     { name: 'data-shownum', type: 'text', label: '單頁筆數' },
@@ -531,23 +549,6 @@
                 });
             }
         },
-    });
-    //目錄內容
-    editor.DomComponents.addType('目錄內容', {
-        isComponent: el => el.parentElement.classList?.contains('menu_directory') || el.classList?.contains('catalog'),
-        model: {
-            defaults: {
-                removable: false,
-                draggable: false,
-                droppable: false,
-                editable: false,
-                copyable: false
-            }
-        },
-    });
-    //輪播容器
-    editor.DomComponents.addType('輪播容器', {
-        isComponent: el => el.classList?.contains('image_link_slide'),
     });
     //關閉所有元件分類夾，僅開啟一個
     var blockControl = function () {
