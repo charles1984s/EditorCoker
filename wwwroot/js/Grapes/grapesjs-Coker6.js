@@ -207,8 +207,8 @@
             defaults: {
                 draggable: false,
                 droppable: false,
-                editable: false,
                 copyable: false,
+                editable: false,
                 traits: [
                     {
                         name: 'swiper-slide', type: 'button',
@@ -297,6 +297,7 @@
         model: {
             defaults: {
                 removable: true,
+                editable: false,
             }
         }
     });
@@ -333,69 +334,6 @@
             },
             init() {
              
-            }
-        },
-    });
-    //目錄切換控制
-    editor.DomComponents.addType('格列切換控制', {
-        isComponent: el => el.classList?.contains('switch_control'),
-        model: {
-            defaults: {
-                droppable: false,
-                copyable: false,
-                traits: [
-                    {
-                        type: 'checkbox',
-                        label: '文字',
-                        name: 'btn_text',
-                        valueTrue: "1",
-                        valueFalse: "0"
-                    }, {
-                        type: 'checkbox',
-                        label: '圖片',
-                        name: 'btn_grid',
-                        valueTrue: "1",
-                        valueFalse: "0"
-                    }, {
-                        type: 'checkbox',
-                        label: '圖文',
-                        name: 'btn_list',
-                        valueTrue: "1",
-                        valueFalse: "0"
-                    }
-                ]
-            },
-            init() {
-
-                var self = this;
-
-                var list = ["btn_text", "btn_grid", "btn_list"];
-                for (var i = 0; i < list.length; i++){
-                    const myClass = list[i];
-                    
-                    self.on(`change:attributes:${myClass}`, () => {
-                        self.components().models.forEach(function (item) {
-                            if (item.getClasses().indexOf(myClass) >= 0) {
-  
-                                if (item.getClasses().indexOf('d-none') >= 0) {
-                                    item.removeClass("d-none");
-                                    setTimeout(() => {
-                                        var content = $(".gjs-frame")[0].contentWindow.namecontrol;
-                                        content(self.getId());
-                                    }, 200);
-                                }
-                                else {
-                                    item.addClass("d-none");
-                                    setTimeout(() => {
-                                        var content = $(".gjs-frame")[0].contentWindow.namecontrol;
-                                        content(self.getId());
-                                    }, 200);
-                                }
-                            }
-                        });
-
-                    });
-                }
             }
         },
     });
@@ -480,8 +418,6 @@
         isComponent: el => el.classList?.contains('menu_directory') || el.classList?.contains('catalog_frame'),
         model: {
             defaults: {
-                removable: false,
-                draggable: false,
                 droppable: false,
                 editable: false,
                 copyable: false,
@@ -547,6 +483,69 @@
                         fWindow.DirectoryGetDataInit();
                     }, 200);
                 });
+            }
+        },
+    });
+    //目錄切換控制
+    editor.DomComponents.addType('格列切換控制', {
+        isComponent: el => el.classList?.contains('switch_control'),
+        model: {
+            defaults: {
+                droppable: false,
+                copyable: false,
+                traits: [
+                    {
+                        type: 'checkbox',
+                        label: '文字',
+                        name: 'btn_text',
+                        valueTrue: "1",
+                        valueFalse: "0"
+                    }, {
+                        type: 'checkbox',
+                        label: '圖片',
+                        name: 'btn_grid',
+                        valueTrue: "1",
+                        valueFalse: "0"
+                    }, {
+                        type: 'checkbox',
+                        label: '圖文',
+                        name: 'btn_list',
+                        valueTrue: "1",
+                        valueFalse: "0"
+                    }
+                ]
+            },
+            init() {
+
+                var self = this;
+
+                var list = ["btn_text", "btn_grid", "btn_list"];
+                for (var i = 0; i < list.length; i++) {
+                    const myClass = list[i];
+
+                    self.on(`change:attributes:${myClass}`, () => {
+                        self.components().models.forEach(function (item) {
+                            if (item.getClasses().indexOf(myClass) >= 0) {
+
+                                if (item.getClasses().indexOf('d-none') >= 0) {
+                                    item.removeClass("d-none");
+                                    setTimeout(() => {
+                                        var content = $(".gjs-frame")[0].contentWindow.namecontrol;
+                                        content(self.getId());
+                                    }, 200);
+                                }
+                                else {
+                                    item.addClass("d-none");
+                                    setTimeout(() => {
+                                        var content = $(".gjs-frame")[0].contentWindow.namecontrol;
+                                        content(self.getId());
+                                    }, 200);
+                                }
+                            }
+                        });
+
+                    });
+                }
             }
         },
     });
