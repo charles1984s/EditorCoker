@@ -423,7 +423,6 @@
                 copyable: false,
                 traits: [
                     { name: 'id', type: 'text', label: 'ID', placeholder: '元件ID名稱' },
-                    { name: 'data-shownum', type: 'text', label: '單頁筆數' },
                     { name: 'data-diridname', type: 'text', label: '目錄名稱', placeholder: '尚未關聯目錄' },
                     {
                         name: 'data-dirid', type: 'button',
@@ -454,9 +453,8 @@
                             PopupDirectory.show();
                         }
                     },
-
-                    { name: 'data-maxlen', type: 'text', label: '最大筆數', placeholder: '該目錄僅抓幾筆資料' },
-                    { name: 'data-shownum', type: 'text', label: '分頁筆數', placeholder: '一個分頁幾筆資料' },
+                    { name: 'data-shownum', type: 'text', label: '單頁筆數', placeholder: '一個分頁要抓幾筆資料' },
+                    { name: 'data-maxlen', type: 'text', label: '最大筆數', placeholder: '該目錄僅抓幾筆資料' }
                 ],
             },
             init() {
