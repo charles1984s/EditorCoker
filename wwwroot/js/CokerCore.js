@@ -97,6 +97,20 @@ var Coker = {
                         $('input:hidden[name="AntiforgeryFieldname"]').val());
                 }
             });
+        },
+        Save: function (data) {
+            return $.ajax({
+                url: "/api/Website/Save",
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify(data),
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("requestverificationtoken",
+                        $('input:hidden[name="AntiforgeryFieldname"]').val());
+                }
+            });
         }
     },
     User: {
@@ -186,6 +200,22 @@ var Coker = {
                 }
             });
             return _dfr.promise();
+        }
+    },
+    Company: {
+        Save: function (data) {
+            return $.ajax({
+                url: "/api/Company/Save",
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify(data),
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("requestverificationtoken",
+                        $('input:hidden[name="AntiforgeryFieldname"]').val());
+                }
+            });
         }
     },
     sweet: {
@@ -1195,7 +1225,7 @@ var Coker = {
                             }
                             break;
                         case "DIV":
-                            switch ($e.data("formType")) {
+                            switch ($e.data("form-type")) {
                                 case "zipcode":
                                     co.Zipcode.setData({
                                         el: $e,
@@ -1215,7 +1245,7 @@ var Coker = {
             let exItems = $(`#${id}`).find(`div[name]`);
             exItems.each(function () {
                 const $e = $(this);
-                switch ($e.data("formType")) {
+                switch ($e.data("form-type")) {
                     case "zipcode":
                         formDataObject[$e.attr("name")] = co.Zipcode.getData($e);
                         break;
