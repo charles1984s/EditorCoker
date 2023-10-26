@@ -195,7 +195,7 @@ var Coker = {
                     _c.sweet.success("密碼變更成功");
                     _dfr.resolve();
                 } else { 
-                    _c.sweet.error(result.message);
+                    _c.sweet.error(result.message,"密碼請包含英文大小寫、數字及特殊符號且密碼長度達十二碼以上!!");
                     _dfr.resolve();
                 }
             });
