@@ -45,6 +45,45 @@ a {
 .memo:before {
     content: "※";
 }
+.ConfirmDanger {
+    color: var(--colors-red-text);
+    font-weight: bold;
+    font-style: italic;
+    font-size: 1.5rem;
+}
+
+.selectedItem + label {
+    cursor: pointer;
+    color: gray;
+}
+
+.selectedItem:checked + label {
+    color: #4B89FC;
+}
+
+.selectedItem + label {
+    color: gray;
+}
+
+    .selectedItem + label > span:first-child {
+        display: none;
+    }
+
+    .selectedItem + label > span:last-child {
+        display: initial;
+    }
+
+.selectedItem:checked + label {
+    color: #4B89FC;
+}
+
+    .selectedItem:checked + label > span:first-child {
+        display: initial;
+    }
+
+    .selectedItem:checked + label > span:last-child {
+        display: none;
+    }
 
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */

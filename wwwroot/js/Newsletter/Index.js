@@ -1,7 +1,7 @@
 ﻿var $btn_display, $btn_pop_visible, $title, $title_text, $describe, $describe_text, $sort, $sort_input, $sort_checkbox, $picker, $nodeDate, $permanent;
 var startDate, endDate, keyId, disp_opt = true, pop_visible = true;
-var article_list;
-var setPage;
+var article_list,initTag_list;
+var setPage,initPageData;
 
 function PageReady() {
     co.Articles = {
@@ -104,6 +104,10 @@ function PageReady() {
     setPage = function (id) {
         co.Articles.GetConten({ Id: id }).done(function (result) {
             if (result.success) {
+                if (result.conten.saveHtml == "") {
+                    result.conten.saveHtml = initPageData.html;
+                    result.conten.saveCss = initPageData.css;
+                }
                 var html = co.Data.HtmlDecode(result.conten.saveHtml);
                 $("body").addClass("grapesEdit");
                 editor.setComponents(html);
@@ -118,6 +122,17 @@ function PageReady() {
     ImageUploadModalInit($("#ImageUpload"));
     ElementInit();
     TagListModalInit();
+
+    co.Recipient.GetRecipientsTag().done(function (result) {
+        initTag_list = [];
+        if (result!=null) initTag_list.push(result);
+    });
+    co.ObjectType.GetNewsletterConten().done(function (result) {
+        if (result.success) {
+            initPageData = result.conten;
+        }
+        console.log(initPageData);
+    });
 
     const forms = $('#ArticletForm');
     (() => {
@@ -139,7 +154,7 @@ function PageReady() {
     })()
 
     $(".btn_back").on("click", function () {
-        Coker.sweet.confirm("返回文章列表", "資料將不被保存", "確定", "取消", function () {
+        Coker.sweet.confirm("返回電子報列表", "資料將不被保存", "確定", "取消", function () {
             article_list.component.refresh();
             BackToList();
         });
@@ -153,10 +168,9 @@ function PageReady() {
 
     $(".btn_to_canvas").on("click", function (event) {
         event.preventDefault()
-
         Swal.fire({
             icon: 'info',
-            title: "前往文章編輯頁",
+            title: "前往電子報編輯頁",
             html: "是否保存資料?",
             showCancelButton: true,
             showDenyButton: true,
@@ -323,6 +337,7 @@ function FormDataClear() {
     $sort_input.attr("disabled", "disabled");
     $sort_checkbox.prop("checked", false);
     $permanent.prop("checked", true);
+    TagInitSet(initTag_list);
 }
 
 function FormDataSet(result) {
@@ -347,7 +362,7 @@ function FormDataSet(result) {
     $nodeDate.val(result.nodeDate);
     startDate = result.startTime;
     endDate = result.endTime;
-    
+
 
     if (result.serNO != 500) {
         $sort_input.val(result.serNO);
@@ -369,7 +384,6 @@ function FormDataSet(result) {
         $nodeDate.data('daterangepicker').setStartDate(result.nodeDate);
         $nodeDate.data('daterangepicker').setEndDate(result.nodeDate);
     }
-
     TagDataSet(result.tagDatas);
 
 }
@@ -377,6 +391,11 @@ function FormDataSet(result) {
 function paletteButtonClicked(e) {
     keyId = e.row.key;
     window.location.hash = keyId + "-1";
+}
+function sendButtonClicked() {
+    co.sweet.confirm("是否確認發送電子報", "電子報將會寄送給所有收件人","寄出","取消", function () {
+        co.sweet.success("寄送成功");
+    });
 }
 
 function deleteButtonClicked(e) {
@@ -397,7 +416,6 @@ function AddUp(success_text, error_text, place) {
             Fid: $("#ImageUpload").data("delectList")
         });
     }
-
     co.Articles.AddUp({
         Id: keyId,
         Title: $title_text.val(),
@@ -491,7 +509,7 @@ function BackToList() {
     $("#ArticleContent").addClass("d-none");
     $("#ArticleCanvas").addClass("d-none");
     $("body").removeClass("grapesEdit");
-    $("#TopLine .title").text("文章管理");
+    $("#TopLine .title").text("電子報管理");
     window.location.hash = ""
 }
 

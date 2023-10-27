@@ -218,6 +218,43 @@ var Coker = {
             });
         }
     },
+    Recipient : {
+        DeleteRecipients: function (id) {
+            return $.ajax({
+                url: "/api/Newsletter/DeleteRecipients/",
+                type: "DELETE",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify({ Id: id }),
+            });
+        },
+        GetRecipientsTag: function () {
+            return $.ajax({
+                url: "/api/Newsletter/GetRecipientsTag/",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("requestverificationtoken",
+                        $('input:hidden[name="AntiforgeryFieldname"]').val());
+                }
+            });
+        }
+    },
+    PowerManagement: {
+        GetAll: function () {
+            return $.ajax({
+                url: "/api/PowerManagement/AllMenus/",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("requestverificationtoken",
+                        $('input:hidden[name="AntiforgeryFieldname"]').val());
+                }
+            });
+        }
+    },
     sweet: {
         config: {
             timeout: 1500
@@ -571,6 +608,18 @@ var Coker = {
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
                 data: JSON.stringify({ id: id }),
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("requestverificationtoken",
+                        $('input:hidden[name="AntiforgeryFieldname"]').val());
+                }
+            });
+        }, GetNewsletterConten: function () {
+            return $.ajax({
+                url: "/api/ObjectType/GetNewsletterConten",
+                type: "Post",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
                 dataType: "json",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("requestverificationtoken",
@@ -936,7 +985,6 @@ var Coker = {
                 data: JSON.stringify({ type: type }),
                 dataType: "json",
                 beforeSend: function (xhr) {
-                    console.log($('input:hidden[name="AntiforgeryFieldname"]'));
                     xhr.setRequestHeader("requestverificationtoken",
                         $('input:hidden[name="AntiforgeryFieldname"]').val());
                 }
