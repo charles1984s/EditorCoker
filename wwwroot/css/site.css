@@ -85,6 +85,13 @@ a {
         display: none;
     }
 
+#switchApp .small.weight-300.text-muted {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+}
+
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
