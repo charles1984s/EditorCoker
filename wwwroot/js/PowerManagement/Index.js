@@ -81,7 +81,6 @@
         $(data.menubar).each((i,e) => {
             addItem("#roleMember", e);
         });
-        console.log($self.data())
     }
     const setNoGroup = function (e) {
         $(e.menubar).each(function () {
@@ -106,21 +105,23 @@
     });
 
     $("#right-btn").on("click", function () {
-        $("#roleMember .member-item").each(function () {
-            if ($(this).hasClass("checked")) {
+        const $items = $("#roleMember .member-item.checked");
+        if ($items.length > 0) {
+            $items.each(function () {
                 $(this).appendTo("#noGroupMember");
                 $(this).removeClass("checked");
-            }
-        });
+            });
+        } else co.sweet.error("請選擇要退出群組的使用者");
     });
 
     $("#left-btn").on("click", function () {
-        $("#noGroupMember .member-item.checked").each(function () {
-            if ($(this).hasClass("checked")) {
+        const $items = $("#noGroupMember .member-item.checked");
+        if ($items.length > 0) {
+            $items.each(function () {
                 $(this).appendTo("#roleMember");
                 $(this).removeClass("checked");
-            }
-        });
+            });
+        } else co.sweet.error("請選擇要加入群組的使用者");
     });
 
     $(".fa-trash-alt").on("click", function () {
@@ -129,6 +130,9 @@
         co.sweet.confirm("確認刪除?", s, "確認", "取消", function () {
             $(m).remove();
         });
+    });
+    $(".fa-edit").on("click", function () {
+        console.log("in");
     });
 
 }
