@@ -1,5 +1,5 @@
 ﻿var $btn_display, $btn_pop_visible, $title, $title_text, $describe, $describe_text, $sort, $sort_input, $sort_checkbox, $picker, $nodeDate, $permanent;
-var startDate, endDate, keyId, disp_opt = true, pop_visible = true;
+var startDate, endDate, keyId, disp_opt = false, pop_visible = false;
 var article_list,initTag_list;
 var setPage,initPageData;
 
@@ -50,8 +50,10 @@ function PageReady() {
                 }
                 var html = co.Data.HtmlDecode(result.conten.saveHtml);
                 $("body").addClass("grapesEdit");
-                editor.setComponents(html);
-                editor.setStyle(result.conten.saveCss);
+                setTimeout(function () {
+                    editor.setStyle(result.conten.saveCss);
+                    editor.setComponents(html);
+                }, 300);
                 if (!!result.title) $("#TopLine .title").text(result.title);
             } else {
                 co.sweet.error(result.error);
@@ -267,8 +269,8 @@ function FormDataClear() {
     TagDataClear();
     ImageUploadModalClear($("#ImageUpload"));
     keyId = 0;
-    $btn_display.children("span").text("visibility");
-    $btn_pop_visible.children("span").text("group");
+    $btn_display.children("span").text("visibility_off");
+    $btn_pop_visible.children("span").text("group_off");
     $title_text.val("");
     $title.children("div").children(".count").text(0);
     $describe_text.val("");
@@ -278,6 +280,8 @@ function FormDataClear() {
     $sort_checkbox.prop("checked", false);
     $permanent.prop("checked", true);
     TagInitSet(initTag_list);
+    pop_visible = false;
+    disp_opt = false;
 }
 
 function FormDataSet(result) {
@@ -287,12 +291,12 @@ function FormDataSet(result) {
     });
     keyId = result.id;
 
-    if (!result.visible) {
-        $btn_display.children("span").text("visibility_off");
+    if (result.visible) {
+        $btn_display.children("span").text("visibility");
     }
 
-    if (!result.popularVisible) {
-        $btn_pop_visible.children("span").text("group_off");
+    if (result.popularVisible) {
+        $btn_pop_visible.children("span").text("group");
     }
 
     $title_text.val(result.title);
@@ -302,6 +306,8 @@ function FormDataSet(result) {
     $nodeDate.val(result.nodeDate);
     startDate = result.startTime;
     endDate = result.endTime;
+    pop_visible = result.popularVisible;
+    disp_opt = result.visible;
 
 
     if (result.serNO != 500) {
@@ -381,8 +387,8 @@ function AddUp(success_text, error_text, place) {
                 formData.append("type", 6);
                 formData.append("sid", result.message);
                 formData.append("serno", 500);
-                co.File.Upload(formData).done(function (result) {
-                    if (result.success) {
+                co.File.Upload(formData).done(function (response) {
+                    if (response.success) {
                         Coker.sweet.success(success_text, null, true);
                         setTimeout(function () {
                             if (place == "canvas") {

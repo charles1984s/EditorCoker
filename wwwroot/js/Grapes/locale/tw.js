@@ -49,6 +49,23 @@ let tw = {
             },
         },
     },
+    blockManager: {
+        labels: {
+            'column1': "一欄位",
+            'column2': "兩欄位",
+            'column3': "三欄位",
+            'column2-3/7': "三七分欄位",
+            text: "文字",
+            link: "連結",
+            image: "圖片",
+            video: "影片",
+            map: "地圖",
+            'link-block': "區塊連結",
+            'quote': "引用",
+            'text-section': "段落",
+            'table': "表格"
+        },
+    },
     selectorManager: {
         label: '元件',
         selected: '選擇器',
