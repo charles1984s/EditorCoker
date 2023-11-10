@@ -333,10 +333,7 @@
                     co.WebMesnus.getConten(data.id).done(function (result) {
                         if (result.success) {
                             var html = co.Data.HtmlDecode(result.conten.saveHtml);
-                            setTimeout(() => {
-                                editor.setComponents(html);
-                                editor.setStyle(result.conten.saveCss);
-                            },300);
+                            co.Grapes.setEditor(editor, html, result.conten.saveCss);
                             $("body").addClass("grapesEdit");
                             $("#TopLine .title").text(data.text);
                             myOffcanvas.hide();

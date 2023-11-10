@@ -1492,6 +1492,14 @@ var Coker = {
             if (typeof (str) == "undefined" || str == null || str.trim() == "") return true;
             else return false;
         }
+    }, Grapes: {
+        setEditor: (editor,html,css) => {
+            editor.DomComponents.clear(); // Clear components
+            editor.CssComposer.clear();  // Clear styles
+            editor.UndoManager.clear(); // Clear undo history
+            editor.setStyle(css);
+            editor.setComponents(html);
+        }
     }
 }
 var _c = Coker;

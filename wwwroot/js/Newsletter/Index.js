@@ -42,18 +42,15 @@ function PageReady() {
 
     //設定html資料
     setPage = function (id) {
+        $("body").addClass("grapesEdit");
         co.Articles.GetConten({ Id: id }).done(function (result) {
             if (result.success) {
-                if (result.conten.saveHtml == "") {
+                if (result.conten.saveHtml.trim() == "") {
                     result.conten.saveHtml = initPageData.html;
                     result.conten.saveCss = initPageData.css;
                 }
                 var html = co.Data.HtmlDecode(result.conten.saveHtml);
-                $("body").addClass("grapesEdit");
-                setTimeout(function () {
-                    editor.setStyle(result.conten.saveCss);
-                    editor.setComponents(html);
-                }, 300);
+                co.Grapes.setEditor(editor, html, result.conten.saveCss);
                 if (!!result.title) $("#TopLine .title").text(result.title);
             } else {
                 co.sweet.error(result.error);
@@ -73,7 +70,6 @@ function PageReady() {
         if (result.success) {
             initPageData = result.conten;
         }
-        console.log(initPageData);
     });
 
     const forms = $('#ArticletForm');

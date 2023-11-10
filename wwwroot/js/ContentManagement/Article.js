@@ -42,14 +42,11 @@ function PageReady() {
 
     //設定html資料
     setPage = function (id) {
+        $("body").addClass("grapesEdit");
         co.Articles.GetConten({ Id: id }).done(function (result) {
             if (result.success) {
                 var html = co.Data.HtmlDecode(result.conten.saveHtml);
-                $("body").addClass("grapesEdit");
-                setTimeout(function () {
-                    editor.setStyle(result.conten.saveCss);
-                    editor.setComponents(html);
-                },300);
+                co.Grapes.setEditor(editor, html, result.conten.saveCss);
                 if (!!result.title) $("#TopLine .title").text(result.title);
             } else {
                 co.sweet.error(result.error);
