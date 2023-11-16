@@ -46,7 +46,7 @@ var grapesInit = function (options) {
             'grapesjs-parser-postcss',
             //'grapesjs-plugin-ckeditor',
             //'gjs-plugin-ckeditor5',
-            'grapesjs-rte-extensions',
+            //'grapesjs-rte-extensions',
             'grapesjs-Coker6'
         ],
         pluginsOpts: {
