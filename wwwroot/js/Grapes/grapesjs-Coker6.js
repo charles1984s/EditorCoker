@@ -189,16 +189,19 @@
                         },
                     }
                 ],
-            },
-            init() {
-                this.on('change:attributes:download', function () {
-                    setTimeout(() => {
-                        var LinkWithIconInit = $(".gjs-frame")[0].contentWindow.LinkWithIconInit;
-                        LinkWithIconInit();
-                    }, "100");
-                });
             }
         },
+        view: {
+            init() {
+                this.on('change:attributes:download', this.setLink);
+                this.setLink();
+            }, setLink: function () {
+                setTimeout(function () {
+                    var LinkWithIconInit = $(".gjs-frame")[0].contentWindow.LinkWithIconInit;
+                    LinkWithIconInit();
+                }, 100);
+            }
+        }
     });
     //輪播
     editor.DomComponents.addType('輪播', {
@@ -381,13 +384,16 @@
                 ]
             },
             init() {
-                var self = this;
-                self.on(`change:attributes`, () => {
+                const self = this;
+                const setting = function () {
+                    console.log(self);
                     setTimeout(() => {
                         var content = $(".gjs-frame")[0].contentWindow.date_input_change;
-                        editor.getSelected().components(content(editor.getSelected().getId()));
+                        self.components(content(self.getId()));
                     }, 200);
-                });
+                }
+                self.on(`change:attributes`, setting);
+                setting();
             }
         }
     });
