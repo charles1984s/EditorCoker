@@ -43,6 +43,7 @@ var grapesInit = function (options) {
             'grapesjs-custom-code',
             'grapesjs-tui-image-editor',
             'grapesjs-blocks-table',
+            //'grapesjs-table',
             'grapesjs-parser-postcss',
             //'grapesjs-plugin-ckeditor',
             //'gjs-plugin-ckeditor5',
@@ -51,6 +52,7 @@ var grapesInit = function (options) {
         ],
         pluginsOpts: {
             'gjs-blocks-basic': { flexGrid: true },
+            "grapesjs-table": {},
             'grapesjs-preset-webpage': {
                 modalImportButton: '匯入',
                 modalImportTitle: '匯入原始碼',
@@ -74,7 +76,7 @@ var grapesInit = function (options) {
                     '/lib/tui-code/css/tui-image-editor.min.css', // v3.15.2
                 ]
             },
-            'grapesjs-blocks-table': { containerId: '#gjs' },
+            'grapesjs-blocks-table': { containerId: '#gjs', componentCell:".test" },
             'grapesjs-Coker6': options,
             'grapesjs-preset-newsletter': {
                 modalLabelExport: 'Copy the code and use it wherever you want',

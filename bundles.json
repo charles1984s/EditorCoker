@@ -216,6 +216,12 @@
       "input": [
         "node_modules/grapesjs-rte-extensions/dist/*"
       ]
+    },
+    {
+      "outputFolder": "lib/grapesjs/plugin/grapesjs-table",
+      "input": [
+        "node_modules/grapesjs-table/dist/*"
+      ]
     }
   ]
 }
