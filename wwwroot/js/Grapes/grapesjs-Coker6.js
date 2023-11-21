@@ -189,11 +189,17 @@
                         },
                     }
                 ],
+            }, init() {
+                this.on('change:attributes:download', function () {
+                    setTimeout(function () {
+                        var LinkWithIconInit = $(".gjs-frame")[0].contentWindow.LinkWithIconInit;
+                        LinkWithIconInit();
+                    }, 100);
+                });
             }
         },
         view: {
             init() {
-                this.on('change:attributes:download', this.setLink);
                 this.setLink();
             }, setLink: function () {
                 setTimeout(function () {
