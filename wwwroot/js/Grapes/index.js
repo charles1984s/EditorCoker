@@ -12,6 +12,9 @@ var grapesInit = function (options) {
             locale: 'tw',
             localeFallback: 'tw',
         },
+        selectorManager: {
+            componentFirst: true,
+        },
         assetManager: {
             custom: false,
             uploadFile: function (e) {
