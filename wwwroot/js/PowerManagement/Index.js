@@ -149,13 +149,19 @@
             const m = $(this).closest(".item");
             const s = `是否確認刪除角色<span class="rad">${$(m).text()}</span>`;
             co.sweet.confirm("確認刪除?", s, "確認", "取消", function () {
-                /*co.PowerManagement.RemoveMappingUserAndWebsite($(m).data("id")).done((result) => {
-                    if (result.success) co.sweet.success("已刪除授權");
-                    else co.sweet.error(result.error);
-                });*/
-                $(m).remove();
-                $('.offcanvas').offcanvas('hide');
+                co.PowerManagement.DeleteRole($(m).data("id")).done((result) => {
+                    if (result.success) {
+                        co.sweet.success("已刪除角色");
+                        $(m).remove();
+                    } else co.sweet.error(result.error);
+                });
             });
+        });
+        $item.find(".fa-edit").on("click", function (event) {
+            event.stopPropagation();
+            const m = $(this).closest(".item");
+            nItem = m;
+            co.Form.insertData($(m).data(), $("#offcanvastopByRoleEdit"));
         });
         $item.appendTo("#RoleList");
     }
@@ -230,6 +236,21 @@
                     $('.offcanvas').offcanvas('hide');
                     addRole({ id: obj.Id, name: obj.Name, members:[]});
                 } else co.sweet.error("新增失敗", result.error);
+            });
+        }
+    });
+    $("#offcanvastopByRoleEdit .submit").on("click", () => {
+        const text = $(`#offcanvastopByRoleEdit [name="name"]`).val();
+        if (text.trim() == "") co.sweet.error("角色名稱不可為空");
+        else {
+            const data = co.Form.getJson("offcanvastopByRoleEditForm");
+            co.PowerManagement.EditRole(data).done(function (result) {
+                if (result.success) {
+                    $('.offcanvas').offcanvas('hide');
+                    $(nItem).find(".title").text(data.name);
+                    $(nItem).data(data);
+                    co.sweet.success("修改成功");
+                } else co.sweet.error("修改失敗", result.error);
             });
         }
     });

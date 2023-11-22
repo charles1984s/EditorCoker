@@ -140,12 +140,6 @@
       ]
     },
     {
-      "outputFolder": "lib/grapesjs/fonts",
-      "input": [
-        "node_modules/grapesjs/dist/fonts/*"
-      ]
-    },
-    {
       "outputFolder": "lib/grapesjs/plugin/grapesjs-preset-webpage",
       "input": [
         "node_modules/grapesjs-preset-webpage/dist/*"
