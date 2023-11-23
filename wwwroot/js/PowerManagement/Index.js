@@ -117,6 +117,12 @@
                             $("#noGroupMember").data("members", members);
                             setNoGroup();
                             $('.offcanvas').offcanvas('hide');
+                        } else {
+                            var members = $("#noGroupMember").data("members");
+                            co.Array.Delete(members, $(m).data());
+                            $("#noGroupMember").data("members", members);
+                            setNoGroup();
+                            $('.offcanvas').offcanvas('hide');
                         }
                     } else co.sweet.error(result.error);
                 });
@@ -189,10 +195,20 @@
         if ($items.length <= 0) co.sweet.error("加入失敗","請選擇要加入角色的使用者");
         else if ($Role.length <= 0) co.sweet.error("加入失敗", "請選擇或新增使用者要加入的角色");
         else {
+            const additems = [];
+            const moveItems = [];
             $items.each(function () {
-                $Role.data("members").push($(this).data());
-                $(this).appendTo("#roleMember");
-                $(this).removeClass("checked");
+                additems.push($(this).data("id"));
+                moveItems.push(this);
+            });
+            co.PowerManagement.AddUserToRole({ Users: additems, RoleId: $Role.data("id") }).done((result) => {
+                if (result.success) {
+                    $(moveItems).each(function () {
+                        $Role.data("members").push($(this).data());
+                        $(this).appendTo("#roleMember");
+                        $(this).removeClass("checked");
+                    });
+                }
             });
         } 
     });
@@ -221,6 +237,12 @@
                         data.members.push({ id: obj.Id, name: obj.Name });
                         $("#noGroupMember").data("members", data.members);
                         setNoGroup();
+                    } else {
+                        var data = $("#roleMember").data();
+                        data.members.push({ id: obj.Id, name: obj.Name });
+                        $("#noGroupMember").data("members", data.members);
+                        console.log(data);
+                        setMember();
                     }
                 } else co.sweet.error("新增失敗",result.error);
             });
