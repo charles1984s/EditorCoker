@@ -12,6 +12,10 @@ var Coker = {
             DataRetentionLongTime: 3 * MonthSecond,
             ReCheckTime: 20 * MinutesSecond
         },
+        Target: [
+            { Id:1, Name: "另開新視窗", value: "_blank" },
+            { Id:0, Name: "直接連結", value: "_self" }
+        ],
         ReplaceAndSinge: function (str) {
             if (!!str) {
                 var s = str.replace(/&amp;/g, "&");
@@ -1660,3 +1664,12 @@ var Coker = {
 var _c = Coker;
 var co = Coker;
 co.Cookie.EffectiveTime = co.Data.Time.DataRetentionTime;
+const getTarget = (options) => {
+    return {
+        store: DevExpress.data.AspNet.createStore({
+            key: "ID",
+            loadUrl: '/api/Newsletter/GetTargetLookup'
+        }),
+        filter: null
+    };
+};

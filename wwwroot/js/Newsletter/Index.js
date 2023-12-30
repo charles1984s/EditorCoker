@@ -1,7 +1,8 @@
 ﻿var $btn_display, $btn_pop_visible, $title, $title_text, $describe, $describe_text, $sort, $sort_input, $sort_checkbox, $picker, $nodeDate, $permanent;
 var startDate, endDate, keyId, disp_opt = false, pop_visible = false;
 var article_list,initTag_list;
-var setPage,initPageData;
+var setPage, initPageData;
+var devCom = {};
 
 function PageReady() {
     // 啟動
@@ -57,8 +58,9 @@ function PageReady() {
             }
         });
     }
-
-    ImageUploadModalInit($("#ImageUpload"));
+    $(".image_upload").each(function () {
+        ImageUploadModalInit($(this));
+    });
     ElementInit();
     TagListModalInit();
 
@@ -70,6 +72,25 @@ function PageReady() {
         if (result.success) {
             initPageData = result.conten;
         }
+    });
+    $("#ArticletForm").CokerMultiStepForm({
+        save: function (option) {
+
+        }
+    });
+
+    $(".add-items").each(function () {
+        const $self = $(this);
+        const $list = $self.siblings(".list");
+        $self.data("temp", $list.html()).on("click", function (e) {
+            e.preventDefault();
+            const $self = $($(this).data("temp"));
+            $self.find(".delete").on("click",function () {
+                $self.remove();
+            });
+            $list.append($self);
+        });
+        $list.empty();
     });
 
     const forms = $('#ArticletForm');
@@ -214,6 +235,9 @@ function contentReady(e) {
     article_list = e;
     HashDataEdit();
 }
+function headerReady(e) {
+    devCom.header = e.component;
+}
 
 function hashChange(e) {
     if (!!e) {
@@ -263,7 +287,9 @@ function editButtonClicked(e) {
 
 function FormDataClear() {
     TagDataClear();
-    ImageUploadModalClear($("#ImageUpload"));
+    $(".image_upload").each(function () {
+        ImageUploadModalClear($(this));
+    });
     keyId = 0;
     $btn_display.children("span").text("visibility_off");
     $btn_pop_visible.children("span").text("group_off");
@@ -283,7 +309,8 @@ function FormDataClear() {
 function FormDataSet(result) {
     FormDataClear();
     co.File.getImgFile({ Sid: result.id, Type: 6, Size: 3 }).done(function (file) {
-        ImageUploadModalDataInsert($("#ImageUpload"), file[0].id, file[0].link, file[0].name)
+        if (file.length>0)
+            ImageUploadModalDataInsert($("#ImageUpload"), file[0].id, file[0].link, file[0].name)
     });
     keyId = result.id;
 
