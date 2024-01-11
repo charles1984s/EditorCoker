@@ -3,6 +3,7 @@ var startDate, endDate, keyId, disp_opt = false, pop_visible = false;
 var article_list,initTag_list;
 var setPage, initPageData;
 var devCom = {};
+let $form;
 
 function PageReady() {
     // 啟動
@@ -73,7 +74,7 @@ function PageReady() {
             initPageData = result.conten;
         }
     });
-    $("#ArticletForm").CokerMultiStepForm({
+    $form = $("#ArticletForm").CokerMultiStepForm({
         save: function (option) {
 
         }
@@ -85,8 +86,13 @@ function PageReady() {
         $self.data("temp", $list.html()).on("click", function (e) {
             e.preventDefault();
             const $self = $($(this).data("temp"));
-            $self.find(".delete").on("click",function () {
+            if (!!$(this).data("palameter")) {
+                if (!!$(this).data("palameter").text)
+                    $self.find(".text").val($(this).data("palameter").text);
+            }
+            $self.find(".delete").on("click", function (e) {
                 $self.remove();
+                return false;
             });
             $list.append($self);
         });
@@ -235,7 +241,8 @@ function contentReady(e) {
     article_list = e;
     HashDataEdit();
 }
-function headerReady(e) {
+function NewsletterReady(e) {
+    $(e.element).data({ component: e.component });
     devCom.header = e.component;
 }
 
@@ -304,6 +311,9 @@ function FormDataClear() {
     TagInitSet(initTag_list);
     pop_visible = false;
     disp_opt = false;
+    console.log($form.find(".part"));
+    $form.find(".part").remove();
+    $form.set(initJson());
 }
 
 function FormDataSet(result) {
@@ -313,6 +323,7 @@ function FormDataSet(result) {
             ImageUploadModalDataInsert($("#ImageUpload"), file[0].id, file[0].link, file[0].name)
     });
     keyId = result.id;
+    $form.set(initJson());
 
     if (result.visible) {
         $btn_display.children("span").text("visibility");
@@ -494,4 +505,189 @@ function WasValidated() {
 function UnValidated() {
     $("#ArticletForm").removeClass("was-validated");
     $sort.children(".checkbox").removeClass("pe-4");
+}
+function initJson() {
+    return {
+  "mainManu": [
+    {
+      "Title": "電子報",
+      "Link": "/eplus/newsletter",
+      "Target": 0,
+      "Alert": "連結至:電子報"
+    },
+    {
+      "Title": "資源手冊",
+      "Link": "/eplus/manual",
+      "Target": 0,
+      "Alert": "連結至:資源手冊"
+    },
+    {
+      "Title": "活動資訊",
+      "Link": "/eplus/news",
+      "Target": 0,
+      "Alert": "連結至:活動資訊"
+    },
+    {
+      "Title": "關於我們",
+      "Link": "/eplus/about",
+      "Target": 0,
+      "Alert": "連結至:活動資訊"
+    }
+  ],
+  "LogoImage": {
+    "Id": 3084,
+    "Link": "/upload/eplus/htmlConten/9175370f-e129-44ad-8463-b901e1d071f8.png",
+    "Name": "logo.png"
+  },
+  "no": 139,
+  "Title": "高軟二期招商說明會臺中場今登場\n園管局邀請企業搶進亞灣2.0投資機會",
+  "Conten1": {
+    "img": {
+      "Id": 3111,
+      "Link": "/upload/eplus/htmlConten/583bb0b6-357a-4458-be8e-2e0f50bc6f42.jpg",
+      "Name": "0846f10a-7b02-426c-aca4-49c8b5763d24.jpg"
+    },
+    "Title": "招商說明會 臺中場",
+    "Conten": [
+      "為擴大南部智慧科技產業群聚，經濟部產業園區管理局(以下簡稱園管局)啟動高雄軟體園區第二園區設置計畫(簡稱高軟二期)，今(23)日於臺中軟體園區M202會議舉辦招商說明會，向企業代表說明高軟二期投資環境、工程進度、招商對象、優惠方案以及園管局優質服務，現場線上共有近百位企業參與踴躍交流，園管局邀請企業搶進亞灣2.0投資機會。",
+      "園管局表示，在5GAIoT發展推動上，除既有高軟一期已形成之產業聚落外，亞灣2.0的政策更將5G AIoT的應用擴展至半導體、石化永續、智慧港灣、智慧影視產業等特色產業，並擴大商業模式驗證，讓企業在亞灣設立研訓總部並輸出新南向國家；於該基礎下，園管局啟動高軟二期開發計畫，不論是旗艦辦公室需求業者，或一般中小企業與新創企業等，皆歡迎進駐高軟二期，園管局也將陪伴企業成長茁壯，希望業者都能到南部拓展據點，一起打拼奮鬥。",
+      "高軟二期位於高軟一期北側，建物導入5G AIoT建築設計理念，透過多元智能科技設備及結合5G AIoT實證場域應用，提供廠商多元智慧化便利服務，並將取得銀級以上綠建築標章，園區生活機能優異，且周邊交通便捷，將是未來企業進駐首選將是高雄亞灣區亮點新指標，招商重點以資訊軟體、數位內容、智慧應用等產業為主，預估可提高產值33億元，可望創造2500個就業機會。園管局提供進駐園區的企業相關輔導資源，包括法人及學界的資源，無論在技術研發、市場拓銷、營運法規甚至是資源補助的申請等，都有直接對應的服務，讓公司創新進程上，可以有相當大幅度的快速成長。相信在中央地方政策推動下，佈局大南方，除了產業群聚效應，更能強化企業競爭優勢，讓產業飛躍升級，說明會廠商分享部分，所邀請『惇智科技股份有限公司』林家弘協理即特別分享園區所提供之輔導資源，對於企業轉型升級以及新知取得或應用上，具有相當實質幫助與效益。",
+      "高軟二期聚焦 數位內容、資訊軟體、智慧應用、電子電信研發等5G、AIoT應用、研發及測試等知識密集型產業進駐，歡迎有意投資進駐之投資人踴躍提出申請。"
+    ],
+    "More": {
+      "Title": "了解更多",
+      "Link": "https://www.bip.gov.tw/info.aspx?pageid=5aa966ecd020763c&cid=c96e4e6e457d4971",
+      "Target": 1,
+      "Alert": "連結至: 招商說明會臺中場(另開新視窗)"
+    }
+  },
+  "News": {
+    "img": {
+      "Id": 3111,
+      "Link": "/upload/eplus/htmlConten/ca505174-c28e-44d4-870b-efcf68a3915e.png",
+      "Name": "newspic.png"
+    },
+    "List": [
+      {
+        "Title": "數位轉型智慧零售服務",
+        "Link": "https://aceschool.iii.org.tw/CaseDetail.aspx?Case_Sqno=81",
+        "Target": 1,
+        "Alert": "連結至: 數位轉型智慧零售服務(另開新視窗)"
+      },
+      {
+        "Title": "人腦加電腦，蕈菇長得快又好",
+        "Link": "https://aceschool.iii.org.tw/CaseDetail.aspx?Case_Sqno=83",
+        "Target": 1,
+        "Alert": "連結至: 人腦加電腦，蕈菇長得快又好(另開新視窗)"
+      },
+      {
+        "Title": "AI毫米波感測技術 前進日本提升照護領域醫療完善率",
+        "Link": "https://aceschool.iii.org.tw/CaseDetail.aspx?Case_Sqno=85",
+        "Target": 1,
+        "Alert": "連結至: AI毫米波感測技術 前進日本提升照護領域醫療完善率(另開新視窗)"
+      },
+      {
+        "Title": "回到過去-打造國家文化記憶個案",
+        "Link": "https://aceschool.iii.org.tw/CaseDetail.aspx?Case_Sqno=90",
+        "Target": 1,
+        "Alert": "連結至: 回到過去-打造國家文化記憶個案(另開新視窗)"
+      }
+    ]
+  },
+  "Active": {
+    "Title": "11月份\n精選活動",
+    "List": [
+      {
+        "Title": "臺中軟體園區 2023成果發表會",
+        "Date": "112/11/10(五)",
+        "Local": "台中",
+        "Link": "https://forms.gle/eL7euAc4SPH3dTtB9",
+        "Target": 1,
+        "Alert": "連結至: 臺中軟體園區 2023成果發表會(另開新視窗)"
+      },
+      {
+        "Title": "【跨域創新定根基 低碳永續創新局】科技產業園區跨域創生暨低碳轉型成果分享交流會 ",
+        "Date": "112/11/22(三)",
+        "Local": "高雄",
+        "Link": "https://reurl.cc/9R0o3V",
+        "Target": 1,
+        "Alert": "連結至:AI發展趨勢下的ChatGPT應用暨企業數位轉型政府補助資源說明(另開新視窗)"
+      }
+    ]
+  },
+  "Conten2": {
+    "mainTitle": "亮點輔導",
+    "img": {
+      "Id": 3112,
+      "Link": "/upload/eplus/htmlConten/71ab4149-1877-4064-a159-464d3d471ada.png",
+      "Name": "螢幕擷取畫面 2023-10-26 183826.png"
+    },
+    "icon": {
+      "Id": 2922,
+      "Link": "/upload/eplus/htmlConten/bb0065aa-dddd-4571-9c81-04475f9928c2.png",
+      "Name": "bEpaper_切版用只剩一個版本.png"
+    },
+    "Title": "虛實動畫影片提升企業專業製造新形象",
+    "Conten": ["靖鎰企業從事生產汽車零件已有30年經驗，歷經多年累積，技術工藝已十分精密，並獲得多間大型車廠的技術經驗肯定。然而於公司行銷推廣，因傳產行業投入資源有限，尚停留於篇幅較長、畫質較模糊階段，於現今行銷推廣上較不易吸引人注意。經過輔導團隊溝通，靖鎰將企業形象宣傳方面提升，導入虛實動畫技術，製作全新企業形象影片做為首要對外數位門面。主軸以台灣精工車用零件的製造商為首，將靖鎰企業專業、精密、高品質製造的形象為展現重點，故拍攝手法以工廠內部實景為主，紀錄工廠內產品製作、精密生產過程，並輔以3D動畫特效，說明冷鍛造的特殊技術、高品質製造特點，對外擴散靖鎰企業本質的專業形象。"]
+  },
+  "Conten3": {
+    "mainTitle": "政府資源",
+    "Title": "區內服務-協助廠商申請政府資源",
+    "List": [
+      {
+        "Title": "經濟部協助中小企業低碳化智慧化轉型發展與納管工廠及特定工廠基礎設施優化專案貸款（低碳智慧納管貸款）",
+        "Memo": "於114年10月31日以前受理申請，惟本貸款利息補貼預算用罄時或已屆申請期限即停止受理貸款申請。",
+        "Conten": "經濟部為執行疫後強化經濟與社會韌性及全民共享經濟成果特別條例，經濟部推動產業及中小企業升級轉型辦法，辦理資金協助，推動中小企業朝低碳化、智慧化， 與納管工廠及特定工廠符合環境保護及公共安全相關要求邁向合法化經營之目的。",
+        "Link": "https://0800056476.sme.gov.tw/plus/index.php",
+        "Target": 1,
+        "Alert": "連結至:低碳智慧納管貸款(另開新視窗)"
+      },
+      {
+        "Title": "商業服務業智慧減碳補助 ",
+        "Memo": "受理期間自即日起至112年11月30日或經費用罄之日止",
+        "Conten": "業服務業智慧減碳補助分成「單一」及「整合」服務應用二類，「單一服務應用類」補助上限為30萬元，整合服務應用類補助上限為150萬元。商業司進一步說明，如果店家應用智慧工具較單純，可以申請單一服務類，例如導入「數位行銷應用」，以APP或數位社群強化與消費者的互動，取代原有的紙本傳單，從節省的廣告紙張減少碳排放，至於須整合多項智慧工具的業者，可申請整合服務應用類補助。",
+        "Link": "https://serv.gcis.nat.gov.tw/BIGS/",
+        "Target": 1,
+        "Alert": "連結至:低碳智慧納管貸款(另開新視窗)"
+      },
+      {
+        "Title": "低碳及智慧化升級轉型補助作業(中小型製造業(經常僱用員工數9人以下))",
+        "Memo": " 自公告日起至 112 年 12 月 20 日 \n 或補助經費用罄之日",
+        "Conten": "為依「疫後強化經濟與社會韌性及全民共享經濟成果特別條例」第 3 條第 5 款及\n「經濟部推動產業及中小企業升級轉型辦法」(以下簡稱本辦法) 第 5 條規定，補助個別製造業(經常僱用員工數 9 人以下)加速導入相關技術、設備及管理機制，朝向低碳化及智慧化升級轉型，提升我國產業競爭力及經濟韌性，特訂定本須知，以執行補助作業。",
+        "Link": "https://www.sbir.org.tw/",
+        "Target": 1,
+        "Alert": "連結至:低碳及智慧化升級轉型補助作業(另開新視窗)"
+      },
+      {
+        "Title": "低碳及智慧化升級轉型補助作業(中小型製造業(經常僱用員工數 10 人以上) ",
+        "Memo": " 自公告日起至 112 年 11月 30 日  \n 或補助經費用罄之日",
+        "Conten": "為依「疫後強化經濟與社會韌性及全民共享經濟成果特別條例」第 3 條第 5款及「經濟部推動產業及中小企業升級轉型辦法」(下稱本辦法)第 5 條規定，補助個別製造業(經常僱用員工數 10 人以上)加速導入低碳化、智慧化相關技術、設備及管理機制，朝向低碳化及智慧化升級轉型，進而提升我國產業競爭力及經濟韌性，特訂定本須知，以執行補助作業。",
+        "Link": "https://www.citd.moeaidb.gov.tw/CITDWeb/Web/Detail.aspx?p=9a437de9-66da-4a22-9a1a-067085181112",
+        "Target": 1,
+        "Alert": "連結至:低碳及智慧化升級轉型補助作業中小型製造業(另開新視窗)"
+      },
+      {
+        "Title": "經濟部中小及新創企業署小型企業創新研發計畫(SBIR)",
+        "Memo": "採隨到隨受理方式",
+        "Conten": "本計畫之推動，旨在帶動國內中小企業創新研發活動，協助其知識布局培育研發人才，並期望運用研發成果扶植產業體系，促進臺灣經濟發展。 ",
+        "Link": "https://www.sbir.org.tw/",
+        "Target": 1,
+        "Alert": "連結至:低碳及智慧化升級轉型補助作業(另開新視窗)"
+      }
+    ]
+  },
+  "Footer": {
+    "Line": {
+      "Icon": { "Class": "fa-brands fa-line" },
+      "Link": "https://line.me/R/ti/p/@998dalcj",
+      "Alert": "連結至:科技產業園區產學供需平臺(另開新視窗)"
+    },
+    "Home": {
+      "icon": { "Class": "fas fa-house" },
+      "Link": "/eplus/",
+      "Alert": "連結至: E++產業服務平台"
+    },
+    "Conten": ["經濟部產業園區管理局 版權所有 © 2023 BIP ALL Rights Reserved"]
+  }
+}
 }

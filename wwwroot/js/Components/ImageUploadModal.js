@@ -68,7 +68,7 @@ function ImageUploadModalDataInsert($select, id, link, name) {
 
 function ImageSetData($select, file) {
     var isSingle = $select.data("issinge");
-    var needCompress = $select.data("needcompress")
+    var needCompress = $select.data("needcompress");
 
     if (file != null && isSingle) var input_frame = $select.find(".img_input");
     else if ($select.hasClass("img_input")) var input_frame = $select;
