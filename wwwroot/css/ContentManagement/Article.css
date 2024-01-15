@@ -39,6 +39,9 @@ input[type="number"] {
 #ArticleContent > form .count::after {
     content: '/300';
 }
+#ArticleContent > form .count.l-150::after {
+    content: '/150';
+}
 
 #ArticleContent > form > .sort > input {
     padding-left: 5.25rem;
