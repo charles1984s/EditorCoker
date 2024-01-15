@@ -311,7 +311,6 @@ function FormDataClear() {
     TagInitSet(initTag_list);
     pop_visible = false;
     disp_opt = false;
-    console.log($form.find(".part"));
     $form.find(".part").remove();
     $form.set(initJson());
 }
@@ -323,8 +322,6 @@ function FormDataSet(result) {
             ImageUploadModalDataInsert($("#ImageUpload"), file[0].id, file[0].link, file[0].name)
     });
     keyId = result.id;
-    $form.set(initJson());
-
     if (result.visible) {
         $btn_display.children("span").text("visibility");
     }
@@ -365,7 +362,9 @@ function FormDataSet(result) {
         $nodeDate.data('daterangepicker').setEndDate(result.nodeDate);
     }
     TagDataSet(result.tagDatas);
-
+    //載入並設定資料
+    $form.find(".part").remove();
+    $form.set(initJson());
 }
 
 function paletteButtonClicked(e) {

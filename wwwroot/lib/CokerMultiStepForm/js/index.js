@@ -60,7 +60,7 @@ $.fn.extend({
                 const $self = $(this);
                 switch ($self.data("key")) {
                     case "main":
-                        $self.find(".title textarea").text(json.title);
+                        $self.find(".title textarea").val(json.Title);
                         $self.find(".no input").val(json.no);
                         json.LogoImage.File = null;
                         ImageSetData($self.find(".image_upload"), json.LogoImage);
@@ -105,9 +105,9 @@ $.fn.extend({
                                 }, 100);
                             }
                             if (!!con.mainTitle)
-                                $self.find(".title textarea").text(con.mainTitle);
-                            if (!!con.mainTitle)
-                                $self.find(".subTitle textarea").text(con.Title);
+                                $self.find(".mainTitle textarea").text(con.mainTitle);
+                            if (!!con.Title)
+                                $self.find(".title textarea").text(con.Title);
                             if (!!con.Line) {
                                 $self.find(`.line [name="link"]`).val(con.Line.Link);
                                 $self.find(`.line [name="alert"]`).val(con.Line.Alert);
