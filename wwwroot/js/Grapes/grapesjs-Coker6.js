@@ -568,6 +568,27 @@
             }
         },
     });
+    const textType = editor.DomComponents.getType("text");
+    //文字
+    editor.DomComponents.addType('span', {
+        // Define the Model
+        model: textType.model.extend({},
+            {
+                isComponent(el) {
+                    if (el.tagName === 'SPAN') {
+                        return {
+                            type: 'span',
+                            src: el.src,
+                            tagName: el.tagName.toLowerCase(),
+                            content: el.innerHTML,
+                            editable: true
+
+                        }
+                    }
+                }
+            }),
+        view: textType.view
+    });
     //關閉所有元件分類夾，僅開啟一個
     var blockControl = function () {
         $(categories.models).each(function (index, category) {
