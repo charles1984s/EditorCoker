@@ -258,6 +258,32 @@ var Coker = {
                         $('input:hidden[name="AntiforgeryFieldname"]').val());
                 }
             });
+        }, UpdateJson: function (data) {
+            return $.ajax({
+                url: "/api/Newsletter/UpdateJson",
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify(data),
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("requestverificationtoken",
+                        $('input:hidden[name="AntiforgeryFieldname"]').val());
+                }
+            });
+        }, SaveConten: function (data) {
+            return $.ajax({
+                url: "/api/Newsletter/SaveConten",
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                data: JSON.stringify(data),
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("requestverificationtoken",
+                        $('input:hidden[name="AntiforgeryFieldname"]').val());
+                }
+            });
         }
     },
     PowerManagement: {
@@ -786,6 +812,18 @@ var Coker = {
         }, GetNewsletterConten: function () {
             return $.ajax({
                 url: "/api/ObjectType/GetNewsletterConten",
+                type: "Post",
+                contentType: 'application/json; charset=utf-8',
+                headers: _c.Data.Header,
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("requestverificationtoken",
+                        $('input:hidden[name="AntiforgeryFieldname"]').val());
+                }
+            });
+        }, GetNewsletterAllConten: function () {
+            return $.ajax({
+                url: "/api/ObjectType/GetNewsletterAllConten",
                 type: "Post",
                 contentType: 'application/json; charset=utf-8',
                 headers: _c.Data.Header,
@@ -1650,6 +1688,10 @@ var Coker = {
         isNullOrEmpty: function (str) {
             if (typeof (str) == "undefined" || str == null || str.trim() == "") return true;
             else return false;
+        },
+        getWeekNumber: function (i) {
+            const characters = "一二三四五六日";
+            return characters.charAt(i-1);
         }
     }, Grapes: {
         setEditor: (editor,html,css) => {

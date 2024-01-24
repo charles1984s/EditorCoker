@@ -577,7 +577,7 @@
                 isComponent(el) {
                     if (el.tagName === 'SPAN') {
                         return {
-                            type: 'span',
+                            type: 'text',
                             src: el.src,
                             tagName: el.tagName.toLowerCase(),
                             content: el.innerHTML,

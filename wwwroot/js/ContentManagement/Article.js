@@ -360,7 +360,7 @@ function AddUp(success_text, error_text, place) {
         RemovedFromShelves:$removedFromShelves.is(":checked") ? false : true
     }).done(function (result) {
         if (result.success) {
-            if ($("#ImageUpload .img_input").data("file") != null && $("#ImageUpload .img_input").data("file").File != null && $("#ImageUpload .img_input").data("file").Id == 0) {
+            if ($("#ImageUpload .img_input").data("file") != null && $("#ImageUpload .img_input").data("file").File != null && $("#ImageUpload .img_input").data("file").id == 0) {
                 var formData = new FormData();
                 formData.append("files", $("#ImageUpload .img_input").data("file").File);
                 formData.append("type", 6);

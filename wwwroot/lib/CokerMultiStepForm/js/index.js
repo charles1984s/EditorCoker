@@ -10,7 +10,7 @@ $.fn.extend({
             if ($top.length == 0 || $top.is($self)) {
                 const key = $item.attr("name") || $item.data("name") || $item.attr("id");
                 if ($item.hasClass("list")) {
-                    if (!!key && key.indexOf("devexplress") < 0) obj[key] = $item.data("component").option("dataSource");
+                    if (!!key && key.indexOf("devextreme") < 0) obj[key] = $item.data("component").option("dataSource");
                     else obj = $item.data("component").option("dataSource");
                 } else if ($item.attr("type") == "checkbox") {
                     obj[key] = $item.prop("checked");
@@ -80,6 +80,10 @@ $.fn.extend({
             var progress = Math.round((data.completedSteps / data.totalSteps) * 100);
             $(".progress-bar").css("width", progress + "%").attr('aria-valuenow', progress);
         });
+        $self.initPage = function () {
+            settings.activeIndex = 0;
+            changeView();
+        };
         $self.getJson = function () {
             const json = {};
             $conten.each(function () {
@@ -100,10 +104,17 @@ $.fn.extend({
                 const $self = $(this);
                 switch ($self.data("key")) {
                     case "main":
-                        $self.find(".title textarea").val(json.Title);
+                        $self.find(".title textarea").val(json.title);
                         $self.find(".no input").val(json.no);
-                        json.LogoImage.File = null;
-                        ImageSetData($self.find(".image_upload").data("path", json.LogoImage), json.LogoImage);
+                        $self.find(".BGColor input").val(json.bgColor); 
+                        if (!!json.logo) {
+                            json.logo.File = null;
+                            ImageSetData($self.find(`.image_upload[data-name="Logo"]`).data("path", json.logo), json.logo);
+                        } else $self.find(`.image_upload[data-name="Logo"]`).data("path", "");
+                        if (!!json.logoCompress) {
+                            json.logoCompress.File = null;
+                            ImageSetData($self.find(`.image_upload[data-name="LogoCompress"]`).data("path", json.logoCompress), json.logoCompress);
+                        } else $self.find(`.image_upload[data-name="LogoCompress"]`).data("path", "");
                         break;
                     case "mainManu":
                         const timmer = setInterval(function () {
@@ -117,50 +128,46 @@ $.fn.extend({
                     default:
                         if (!!json[$self.data("key")]) {
                             var con = json[$self.data("key")]
-                            if (!!con.Conten && con.Conten.length > 0) {
-                                const $ele = $self.find(".add-items");
-                                if ($ele.length > 0) {
-                                    $(con.Conten).each(function () {
-                                        $ele.data("palameter", { text: this });
-                                        $ele.trigger("click");
-                                        $ele.removeData("palameter");
-                                    });
-                                } else if (con.Conten.length == 1) {
-                                    $self.find(".conten textarea").text(con.Conten[0]);
-                                }
+                            if (!!con.conten)
+                                $self.find(".conten textarea").text(con.conten);
+                            if (!!con.more) {
+                                $self.find(`[name="title"]`).val(con.more.title);
+                                $self.find(`[name="link"]`).val(con.more.link);
+                                $self.find(`[name="target"]`).prop("checked", con.more.target == 1);
+                                $self.find(`[name="alert"]`).val(con.more.alert);
                             }
-                            if (!!con.More) {
-                                $self.find(`[name="title"]`).val(con.More.Title);
-                                $self.find(`[name="link"]`).val(con.More.Link);
-                                $self.find(`[name="target"]`).prop("checked", con.More.Target == 1);
-                                $self.find(`[name="alert"]`).val(con.More.Alert);
-                            }
-                            if (!!con.List && $self.find(".dx-widget").length > 0) {
+                            if (!!con.list && $self.find(".dx-widget").length > 0) {
                                 const timmer = setInterval(function () {
                                     const component = $self.find(".dx-widget").data("component");
                                     if (!!component) {
-                                        $self.find(".dx-widget").data("component").option("dataSource", con.List);
+                                        $self.find(".dx-widget").data("component").option("dataSource", con.list);
                                         clearInterval(timmer);
                                     }
                                 }, 100);
                             }
                             if (!!con.mainTitle)
                                 $self.find(".mainTitle textarea").text(con.mainTitle);
-                            if (!!con.Title)
-                                $self.find(".title textarea").val(con.Title);
-                            if (!!con.Visible)
-                                $self.find(`[name="Visible"]`).prop("checked", con.Visible);
-                            if (!!con.Line) {
-                                $self.find(`.line [name="link"]`).val(con.Line.Link);
-                                $self.find(`.line [name="alert"]`).val(con.Line.Alert);
-                            } if (!!con.Home) {
-                                $self.find(`.home [name="link"]`).val(con.Home.Link);
-                                $self.find(`.home [name="alert"]`).val(con.Home.Alert);
+                            if (!!con.title)
+                                $self.find(".title textarea").val(con.title);
+                            if (!!con.visible)
+                                $self.find(`[name="Visible"]`).prop("checked", con.visible);
+                            if (!!con.line) {
+                                $self.find(`.line [name="link"]`).val(con.line.link);
+                                $self.find(`.line [name="alert"]`).val(con.line.alert);
                             }
-                            if (!!con.img)
-                                ImageSetData($self.find(".image_upload:not(.ico)").data("path", json.LogoImage), con.img);
-                            if (!!con.icon)
-                                ImageSetData($self.find(".image_upload.ico").data("path", json.LogoImage), con.icon);
+                            if (!!con.home) {
+                                $self.find(`.home [name="link"]`).val(con.home.link);
+                                $self.find(`.home [name="alert"]`).val(con.home.alert);
+                            }
+                            if (!!con.image) ImageSetData($self.find(`.image_upload[data-name="image"]`).data("path", con.image), con.image);
+                            else $self.find(`.image_upload[data-name="image"]`).data("path", "");
+                            if (!!con.imageCompress) ImageSetData($self.find(`.image_upload[data-name="imageCompress"]`).data("path", con.imageCompress), con.imageCompress);
+                            else $self.find(`.image_upload[data-name="imageCompress"]`).data("path", "");
+
+                            if (!!con.icon) ImageSetData($self.find(`.image_upload[data-name="icon"]`).data("path", con.icon), con.icon);
+                            else $self.find(`.image_upload[data-name="icon"]`).data("path", "")
+                            if (!!con.iconCompress) ImageSetData($self.find(`.image_upload[data-name="iconCompress"]`).data("path", con.iconCompress), con.iconCompress);
+                            else $self.find(`.image_upload[data-name="iconCompress"]`).data("path", "")
                         }
                         break;
                 }
