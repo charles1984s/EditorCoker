@@ -149,7 +149,7 @@ $.fn.extend({
                                 $self.find(".mainTitle textarea").text(con.mainTitle);
                             if (!!con.title)
                                 $self.find(".title textarea").val(con.title);
-                            if (!!con.visible)
+                            if ($self.find(`[name="Visible"]`).length>0)
                                 $self.find(`[name="Visible"]`).prop("checked", con.visible);
                             if (!!con.line) {
                                 $self.find(`.line [name="link"]`).val(con.line.link);
