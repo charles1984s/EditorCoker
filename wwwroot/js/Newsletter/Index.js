@@ -622,7 +622,7 @@ $.fn.extend({
                 $item.setLink(element);
                 $item.appendTo($conten3List);
             });
-            $self.find("#linkMore").setLink({ alert: "連結至：完整資訊", target: true, link: `https://www.ivsr.org.tw/eplus/newsletter/article/${keyId}` });
+            $self.find("#linkMore").setLink({ alert: "連結至：完整資訊", target: true, link: `/eplus/newsletter/article/${keyId}` });
         } else $self.find("#Resource").remove();
         //footer
         const $footer = $self.find("#footer");
