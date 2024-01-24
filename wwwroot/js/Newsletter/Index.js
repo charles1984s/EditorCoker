@@ -348,11 +348,11 @@ function deleteButtonClicked(e) {
 function AddUp(success_text, error_text, place) {
     $(".image_upload").each(function () {
         const selt = this;
-        if ($(this).find(".img_input_frame").data("delectList") != null) {
+        if ($(selt).find(".img_input_frame").data("delectList") != null) {
             co.File.DeleteFileById({
                 Sid: keyId,
                 Type: 6,
-                Fid: $(this).data("delectList")
+                Fid: $(selt).data("delectList")
             }).done(function (result) {
                 if (result.success) $(selt).data("path", "");
             });
@@ -428,8 +428,7 @@ function AddUp(success_text, error_text, place) {
 function setNewsletter(data) {
     var list = [];
     let web = $(co.Data.HtmlDecode(AllPageData[1].html));
-    let email = $(co.Data.HtmlDecode(AllPageData[0].html));
-    
+    let email = $("<div>").append(co.Data.HtmlDecode(AllPageData[0].html));
     $(web).setWebHtml(data);
     $(email).setEmailHtml(data);
 
@@ -439,7 +438,7 @@ function setNewsletter(data) {
     AllPageData[1].css = AllPageData[1].css.replace("background-color:#2959b4;", `background-color: ${data.BGColor};`)
     AllPageData[1].saveHtml = co.Data.HtmlEncode(`<body>${$("<div>").append(web).html()}</body>`);
     AllPageData[1].saveCss = AllPageData[1].css;
-    AllPageData[0].html = co.Data.HtmlEncode(`<body>${$("<div>").append(email).html()}</body>`);
+    AllPageData[0].html = co.Data.HtmlEncode(`<body>${$(email).html()}</body>`);
     list.push(co.Articles.ImportConten(AllPageData[1]));
     list.push(co.Newsletter.SaveConten(AllPageData[0]));
     return $.when.apply(null, list)
@@ -566,7 +565,7 @@ $.fn.extend({
         $self.find("#NO").text(`No.${data.No}`);
         $self.find("#headerTitle").html(`${data.Title.replace(/\n/g, "<br />")}`);
         //主選單
-        const $mainManu = $self.find("#navbarNav table>tbody");
+        const $mainManu = $self.find("#navbarNav table>tbody>tr");
         $mainManu.data("templ", $mainManu.html()).empty();
         $(data.mainManu).each(function () {
             const $item = $($mainManu.data("templ"));
@@ -596,9 +595,10 @@ $.fn.extend({
             $active.find(".title").html(`${data.active.Title.replace(/\n/g, "<br />")}`);
             const $activeList = $active.find(".items");
             $activeList.data("templ", $activeList.html()).empty();
-            $(data.active.List).each(function () {
+            $(data.active.List).each(function (index, element) {
+                if (index >= 2) return;
                 const $item = $($activeList.data("templ"));
-                $item.find("a").setLink(this);
+                $item.find("a").setLink(element);
                 $item.appendTo($activeList);
             });
         } else $self.find("#active").remove();
@@ -613,12 +613,13 @@ $.fn.extend({
         //conten3
         if (data.conten3.Visible) {
             const $conten3 = $self.find("#Resource");
-            const $conten3List = $conten3.find(".items");
+            const $conten3List = $conten3.find(".items table>tbody");
             $conten3.find(".image").attr({ src: data.conten3.image.path });
             $conten3List.data("templ", $conten3List.html()).empty();
-            $(data.conten3.List).each(function () {
+            $(data.conten3.List).each(function (index, element) {
+                if (index >= 3) return;
                 const $item = $($conten3List.data("templ"));
-                $item.setLink(this);
+                $item.setLink(element);
                 $item.appendTo($conten3List);
             });
             $self.find("#linkMore").setLink({ alert: "連結至：完整資訊", target: true, link: `https://www.ivsr.org.tw/eplus/newsletter/article/${keyId}` });
