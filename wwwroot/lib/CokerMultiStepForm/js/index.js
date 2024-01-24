@@ -110,12 +110,12 @@ $.fn.extend({
                         if (!!json.logo) {
                             json.logo.File = null;
                             ImageSetData($self.find(`.image_upload[data-name="Logo"]`).data("path", json.logo), json.logo);
-                            $(selt).find(`.image_upload[data-name="Logo"] .img_input_frame`).data("delectList");
+                            $self.find(`.image_upload[data-name="Logo"] .img_input_frame`).data("delectList");
                         } else $self.find(`.image_upload[data-name="Logo"]`).data("path", "");
                         if (!!json.logoCompress) {
                             json.logoCompress.File = null;
                             ImageSetData($self.find(`.image_upload[data-name="LogoCompress"]`).data("path", json.logoCompress), json.logoCompress);
-                            $(selt).find(`.image_upload[data-name="LogoCompress"] .img_input_frame`).data("delectList");
+                            $self.find(`.image_upload[data-name="LogoCompress"] .img_input_frame`).data("delectList");
                         } else $self.find(`.image_upload[data-name="LogoCompress"]`).data("path", "");
                         break;
                     case "mainManu":
@@ -170,8 +170,8 @@ $.fn.extend({
                             else $self.find(`.image_upload[data-name="icon"]`).data("path", "")
                             if (!!con.iconCompress) ImageSetData($self.find(`.image_upload[data-name="iconCompress"]`).data("path", con.iconCompress), con.iconCompress);
                             else $self.find(`.image_upload[data-name="iconCompress"]`).data("path", "")
-                            $(selt).find(`.image_upload[data-name="icon"] .img_input_frame`).data("delectList");
-                            $(selt).find(`.image_upload[data-name="iconCompress"] .img_input_frame`).data("delectList");
+                            $self.find(`.image_upload[data-name="icon"] .img_input_frame`).data("delectList");
+                            $self.find(`.image_upload[data-name="iconCompress"] .img_input_frame`).data("delectList");
                         }
                         break;
                 }
