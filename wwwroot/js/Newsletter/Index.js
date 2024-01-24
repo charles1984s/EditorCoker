@@ -605,8 +605,8 @@ $.fn.extend({
         //conten2
         if (data.conten2.Visible) {
             const $conten2 = $self.find("#subport");
-            $conten2.find(".icon").attr({ src: data.conten2.icon.path });
-            $conten2.find(".image").attr({ src: data.conten2.image.path });
+            $conten2.find(".icon").attr({ src: data.conten2.iconCompress.path });
+            $conten2.find(".image").attr({ src: data.conten2.imageCompress.path });
             $conten2.find(".mainTitle").html(`${data.conten2.mainTitle.replace(/\n/g, "<br />")}`);
             $conten2.find(".title").html(`${data.conten2.Title.replace(/\n/g, "<br />")}`);
         } else $self.find("#subport").remove();
