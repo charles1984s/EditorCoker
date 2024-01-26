@@ -22,12 +22,10 @@ var ImageUploadModalInit = ImageUploadModalClear;
 function ImageDelect($select) {
     var $img_btn = $select.find(".btn_input_pic");
     if ($img_btn.hasClass("has_image")) {
-        console.log($select.data("file"));
         if ($select.data("file").id > 0) {
             var delect_list = [];
             if (typeof ($select.parent(".img_input_frame").data("delectList")) != "undefined" && $select.parent(".img_input_frame").data("delectList") != null) delect_list = $select.parent(".img_input_frame").data("delectList");
             delect_list.push($select.data("file").id);
-            console.log(delect_list);
             $select.parent(".img_input_frame").data("delectList", delect_list);
         }
         ImageClear($select);
