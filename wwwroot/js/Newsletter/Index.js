@@ -348,11 +348,12 @@ function deleteButtonClicked(e) {
 function AddUp(success_text, error_text, place) {
     $(".image_upload").each(function () {
         const selt = this;
-        if ($(selt).find(".img_input_frame").data("delectList") != null) {
+        const $input = $(selt).find(".img_input_frame");
+        if ($input.data("delectList") != null) {
             co.File.DeleteFileById({
                 Sid: keyId,
                 Type: 6,
-                Fid: $(selt).data("delectList")
+                Fid: $input.data("delectList")
             }).done(function (result) {
                 if (result.success) $(selt).data("path", "");
             });
@@ -497,7 +498,7 @@ $.fn.extend({
         $self.find("#headerTitle").html(`${data.Title.replace(/\n/g, "<br />")}`);
         //主選單
         const $mainManu = $self.find("#navbarNav>ul");
-        $mainManu.data("templ", $mainManu.html()).empty();
+        if (!!!$mainManu.data("templ")) $mainManu.data("templ", $mainManu.html()).empty();
         $(data.mainManu).each(function () {
             const $item = $($mainManu.data("templ"));
             $item.find("a").setLink(this);
@@ -512,7 +513,7 @@ $.fn.extend({
         if (data.news.Visible) {
             $self.find("#NewsImage").attr({ src: data.news.image.path });
             const $newsList = $self.find("#NewsList");
-            $newsList.data("templ", $newsList.html()).empty();
+            if (!!!$newsList.data("templ")) $newsList.data("templ", $newsList.html()).empty();
             $(data.news.List).each(function () {
                 const $item = $($newsList.data("templ"));
                 $item.find("a").setLink(this);
@@ -524,7 +525,7 @@ $.fn.extend({
             const $active = $self.find("#active");
             $active.find(".title").html(`${data.active.Title.replace(/\n/g, "<br />")}`);
             const $activeList = $active.find(".items");
-            $activeList.data("templ", $activeList.html()).empty();
+            if (!!!$activeList.data("templ")) $activeList.data("templ", $activeList.html()).empty();
             $(data.active.List).each(function () {
                 const $item = $($activeList.data("templ"));
                 $item.find("a").setLink(this);
@@ -546,7 +547,7 @@ $.fn.extend({
             $conten3.find(".mainTitle").html(`${data.conten3.mainTitle.replace(/\n/g, "<br />")}`);
             $conten3.find(".title").html(`${data.conten3.Title.replace(/\n/g, "<br />")}`);
             const $conten3List = $conten3.find(".items");
-            $conten3List.data("templ", $conten3List.html()).empty();
+            if (!!!$conten3List.data("templ")) $conten3List.data("templ", $conten3List.html()).empty();
             $(data.conten3.List).each(function () {
                 const $item = $($conten3List.data("templ"));
                 $item.setLink(this);
@@ -566,7 +567,7 @@ $.fn.extend({
         $self.find("#headerTitle").html(`${data.Title.replace(/\n/g, "<br />")}`);
         //主選單
         const $mainManu = $self.find("#navbarNav table>tbody>tr");
-        $mainManu.data("templ", $mainManu.html()).empty();
+        if (!!!$mainManu.data("templ")) $mainManu.data("templ", $mainManu.html()).empty();
         $(data.mainManu).each(function () {
             const $item = $($mainManu.data("templ"));
             $item.find("a").setLink(this);
@@ -581,7 +582,7 @@ $.fn.extend({
         if (data.news.Visible) {
             $self.find("#NewsImage").attr({ src: data.news.image.path });
             const $newsList = $self.find("#NewsList");
-            $newsList.data("templ", $newsList.html()).empty();
+            if (!!!$newsList.data("templ")) $newsList.data("templ", $newsList.html()).empty();
             $(data.news.List).each(function (index, element) {
                 if (index >= 4) return;
                 const $item = $($newsList.data("templ"));
@@ -594,7 +595,7 @@ $.fn.extend({
             const $active = $self.find("#active");
             $active.find(".title").html(`${data.active.Title.replace(/\n/g, "<br />")}`);
             const $activeList = $active.find(".items");
-            $activeList.data("templ", $activeList.html()).empty();
+            if (!!!$activeList.data("templ")) $activeList.data("templ", $activeList.html()).empty();
             $(data.active.List).each(function (index, element) {
                 if (index >= 2) return;
                 const $item = $($activeList.data("templ"));
@@ -615,7 +616,7 @@ $.fn.extend({
             const $conten3 = $self.find("#Resource");
             const $conten3List = $conten3.find(".items table>tbody");
             $conten3.find(".image").attr({ src: data.conten3.image.path });
-            $conten3List.data("templ", $conten3List.html()).empty();
+            if (!!!$conten3List.data("templ")) $conten3List.data("templ", $conten3List.html()).empty();
             $(data.conten3.List).each(function (index, element) {
                 if (index >= 3) return;
                 const $item = $($conten3List.data("templ"));
