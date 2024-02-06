@@ -69,9 +69,9 @@
                 viewItem.attr({ id: `${self.pageName}_view`, name: `${self.pageName}_view` }).data({ "name": `${self.pageName}.View` }).prop("checked", self.canVisble);
                 viewItem.on("change", function () {
                     if (!$(this).prop("checked")) {
-                        editItem.prop("checked", false).trigger('change');
-                        delItem.prop("checked", false).trigger('change');
-                        newItem.prop("checked", false).trigger('change');
+                        editItem.prop("checked") && editItem.prop("checked", false).trigger('change');
+                        delItem.prop("checked") && delItem.prop("checked", false).trigger('change');
+                        newItem.prop("checked") && newItem.prop("checked", false).trigger('change');
                     }
                 });
                 $item.appendTo($body);
@@ -240,6 +240,7 @@
             co.PowerManagement.RemoveUserToRole({ Users: removeitems, RoleId: $Role.data("id") }).done((result) => {
                 if (result.success) {
                     $(moveItems).each(function () {
+                        co.Array.Delete($Role.data("members"), $(this).data());
                         $(this).appendTo("#noGroupMember");
                         $(this).removeClass("checked");
                     });
