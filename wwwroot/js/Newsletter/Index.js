@@ -16,7 +16,8 @@ function PageReady() {
                 return $(c).text();
             }
             const data = {
-                title: $(html).find("#headerTitle").text(),
+                Id: $("#gjs").data("id"),
+                Title: $(html).find("#headerTitle").text(),
                 Conten1Title: $(html).find("#Conten1Title").text(),
                 Conten1Conten: contenText($(html).find("#Conten1Conten")),
                 Conten2MainTitle: contenText($(html).find("#support .mainTitle")),
