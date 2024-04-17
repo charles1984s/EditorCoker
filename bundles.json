@@ -17,6 +17,7 @@
         "wwwroot/js/CokerCore/Directory.js",
         "wwwroot/js/CokerCore/Articles.js",
         "wwwroot/js/CokerCore/Company.js",
+        "wwwroot/js/CokerCore/Contact.js",
         "wwwroot/js/CokerCore/File.js",
         "wwwroot/js/CokerCore/Form.js",
         "wwwroot/js/CokerCore/HtmlContent.js",
