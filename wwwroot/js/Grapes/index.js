@@ -3,6 +3,28 @@
  * obj.import 內容發布
  ****************************************/
 var grapesInit = function (options) {
+    const insertData = {
+        css: [
+            '/lib/bootstrap/dist/css/bootstrap.min.css',
+            '/lib/swiper/swiper-bundle.min.css',
+            '/lib/fortawesome/css/all.min.css',
+            '/css/Grapes/GrapesCss.min.css',
+            'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200',
+            '/Shared/shared.min.css',
+            `/Layout/Default_Site.css`
+        ],
+        js: [
+            '/lib/jquery/dist/jquery.min.js',
+            '/lib/bootstrap/dist/js/bootstrap.bundle.min.js',
+            '/lib/swiper/swiper-bundle.min.js',
+            '/lib/masonry-layout/dist/masonry.pkgd.min.js',
+            '/lib/jquery-plugin-c-share/dist/jquery.c-share.min.js',
+            '/Shared/shared.min.js',
+        ]
+    }
+    if (typeof (frameLevel) != "undefined" && frameLevel != null && frameLevel != 0) {
+        insertData.css.push(`/Layout/Layout_${frameLevel}_Site.min.css`);
+    }
     var editor = grapesjs.init({
         showOffsets: 1,
         noticeOnUnload: 0,
@@ -224,22 +246,8 @@ var grapesInit = function (options) {
             }
         },
         canvas: {
-            styles: [
-                '/lib/bootstrap/dist/css/bootstrap.min.css',
-                '/lib/swiper/swiper-bundle.min.css',
-                '/lib/fortawesome/css/all.min.css',
-                '/css/Grapes/GrapesCss.min.css',
-                'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200',
-                '/Shared/shared.min.css',
-            ],
-            scripts: [
-                '/lib/jquery/dist/jquery.min.js',
-                '/lib/bootstrap/dist/js/bootstrap.bundle.min.js',
-                '/lib/swiper/swiper-bundle.min.js',
-                '/lib/masonry-layout/dist/masonry.pkgd.min.js',
-                '/lib/jquery-plugin-c-share/dist/jquery.c-share.min.js',
-                '/Shared/shared.min.js',
-            ],
+            styles: insertData.css,
+            scripts: insertData.js,
         },
         domComponents: {
             processor: (obj) => {
