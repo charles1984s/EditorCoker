@@ -255,8 +255,13 @@ var grapesInit = function (options) {
                     const iframe = document.getElementsByClassName("gjs-frame")[0].contentWindow;
                     const isrun = false;
                     let timer = null;
+                    if (typeof (iframe.local) == "undefined") {
+                        co.i18.getAll().done(function (result) {
+                            iframe.local = result;
+                        });
+                    }
                     const init = function () {
-                        if (typeof(iframe.jqueryExtend) != "undefined" ) iframe.jqueryExtend();
+                        if (typeof (iframe.jqueryExtend) != "undefined" && typeof (iframe.local) != "undefined" ) iframe.jqueryExtend();
                         else timer = setTimeout(init, 100);
                     }
                     timer = setTimeout(init, 100);
