@@ -1,6 +1,6 @@
-﻿var $btn_display, $name, $name_count, $introduction, $introduction_count, $illustrate, $illustrate_count,
+﻿var $display, $removedFromShelves, $name, $name_count, $introduction, $introduction_count, $illustrate, $illustrate_count,
     $marks, $price, $subItemNo, $stock_number, $alert_number, $min_number, $date, $picker, $permanent, $itemNo, $itemNo_count;
-var startDate, endDate, keyId, disp_opt = true, price_tid, temp_psid
+var startDate, endDate, keyId, price_tid, temp_psid
 var product_list, spec_num = 0, spec_price_num = 0, spec_remove_list = [], modal_price_list = [], spec_pick_list
 var $price_modal, priceModal
 var total_files = [];
@@ -157,15 +157,7 @@ function PageReady() {
         event.preventDefault();
         $(".input_pic").click();
     })
-    $btn_display.on("click", function () {
-        if (disp_opt) {
-            $btn_display.children("span").text("visibility_off");
-            disp_opt = !disp_opt;
-        } else {
-            $btn_display.children("span").text("visibility");
-            disp_opt = !disp_opt;
-        }
-    })
+
     $(".btn_expand_out").on("click", function () {
         var $self = $(this);
         if ($self.children("span").text() == "expand_less") {
@@ -233,7 +225,6 @@ function PageReady() {
 }
 
 function ElementInit() {
-    $btn_display = $("#Btn_Display");
     $name = $("#InputName");
     $name_count = $("#ProductForm > .name .name_count");
     $introduction = $("#InputIntroduction");
@@ -251,6 +242,8 @@ function ElementInit() {
     $permanent = $("#PermanentCheck");
     $itemNo = $("#InputItemNo");
     $itemNo_count = $("#ProductForm > .itemNo .itemNo_count");
+    $display = $(`#ProductForm [name="Visible"]`);
+    $removedFromShelves = $(`#ProductForm [name="RemovedFromShelves"]`);
 
     priceModal = new bootstrap.Modal(document.getElementById('PriceModal'))
     $price_modal = $("#PriceModal >.modal-dialog > .modal-content > .modal-body >.price_option");
@@ -285,8 +278,8 @@ function FormDataClear() {
     })
     spec_num = 0;
     keyId = 0;
-    $btn_display.children("span").text("visibility");
-    disp_opt = true;
+    $removedFromShelves.prop("checked", false);
+    $display.prop("checked", false);
     $name.val("");
     $name_count.text(0);
     $itemNo.val("");
@@ -419,8 +412,8 @@ function FormDataSet(result) {
     endDate = result.endTime;
     keyId = result.id;
     disp_opt = result.disp_Opt;
-    $btn_display.children("span").text(result.disp_Opt ? "visibility" : "visibility_off");
-
+    $removedFromShelves.prop("checked", !result.removedFromShelves)
+    $display.prop("checked", result.visible);
     $name.val(result.title);
     $name_count.text($name.val().length);
     $itemNo.val(result.itemNo);
@@ -797,7 +790,7 @@ function UploadListAdd(result,$target) {
     var item_serno = item.find(".ser_no"),
         item_btn_remove = item.find(".btn_remove");
 
-    var file_num = $target.data("file_num");
+    var file_num = $target.find("ul > li").length - 1;
     if (typeof (file_num) == "undefined") file_num = 0;
     if (result == null) {
         $target.find("ul > li").each(function () {
@@ -821,7 +814,6 @@ function UploadListAdd(result,$target) {
             co.File.ListFile($(this));
         })
     } else if (typeof (result.id) == "undefined") {
-        file_num += 1;
         item.data("tempid", result.TempId);
         item.data("serno", file_num);
         item_serno.val(file_num);
@@ -979,12 +971,12 @@ function AddUp(success_text, error_text, target) {
 
         stock_addup_list.push(obj);
     })
-
     co.Product.AddUp.Product({
         Id: keyId,
         Title: $name.val(),
         ItemNo: $itemNo.val(),
-        Visible: disp_opt,
+        Visible: $display.is(":checked"),
+        RemovedFromShelves: !$removedFromShelves.is(":checked"),
         Ser_No: 500,
         Introduction: $introduction.val(),
         Description: $illustrate.val(),
@@ -1074,6 +1066,20 @@ function AddUp(success_text, error_text, target) {
                                     SerNo: $self.find(".ser_no").val(),
                                 });
                                 break;
+                            case 5:
+                                if (typeof (data[0]["File"]) == "string") {
+                                    co.File.fileSortChange({
+                                        Id: data[0]["Id"],
+                                        SerNo: $self.find(".ser_no").val(),
+                                    });
+                                } else {
+                                    var formData = new FormData();
+                                    formData.append("files", data[0]["File"]);
+                                    formData.append("type", 8);
+                                    formData.append("sid", pid);
+                                    formData.append("serno", $self.find(".ser_no").val());
+                                    co.File.Upload(formData);
+                                }
                         }
                     }
                 })

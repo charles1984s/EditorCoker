@@ -54,28 +54,10 @@ input[type="number"] {
     }
 
 /* Product Form */
-.media_preview {
-    height: calc(70vh - 115px);
-}
-
-    .media_preview img {
-        max-height: 100%;
-        max-width: 100%;
-        width: auto;
-        height: auto;
-    }
-
-.data_upload > ul {
-    height: 70vh;
-}
-#ProdFiles.data_upload>ul{
-    height:auto;
-}
-
-.data_upload > .preview_frame {
-    height: 70vh;
-}
-#ProdFiles.data_upload>.preview_frame {
+.media_preview img {
+    max-height: 150px;
+    max-width: 100%;
+    width: auto;
     height: auto;
 }
 
