@@ -85,6 +85,7 @@ function PageReady() {
             if (result.success) {
                 var html = co.Data.HtmlDecode(result.conten.saveHtml);
                 co.Grapes.setEditor(editor, html, result.conten.saveCss);
+                co.Grapes.setFile(editor, id, 3);
             } else {
                 co.sweet.error(result.error);
             }
@@ -247,6 +248,10 @@ function ElementInit() {
 
     priceModal = new bootstrap.Modal(document.getElementById('PriceModal'))
     $price_modal = $("#PriceModal >.modal-dialog > .modal-content > .modal-body >.price_option");
+    $("#SortCheck").on("change", function () {
+        if ($(this).prop("checked")) $(`[name="serNo"]`).removeAttr("disabled");
+        else $(`[name="serNo"]`).attr({ disabled: "disabled" });
+    });
     document.getElementById('PriceModal').addEventListener('hidden.bs.modal', function (event) {
         $price_modal.children(".frame").each(function () {
             $(this).remove();
@@ -259,7 +264,8 @@ function ElementInit() {
             var temppsid = $self.parents(".frame").data("temppsid")
             var index = modal_price_list.findIndex(item => item["FK_PSId"] == psid || (item["TempPSid"] != null && item["TempPSid"] == temppsid))
             if (index > -1) {
-                text = "現金：" + modal_price_list[index]["Price"] + " 紅利：" + modal_price_list[index]["Bonus"]
+                text = "現金：" + co.String.thousandSign(modal_price_list[index]["Price"]);
+                if (modal_price_list[index]["Bonus"] != 0) text += " 紅利：" + co.String.thousandSign(modal_price_list[index]["Bonus"]);
                 $self.val(text);
             } else {
                 $self.val("");
@@ -273,7 +279,7 @@ function ElementInit() {
 function FormDataClear() {
     TechCertDataClear();
     TagDataClear();
-    $("#Spec_Frame > .frame").each(function () {
+    $("#Spec_Frame .frame").each(function () {
         $(this).remove();
     })
     spec_num = 0;
@@ -425,6 +431,11 @@ function FormDataSet(result) {
 
     $date = $("#InputDate");
     $(".linkToF").attr("href", `${defaultUrl}/${OrgName}/search/product/${result.id}`);
+
+    $("#SortCheck").prop("checked", result.ser_No != 500);
+    $(`[name="serNo"]`).val(result.ser_No);
+    $("#SortCheck").trigger("change");
+
     if (result.permanent) {
         $date.val('');
         $date.attr("disabled", "disabled");
@@ -622,7 +633,8 @@ function SpecAdd(result) {
 
     var index = modal_price_list.findIndex(mitem => mitem["FK_PSId"] == item.data("psid") || (mitem["TempPSid"] != null && mitem["TempPSid"] == item.data("temppsid")))
     if (index > -1) {
-        text = "現金：" + modal_price_list[index]["Price"] + " 紅利：" + modal_price_list[index]["Bonus"]
+        text = "現金：" + co.String.thousandSign(modal_price_list[index]["Price"]);
+        if (modal_price_list[index]["Bonus"] != 0) text += " 紅利：" + co.String.thousandSign(modal_price_list[index]["Bonus"]);
         item_price.val(text);
     } else {
         item_price.val("");
@@ -686,8 +698,7 @@ function SpecAdd(result) {
             })
         }
     })
-
-    $("#Spec_Frame").append(item);
+    $("#Spec_Frame .list").append(item);
 
     $spec_select = $(".spec_select")
     $spec_select.each(function () {
@@ -770,7 +781,7 @@ function ISpecRepect() {
     var obj = []
     var temp_list = []
     var isRepect = false;
-    $("#Spec_Frame > .frame").each(function () {
+    $("#Spec_Frame .frame").each(function () {
         $self = $(this);
         $self.find(".input_spec").each(function () {
             obj.push($(this).val());
@@ -785,7 +796,7 @@ function ISpecRepect() {
     return isRepect;
 }
 
-function UploadListAdd(result,$target) {
+function UploadListAdd(result, $target) {
     var item = $($("#TemplateUploadList").html()).clone();
     var item_serno = item.find(".ser_no"),
         item_btn_remove = item.find(".btn_remove");
@@ -845,6 +856,7 @@ function UploadListAdd(result,$target) {
         }
         obj["Type"] = result.fileType;
         obj["IsDelete"] = false;
+        item.find(".btn_link").attr("href", obj["File"]);
         total_files.push(obj);
 
         item.on("click", function () {
@@ -852,7 +864,7 @@ function UploadListAdd(result,$target) {
         })
     }
     $target.data("file_num", file_num);
-    item_serno.on("blur",function () {
+    item_serno.on("blur", function () {
         var $self = $(this);
         if ($self.val() < 1) {
             $self.val(1);
@@ -887,7 +899,7 @@ function UploadListAdd(result,$target) {
         }
         UploadPreviewFrameClear($target);
         $self.remove();
-        $target.data("file_num", $target.data("file_num")-1);
+        $target.data("file_num", $target.data("file_num") - 1);
     })
 
     $target.find("ul > .btn_upload_add").before(item);
@@ -928,7 +940,7 @@ function AddUp(success_text, error_text, target) {
 
     var stock_addup_list = []
     var temp_serno = 1;
-    $("#Spec_Frame > .frame").each(function () {
+    $("#Spec_Frame .frame").each(function () {
         var $self = $(this);
         var obj = {};
         var fk_sid = [];
@@ -977,7 +989,7 @@ function AddUp(success_text, error_text, target) {
         ItemNo: $itemNo.val(),
         Visible: $display.is(":checked"),
         RemovedFromShelves: !$removedFromShelves.is(":checked"),
-        Ser_No: 500,
+        Ser_No: $("#SortCheck").is(":checked") ? $(`[name="serNo"]`).val() : 500,
         Introduction: $introduction.val(),
         Description: $illustrate.val(),
         StartTime: startDate,
@@ -1023,9 +1035,9 @@ function AddUp(success_text, error_text, target) {
                                     })
                                 }
                                 break;
-                                     /* ********** *****************
-                                   360 上傳資料庫，須重打
-                                    ***************************/
+                            /* ********** *****************
+                          360 上傳資料庫，須重打
+                           ***************************/
                             case 2:
                                 var formData = new FormData();
                                 formData.append("type", 1);
@@ -1038,9 +1050,9 @@ function AddUp(success_text, error_text, target) {
                                     formData.delete('files');
                                 }
                                 break;
-                                /* ********** *****************
-                                   影片上傳資料庫，不確定錯誤是否在這
-                                    ***************************/
+                            /* ********** *****************
+                               影片上傳資料庫，不確定錯誤是否在這
+                                ***************************/
                             case 3:
                                 if (typeof (data[0]["File"]) == "string") {
                                     co.File.fileSortChange({
