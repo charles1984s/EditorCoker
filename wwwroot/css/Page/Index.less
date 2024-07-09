@@ -85,8 +85,20 @@
             > .item-menu {
                 width: 49%;
 
+                &#myEditor {
+                    max-height: calc(100vh - 7.4rem);
+                    overflow-y: auto;
+                    position: relative;
+
+                    &#myEditor::-webkit-scrollbar-track {
+                        background-color: #F5F5F5;
+                        width: 2px;
+                        position: absolute;
+                    }
+                }
+
                 .card-body {
-                    max-height: calc(100vh - 15rem);
+                    max-height: calc(100vh - 15.1rem);
                     overflow-y: auto;
                 }
             }

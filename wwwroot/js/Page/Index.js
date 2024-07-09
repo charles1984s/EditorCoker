@@ -281,8 +281,8 @@
                         co.sweet.error("資料錯誤", massage);     
                     }
                 },
-                save: function () {
-
+                setPower: function () {
+                    console.log("in");
                 },
                 drop: function (cEl) {
                     let saveList = [];
@@ -357,6 +357,11 @@
     }
     $('#offcanvasSite').on('show.bs.offcanvas', function () {
         closeEdit();
+    });
+    $('#offcanvasSite').on("click", ".btn-close", function (e) {
+        e.preventDefault();
+        if ($("#offcanvasSite.offcanvas-lg").length > 0) closeEdit();
+        else myOffcanvas.hide();
     });
     $("#btnExtend").on("click", function () {
         $("#IconImageUpload").ImageUploadModalClear();
