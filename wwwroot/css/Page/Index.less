@@ -114,6 +114,20 @@
         
     }
 }
+.modal-backdrop {
+    z-index: 1045;
+}
+
+.modal-open {
+    .offcanvas-backdrop{
+        opacity:0;
+    }
+    .wrapper {
+        transition: unset !important;
+        filter: unset !important;
+    }
+}
+
 .has_image {
     height: 150px !important;
     width: 150px !important;
