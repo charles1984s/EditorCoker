@@ -280,7 +280,7 @@
                 }
             },
             setPower: function (data) {
-                $("#PermissionDetailsModal").setData({ pageId: data.id, type: 0 }).modal("show");
+                $("#PermissionDetailsModal").setData({ pageId: data.id, title: data.text, type: 0 }).modal("show");
             },
             drop: function (cEl) {
                 let saveList = [];
@@ -344,7 +344,7 @@
         }
     };
     co.PowerManagement.GetPermission().done(function (permission) {
-        if (!permission.CanCreate) delete editorStting.on.setPower;
+        if (!permission.superManager) delete editorStting.on.setPower;
         var menuEditor = new MenuEditor('myEditor', editorStting);
         $('#offcanvasSite').on('show.bs.offcanvas', function () {
             closeEdit();
