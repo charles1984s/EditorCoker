@@ -6,13 +6,19 @@
     }
 }
 .accordion-body {
+    > fieldset {
+        > .d-flex {
+            margin: 1rem 0;
+
+            > label {
+                width: 10rem;
+                text-align: right;
+            }
+        }
+    }
+
     > .d-flex {
         margin: 1rem 0;
-
-        > label {
-            width: 10rem;
-            text-align: right;
-        }
 
         .d-flex {
             flex-wrap: wrap;
