@@ -1749,7 +1749,10 @@
           "SimpleCaptcha": "1.0.0"
         },
         "runtime": {
-          "EtheriT.Coker.Application.dll": {}
+          "EtheriT.Coker.Application.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "EtheriT.Coker.Application.Shared/1.0.0": {
@@ -1759,12 +1762,18 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.10"
         },
         "runtime": {
-          "EtheriT.Coker.Application.Shared.dll": {}
+          "EtheriT.Coker.Application.Shared.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "EtheriT.Coker.Core/1.0.0": {
         "runtime": {
-          "EtheriT.Coker.Core.dll": {}
+          "EtheriT.Coker.Core.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "EtheriT.Coker.EntityFrameworkCore/1.0.0": {
@@ -1774,7 +1783,10 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.10"
         },
         "runtime": {
-          "EtheriT.Coker.EntityFrameworkCore.dll": {}
+          "EtheriT.Coker.EntityFrameworkCore.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
