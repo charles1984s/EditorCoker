@@ -88,6 +88,14 @@
           }
         }
       },
+      "HtmlAgilityPack/1.11.66": {
+        "runtime": {
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {
+            "assemblyVersion": "1.11.66.0",
+            "fileVersion": "1.11.66.0"
+          }
+        }
+      },
       "Humanizer.Core/2.8.26": {},
       "MailKit/4.2.0": {
         "dependencies": {
@@ -1743,6 +1751,7 @@
           "DevExtreme.AspNet.Data": "2.8.6",
           "EtheriT.Coker.Application.Shared": "1.0.0",
           "EtheriT.Coker.EntityFrameworkCore": "1.0.0",
+          "HtmlAgilityPack": "1.11.66",
           "MailKit": "4.2.0",
           "MiniExcel": "1.30.3",
           "Newtonsoft.Json": "13.0.1",
@@ -1845,6 +1854,13 @@
       "sha512": "sha512-e4wdg9w91qy8pisV0JStAY0BUQ+sN3g5v3j2D3hCbAaiwKu/Vw3G+AznPWx5u1zSPe12H0U3ZhX1d6DcbQUZjw==",
       "path": "googleauthenticatorservice.core/1.0.2",
       "hashPath": "googleauthenticatorservice.core.1.0.2.nupkg.sha512"
+    },
+    "HtmlAgilityPack/1.11.66": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kRlJ/rnvDzSPZv294uR+k3IR04eQO1IxdYJuUPPFETZ0W2NDDRiuZlfgYaDX17OVvODJFWj6+lsMOko/Xj5XVQ==",
+      "path": "htmlagilitypack/1.11.66",
+      "hashPath": "htmlagilitypack.1.11.66.nupkg.sha512"
     },
     "Humanizer.Core/2.8.26": {
       "type": "package",
