@@ -1,207 +1,5 @@
 import Backbone from 'backbone';
 
-export interface NOOP {
-}
-export type Debounced = Function & {
-	cancel(): void;
-};
-export type SetOptions = Backbone.ModelSetOptions & {
-	avoidStore?: boolean;
-};
-export type AddOptions = Backbone.AddOptions & {
-	temporary?: boolean;
-};
-export type RemoveOptions = Backbone.Silenceable;
-export type EventHandler = Backbone.EventHandler;
-export type ObjectHash = Backbone.ObjectHash;
-export type ObjectAny = Record<string, any>;
-export type ObjectStrings = Record<string, string>;
-export type LiteralUnion<T, U> = T | (U & NOOP);
-export type Position = {
-	x: number;
-	y: number;
-};
-export interface Coordinates {
-	x: number;
-	y: number;
-}
-export interface Dimensions {
-	height: number;
-	width: number;
-}
-export interface BoxRect extends Coordinates, Dimensions {
-}
-export type ElementRect = {
-	top: number;
-	left: number;
-	width: number;
-	height: number;
-};
-export type CombinedModelConstructorOptions<E, M extends Model<any, any, E> = Model> = Backbone.ModelConstructorOptions<M> & E;
-export interface ViewOptions<TModel extends Model | undefined = Model, TElement extends Element = HTMLElement> extends Backbone.ViewOptions<TModel, TElement> {
-}
-declare class Model<T extends ObjectHash = any, S = SetOptions, E = any> extends Backbone.Model<T, S, E> {
-}
-declare class Collection<T extends Model = Model> extends Backbone.Collection<T> {
-}
-declare class View<T extends Model | undefined = Model, E extends Element = HTMLElement> extends Backbone.View<T, E> {
-}
-export type PickMatching<T, V> = {
-	[K in keyof T as T[K] extends V ? K : never]: T[K];
-};
-export type ExtractMethods<T> = PickMatching<T, Function>;
-declare enum CoordinatesTypes {
-	Screen = "screen",
-	World = "world"
-}
-export interface SelectorProps {
-	name: string;
-	label?: string;
-	type?: number;
-	active?: boolean;
-	private?: boolean;
-	protected?: boolean;
-}
-/**
- * @typedef Selector
- * @property {String} name Selector name, eg. `my-class`
- * @property {String} label Selector label, eg. `My Class`
- * @property {Number} [type=1] Type of the selector. 1 (class) | 2 (id)
- * @property {Boolean} [active=true] If not active, it's not selectable by the Style Manager.
- * @property {Boolean} [private=false] If true, it can't be seen by the Style Manager, but it will be rendered in the canvas and in export code.
- * @property {Boolean} [protected=false] If true, it can't be removed from the attached component.
- */
-export declare class Selector extends Model {
-	defaults(): {
-		name: string;
-		label: string;
-		type: number;
-		active: boolean;
-		private: boolean;
-		protected: boolean;
-		_undo: boolean;
-	};
-	static readonly TYPE_CLASS = 1;
-	static readonly TYPE_ID = 2;
-	em: EditorModel;
-	/**
-	 * @hideconstructor
-	 */
-	constructor(props: any, opts?: any);
-	isId(): boolean;
-	isClass(): boolean;
-	getFullName(opts?: any): string;
-	/**
-	 * Get selector as a string.
-	 * @returns {String}
-	 * @example
-	 * // Given such selector: { name: 'my-selector', type: 2 }
-	 * console.log(selector.toString());
-	 * // -> `#my-selector`
-	 */
-	toString(): string;
-	/**
-	 * Get selector label.
-	 * @returns {String}
-	 * @example
-	 * // Given such selector: { name: 'my-selector', label: 'My selector' }
-	 * console.log(selector.getLabel());
-	 * // -> `My selector`
-	 */
-	getLabel(): any;
-	/**
-	 * Update selector label.
-	 * @param {String} label New label
-	 * @example
-	 * // Given such selector: { name: 'my-selector', label: 'My selector' }
-	 * selector.setLabel('New Label')
-	 * console.log(selector.getLabel());
-	 * // -> `New Label`
-	 */
-	setLabel(label: string): this;
-	/**
-	 * Get selector active state.
-	 * @returns {Boolean}
-	 */
-	getActive(): boolean;
-	/**
-	 * Update selector active state.
-	 * @param {Boolean} value New active state
-	 */
-	setActive(value: boolean): this;
-	toJSON(opts?: {}): any;
-	/**
-	 * Escape string
-	 * @param {string} name
-	 * @return {string}
-	 * @private
-	 */
-	static escapeName(name: string): string;
-}
-export declare class Selectors extends Collection<Selector> {
-	modelId(attr: any): string;
-	getStyleable(): Selector[];
-	getValid({ noDisabled }?: any): Selector[];
-	getFullString(collection?: Selector[] | null, opts?: {
-		sort?: boolean;
-	}): string;
-	getFullName(opts?: any): string | string[];
-}
-export type StyleProps = Record<string, string | string[]>;
-export type UpdateStyleOptions = ObjectAny & {
-	partial?: boolean;
-};
-declare class StyleableModel<T extends ObjectHash = any> extends Model<T> {
-	/**
-	 * Forward style string to `parseStyle` to be parse to an object
-	 * @param  {string} str
-	 * @returns
-	 */
-	parseStyle(str: string): Record<string, string | string[]>;
-	/**
-	 * To trigger the style change event on models I have to
-	 * pass a new object instance
-	 * @param {Object} prop
-	 * @return {Object}
-	 */
-	extendStyle(prop: ObjectAny): ObjectAny;
-	/**
-	 * Get style object
-	 * @return {Object}
-	 */
-	getStyle(prop?: string | ObjectAny): StyleProps;
-	/**
-	 * Set new style object
-	 * @param {Object|string} prop
-	 * @param {Object} opts
-	 * @return {Object} Applied properties
-	 */
-	setStyle(prop?: string | ObjectAny, opts?: UpdateStyleOptions): {
-		[x: string]: any;
-	};
-	/**
-	 * Add style property
-	 * @param {Object|string} prop
-	 * @param {string} value
-	 * @example
-	 * this.addStyle({color: 'red'});
-	 * this.addStyle('color', 'blue');
-	 */
-	addStyle(prop: string | ObjectAny, value?: any, opts?: UpdateStyleOptions): void;
-	/**
-	 * Remove style property
-	 * @param {string} prop
-	 */
-	removeStyle(prop: string): void;
-	/**
-	 * Returns string of style properties
-	 * @param {Object} [opts={}] Options
-	 * @return {String}
-	 */
-	styleToString(opts?: ObjectAny): string;
-	getSelectors(): Selectors;
-	getSelectorsString(opts?: ObjectAny): any;
-}
 export interface DomComponentsConfig {
 	stylePrefix?: string;
 	/**
@@ -250,6 +48,12 @@ export interface DomComponentsConfig {
 	 * https://www.w3.org/TR/2011/WD-html-markup-20110113/syntax.html#void-elements
 	 */
 	voidElements?: string[];
+	/**
+	 * Experimental: Use the frame document for DOM element creation.
+	 * This option might be useful when elements require the local document context to
+	 * work properly (eg. Web Components).
+	 */
+	useFrameDoc?: boolean;
 }
 declare class ModuleModel<TModule extends IBaseModule<any> = Module, T extends ObjectHash = any, S = SetOptions, E = any> extends Model<T, S, E> {
 	private _module;
@@ -321,26 +125,15 @@ declare class Droppable {
 		content: any;
 	};
 }
-export declare class Pages extends Collection<Page> {
-	constructor(models: any, em: EditorModel);
-	onReset(m: Page, opts?: {
-		previousModels?: Pages;
-	}): void;
-	onRemove(removed?: Page): void;
-}
-declare class ComponentWrapper extends Component {
-	get defaults(): {
-		tagName: string;
-		removable: boolean;
-		copyable: boolean;
-		draggable: boolean;
-		components: never[];
-		traits: never[];
-		stylable: string[];
-	};
-	__postAdd(): void;
-	__postRemove(): void;
-	static isComponent(): boolean;
+export interface PageManagerConfig extends ModuleConfig {
+	/**
+	 * Default pages.
+	 */
+	pages?: PageProperties[];
+	/**
+	 * ID of the page to select on editor load.
+	 */
+	selected?: string;
 }
 export interface SelectableOption {
 	/**
@@ -351,113 +144,40 @@ export interface SelectableOption {
 export interface AbortOption {
 	abort?: boolean;
 }
-declare const pageEvents: {
-	all: string;
-	select: string;
-	selectBefore: string;
-	update: string;
-	add: string;
-	addBefore: string;
-	remove: string;
-	removeBefore: string;
-};
-export interface PageManagerConfig extends ModuleConfig {
-	pages?: any[];
-}
-declare class PageManager extends ItemManagerModule<PageManagerConfig, Pages> {
-	events: typeof pageEvents;
-	storageKey: string;
-	get pages(): Pages;
-	model: ModuleModel;
-	getAll(): Page[];
+declare enum PagesEvents {
 	/**
-	 * Get all pages
-	 * @name getAll
-	 * @function
-	 * @returns {Array<[Page]>}
+	 * @event `page:add` Added new page. The page is passed as an argument to the callback.
 	 * @example
-	 * const arrayOfPages = pageManager.getAll();
+	 * editor.on('page:add', (page) => { ... });
 	 */
+	add = "page:add",
+	addBefore = "page:add:before",
 	/**
-	 * Initialize module
-	 * @hideconstructor
-	 * @param {Object} config Configurations
-	 */
-	constructor(em: EditorModel);
-	__onChange(event: string, page: Page, coll: Pages, opts?: any): void;
-	onLoad(): void;
-	_onPageChange(m: any, page: Page, opts: any): void;
-	postLoad(): void;
-	/**
-	 * Add new page
-	 * @param {Object} props Page properties
-	 * @param {Object} [opts] Options
-	 * @returns {[Page]}
+	 * @event `page:remove` Page removed. The page is passed as an argument to the callback.
 	 * @example
-	 * const newPage = pageManager.add({
-	 *  id: 'new-page-id', // without an explicit ID, a random one will be created
-	 *  styles: `.my-class { color: red }`, // or a JSON of styles
-	 *  component: '<div class="my-class">My element</div>', // or a JSON of components
-	 * });
+	 * editor.on('page:remove', (page) => { ... });
 	 */
-	add(props: PageProperties, opts?: AddOptions & SelectableOption & AbortOption): false | Page;
+	remove = "page:remove",
+	removeBefore = "page:remove:before",
 	/**
-	 * Remove page
-	 * @param {String|[Page]} page Page or page id
-	 * @returns {[Page]} Removed Page
+	 * @event `page:select` New page selected. The newly selected page and the previous one, are passed as arguments to the callback.
 	 * @example
-	 * const removedPage = pageManager.remove('page-id');
-	 * // or by passing the page
-	 * const somePage = pageManager.get('page-id');
-	 * pageManager.remove(somePage);
+	 * editor.on('page:select', (page, previousPage) => { ... });
 	 */
-	remove(page: string | Page, opts?: RemoveOptions & AbortOption): false | Page | undefined;
+	select = "page:select",
+	selectBefore = "page:select:before",
 	/**
-	 * Get page by id
-	 * @param {String} id Page id
-	 * @returns {[Page]}
+	 * @event `page:update` Page updated. The updated page and the object containing changes are passed as arguments to the callback.
 	 * @example
-	 * const somePage = pageManager.get('page-id');
+	 * editor.on('page:update', (page, changes) => { ... });
 	 */
-	get(id: string): Page | undefined;
+	update = "page:update",
 	/**
-	 * Get main page (the first one available)
-	 * @returns {[Page]}
+	 * @event `page` Catch-all event for all the events mentioned above. An object containing all the available data about the triggered event is passed as an argument to the callback.
 	 * @example
-	 * const mainPage = pageManager.getMain();
+	 * editor.on('page', ({ event, model, ... }) => { ... });
 	 */
-	getMain(): Page;
-	/**
-	 * Get wrapper components (aka body) from all pages and frames.
-	 * @returns {Array<[Component]>}
-	 * @example
-	 * const wrappers = pageManager.getAllWrappers();
-	 * // Get all `image` components from the project
-	 * const allImages = wrappers.map(wrp => wrp.findType('image')).flat();
-	 */
-	getAllWrappers(): ComponentWrapper[];
-	/**
-	 * Change the selected page. This will switch the page rendered in canvas
-	 * @param {String|[Page]} page Page or page id
-	 * @returns {this}
-	 * @example
-	 * pageManager.select('page-id');
-	 * // or by passing the page
-	 * const somePage = pageManager.get('page-id');
-	 * pageManager.select(somePage);
-	 */
-	select(page: string | Page, opts?: SetOptions): this;
-	/**
-	 * Get the selected page
-	 * @returns {[Page]}
-	 * @example
-	 * const selectedPage = pageManager.getSelected();
-	 */
-	getSelected(): Page | undefined;
-	destroy(): void;
-	store(): any;
-	load(data: any): any;
-	_createId(): string;
+	all = "page"
 }
 export declare class Frames extends ModuleCollection<Frame> {
 	loadedItems: number;
@@ -473,186 +193,6 @@ export declare class Frames extends ModuleCollection<Frame> {
 	itemLoaded(): void;
 	listenToLoad(): void;
 	listenToLoadItems(on: boolean): void;
-}
-/** @private */
-export interface CssRuleProperties {
-	/**
-	 * Array of selectors
-	 */
-	selectors: Selector[];
-	/**
-	 * Object containing style definitions
-	 * @default {}
-	 */
-	style?: Record<string, any>;
-	/**
-	 * Additional string css selectors
-	 * @default ''
-	 */
-	selectorsAdd?: string;
-	/**
-	 * Type of at-rule, eg. `media`, 'font-face'
-	 * @default ''
-	 */
-	atRuleType?: string;
-	/**
-	 * At-rule value, eg. `(max-width: 1000px)`
-	 * @default ''
-	 */
-	mediaText?: string;
-	/**
-	 * This property is used only on at-rules, like 'page' or 'font-face', where the block containes only style declarations.
-	 * @default false
-	 */
-	singleAtRule?: boolean;
-	/**
-	 * State of the rule, eg: `hover`, `focused`
-	 * @default ''
-	 */
-	state?: string;
-	/**
-	 * If true, sets `!important` on all properties. You can also pass an array to specify properties on which to use important.
-	 * @default false
-	 */
-	important?: boolean | string[];
-	/**
-	 * Indicates if the rule is stylable from the editor.
-	 * @default true
-	 */
-	stylable?: boolean | string[];
-	/**
-	 * Group for rules.
-	 * @default ''
-	 */
-	group?: string;
-	/**
-	 * If true, the rule won't be stored in JSON or showed in CSS export.
-	 * @default false
-	 */
-	shallow?: boolean;
-}
-export interface CssRuleJSON extends Omit<CssRuleProperties, "selectors"> {
-	selectors: (string | SelectorProps)[];
-}
-/**
- * @typedef CssRule
- * @property {Array<Selector>} selectors Array of selectors
- * @property {Object} style Object containing style definitions
- * @property {String} [selectorsAdd=''] Additional string css selectors
- * @property {String} [atRuleType=''] Type of at-rule, eg. `media`, 'font-face'
- * @property {String} [mediaText=''] At-rule value, eg. `(max-width: 1000px)`
- * @property {Boolean} [singleAtRule=false] This property is used only on at-rules, like 'page' or 'font-face', where the block containes only style declarations
- * @property {String} [state=''] State of the rule, eg: `hover`, `focused`
- * @property {Boolean|Array<String>} [important=false] If true, sets `!important` on all properties. You can also pass an array to specify properties on which use important
- * @property {Boolean} [stylable=true] Indicates if the rule is stylable from the editor
- *
- * [Device]: device.html
- * [State]: state.html
- * [Component]: component.html
- */
-export declare class CssRule extends StyleableModel<CssRuleProperties> {
-	config: CssRuleProperties;
-	em?: EditorModel;
-	opt: any;
-	defaults(): {
-		selectors: never[];
-		selectorsAdd: string;
-		style: {};
-		mediaText: string;
-		state: string;
-		stylable: boolean;
-		atRuleType: string;
-		singleAtRule: boolean;
-		important: boolean;
-		group: string;
-		shallow: boolean;
-		_undo: boolean;
-	};
-	constructor(props: CssRuleProperties, opt?: any);
-	__onChange(m: CssRule, opts: any): void;
-	clone(): CssRule;
-	ensureSelectors(m: any, c: any, opts: any): void;
-	/**
-	 * Returns the at-rule statement when exists, eg. `@media (...)`, `@keyframes`
-	 * @returns {String}
-	 * @example
-	 * const cssRule = editor.Css.setRule('.class1', { color: 'red' }, {
-	 *  atRuleType: 'media',
-	 *  atRuleParams: '(min-width: 500px)'
-	 * });
-	 * cssRule.getAtRule(); // "@media (min-width: 500px)"
-	 */
-	getAtRule(): string;
-	/**
-	 * Return selectors of the rule as a string
-	 * @param {Object} [opts] Options
-	 * @param {Boolean} [opts.skipState] Skip state from the result
-	 * @returns {String}
-	 * @example
-	 * const cssRule = editor.Css.setRule('.class1:hover', { color: 'red' });
-	 * cssRule.selectorsToString(); // ".class1:hover"
-	 * cssRule.selectorsToString({ skipState: true }); // ".class1"
-	 */
-	selectorsToString(opts?: ObjectAny): string;
-	/**
-	 * Get declaration block (without the at-rule statement)
-	 * @param {Object} [opts={}] Options (same as in `selectorsToString`)
-	 * @returns {String}
-	 * @example
-	 * const cssRule = editor.Css.setRule('.class1', { color: 'red' }, {
-	 *  atRuleType: 'media',
-	 *  atRuleParams: '(min-width: 500px)'
-	 * });
-	 * cssRule.getDeclaration() // ".class1{color:red;}"
-	 */
-	getDeclaration(opts?: ObjectAny): string;
-	/**
-	 * Get the Device the rule is related to.
-	 * @returns {[Device]|null}
-	 * @example
-	 * const device = rule.getDevice();
-	 * console.log(device?.getName());
-	 */
-	getDevice(): any;
-	/**
-	 * Get the State the rule is related to.
-	 * @returns {[State]|null}
-	 * @example
-	 * const state = rule.getState();
-	 * console.log(state?.getLabel());
-	 */
-	getState(): any;
-	/**
-	 * Returns the related Component (valid only for component-specific rules).
-	 * @returns {[Component]|null}
-	 * @example
-	 * const cmp = rule.getComponent();
-	 * console.log(cmp?.toHTML());
-	 */
-	getComponent(): any;
-	/**
-	 * Return the CSS string of the rule
-	 * @param {Object} [opts={}] Options (same as in `getDeclaration`)
-	 * @return {String} CSS string
-	 * @example
-	 * const cssRule = editor.Css.setRule('.class1', { color: 'red' }, {
-	 *  atRuleType: 'media',
-	 *  atRuleParams: '(min-width: 500px)'
-	 * });
-	 * cssRule.toCSS() // "@media (min-width: 500px){.class1{color:red;}}"
-	 */
-	toCSS(opts?: ObjectAny): string;
-	toJSON(...args: any): any;
-	/**
-	 * Compare the actual model with parameters
-	 * @param {Object} selectors Collection of selectors
-	 * @param {String} state Css rule state
-	 * @param {String} width For which device this style is oriented
-	 * @param {Object} ruleProps Other rule props
-	 * @returns  {Boolean}
-	 * @private
-	 */
-	compare(selectors: any, state?: string, width?: string, ruleProps?: Partial<CssRuleProperties>): boolean;
 }
 /** @private */
 export interface PageProperties {
@@ -899,7 +439,7 @@ declare class Dragger {
 	 * @param  {integer} y
 	 */
 	move(x: number, y: number, end?: boolean): void;
-	getContainerEl(): HTMLElement[] | Document[];
+	getContainerEl(): Document[] | HTMLElement[];
 	getWindowEl(): any[];
 	/**
 	 * Returns documents
@@ -929,6 +469,13 @@ export interface ToWorldOption {
 }
 export interface GetBoxRectOptions extends ToScreenOption {
 	local?: boolean;
+}
+export interface CanvasRefreshOptions {
+	/**
+	 * Refresh canvas spots.
+	 */
+	spots?: boolean;
+	all?: boolean;
 }
 declare enum CanvasEvents {
 	/**
@@ -1007,7 +554,43 @@ declare enum CanvasEvents {
 	 *  console.log('Canvas pointer updated:', editor.Canvas.getPointer());
 	 * });
 	 */
-	pointer = "canvas:pointer"
+	pointer = "canvas:pointer",
+	/**
+	 * @event `canvas:refresh` Canvas was refreshed to update elements on top,
+	 * like spots/tools (eg. via `editor.Canvas.refresh()` or on frame resize).
+	 * @example
+	 * editor.on('canvas:refresh', (canvasRefreshOptions) => {
+	 *  console.log('Canvas refreshed with options:', canvasRefreshOptions);
+	 * });
+	 */
+	refresh = "canvas:refresh",
+	/**
+	 * @event `canvas:frame:load` Frame loaded in canvas.
+	 * The event is triggered right after iframe's `onload`.
+	 * @example
+	 * editor.on('canvas:frame:load', ({ window }) => {
+	 *  console.log('Frame loaded', window);
+	 * });
+	 */
+	frameLoad = "canvas:frame:load",
+	/**
+	 * @event `canvas:frame:load:head` Frame head loaded in canvas.
+	 * The event is triggered right after iframe's finished to load the head elemenets (eg. scripts)
+	 * @example
+	 * editor.on('canvas:frame:load:head', ({ window }) => {
+	 *  console.log('Frame head loaded', window);
+	 * });
+	 */
+	frameLoadHead = "canvas:frame:load:head",
+	/**
+	 * @event `canvas:frame:load:body` Frame body loaded in canvas.
+	 * The event is triggered when the body is rendered with components.
+	 * @example
+	 * editor.on('canvas:frame:load:body', ({ window }) => {
+	 *  console.log('Frame completed the body render', window);
+	 * });
+	 */
+	frameLoadBody = "canvas:frame:load:body"
 }
 declare abstract class ModuleDomainViews<TCollection extends ModuleCollection, TItemView extends ModuleView> extends ModuleView<TCollection> {
 	itemsView: string;
@@ -1055,6 +638,10 @@ export interface MarginPaddingOffsets {
 	paddingRight?: number;
 	paddingBottom?: number;
 	paddingLeft?: number;
+	borderTopWidth?: number;
+	borderRightWidth?: number;
+	borderBottomWidth?: number;
+	borderLeftWidth?: number;
 }
 export type ElementPosOpts = {
 	avoidFrameOffset?: boolean;
@@ -1259,6 +846,7 @@ declare class FrameView extends ModuleView<Frame, HTMLIFrameElement> {
 	private jsContainer?;
 	private tools;
 	private wrapper?;
+	private headView?;
 	private frameWrapView?;
 	constructor(model: Frame, view?: FrameWrapView);
 	getBoxRect(): BoxRect;
@@ -1304,6 +892,7 @@ declare class FrameView extends ModuleView<Frame, HTMLIFrameElement> {
 	render(): this;
 	renderScripts(): void;
 	renderStyles(opts?: any): void;
+	renderHead(): void;
 	renderBody(): void;
 	_toggleEffects(enable: boolean): void;
 	_emitUpdate(): void;
@@ -1365,14 +954,14 @@ export interface RuleOptions {
 	atRuleParams?: string;
 }
 /** @private */
-export interface SetRuleOptions extends RuleOptions {
+export interface SetRuleOptions extends RuleOptions, UpdateStyleOptions {
 	/**
 	 * If the rule exists already, merge passed styles instead of replacing them.
 	 */
 	addStyles?: boolean;
 }
 /** @private */
-export interface GetSetRuleOptions {
+export interface GetSetRuleOptions extends UpdateStyleOptions {
 	state?: string;
 	mediaText?: string;
 	addOpts?: ObjectAny;
@@ -1523,7 +1112,7 @@ declare class CssComposer extends ItemManagerModule<CssComposerConfig & {
 	 * // All rules in the project
 	 * console.log(css.getRules())
 	 */
-	getRules(selector: string): CssRule[];
+	getRules(selector?: string): CssRule[];
 	/**
 	 * Add/update the CSS rule with id selector
 	 * @param {string} name Id selector name, eg. 'my-id'
@@ -1600,6 +1189,9 @@ declare class CssComposer extends ItemManagerModule<CssComposerConfig & {
 	 * @private
 	 */
 	render(): HTMLElement;
+	checkId(rule: CssRuleJSON | CssRuleJSON[], opts?: {
+		idMap?: PrevToNewIdMap;
+	}): CssRuleJSON[];
 	destroy(): void;
 }
 declare class ComponentsView extends View {
@@ -1619,9 +1211,7 @@ declare class ComponentsView extends View {
 	 * @param {Object} opts
 	 * @private
 	 * */
-	addTo(model: Component, coll?: any, opts?: {
-		temporary?: boolean;
-	}): void;
+	addTo(model: Component): void;
 	/**
 	 * Add new object to collection
 	 * @param  {Object}  Model
@@ -1631,7 +1221,7 @@ declare class ComponentsView extends View {
 	 * @return   {Object}   Object rendered
 	 * @private
 	 * */
-	addToCollection(model: Component, fragmentEl?: DocumentFragment | null, index?: number): HTMLElement | Text;
+	addToCollection(model: Component, fragment?: DocumentFragment | null, index?: number): HTMLElement | Text;
 	resetChildren(models: Components, { previousModels }?: {
 		previousModels?: never[] | undefined;
 	}): void;
@@ -1640,12 +1230,12 @@ declare class ComponentsView extends View {
 export type ClbObj = ReturnType<ComponentView["_clbObj"]>;
 export interface IComponentView extends ExtractMethods<ComponentView> {
 }
-export declare class ComponentView extends View</**
+export declare class ComponentView<TComp extends Component = Component> extends View</**
  * Keep this format to avoid errors in TS bundler */ 
 /** @ts-ignore */
-Component> {
+TComp> {
 	/** @ts-ignore */
-	model: Component;
+	model: TComp;
 	/** @ts-ignore */
 	className(): any;
 	/** @ts-ignore */
@@ -1662,13 +1252,15 @@ Component> {
 	getChildrenSelector?: Function;
 	getTemplate?: Function;
 	scriptContainer?: HTMLElement;
+	preinitialize(opt?: any): void;
 	initialize(opt?: any): void;
 	get __cmpStyleOpts(): GetSetRuleOptions;
 	get frameView(): FrameView;
+	get createDoc(): Document;
 	__isDraggable(): string | boolean | DraggableDroppableFn | undefined;
 	_clbObj(): {
 		editor: Editor;
-		model: Component;
+		model: TComp;
 		el: HTMLElement;
 	};
 	/**
@@ -1690,7 +1282,7 @@ Component> {
 	/**
 	 * Callback executed when the `disable` event is triggered on component
 	 */
-	onDisable(): void;
+	onDisable(opts?: DisableOptions): void;
 	remove(): this;
 	handleDragStart(event: Event): false | undefined;
 	initClasses(): void;
@@ -1811,6 +1403,7 @@ Component> {
 	 */
 	reset(): void;
 	_setData(): void;
+	_createElement(tagName: string): Node;
 	/**
 	 * Render children components
 	 * @private
@@ -1876,7 +1469,7 @@ export declare class CanvasSpot<T extends CanvasSpotProps = CanvasSpotProps> ext
 	defaults(): T;
 	get type(): "" | T["type"];
 	get component(): Component | undefined;
-	get componentView(): ComponentView | undefined;
+	get componentView(): ComponentView<Component> | undefined;
 	get el(): HTMLElement | undefined;
 	/**
 	 * Get the box rect of the spot.
@@ -2460,6 +2053,12 @@ declare class CanvasModule extends Module<CanvasConfig> {
 	 * @returns {Object}
 	 */
 	getWorldRectToScreen(boxRect: Parameters<CanvasView["getRectToScreen"]>[0]): BoxRect | undefined;
+	/**
+	 * Update canvas for spots/tools positioning.
+	 * @param {Object} [opts] Options.
+	 * @param {Object} [opts.spots=false] Update the position of spots.
+	 */
+	refresh(opts?: CanvasRefreshOptions): void;
 	refreshSpots(): void;
 	destroy(): void;
 }
@@ -2532,6 +2131,101 @@ export declare class Frame extends ModuleModel<CanvasModule> {
 	_emitUpdated(data?: {}): void;
 	hasAutoHeight(): boolean;
 	toJSON(opts?: any): any;
+}
+export interface CategoryViewConfig {
+	em: EditorModel;
+	pStylePrefix?: string;
+	stylePrefix?: string;
+}
+declare class CategoryView extends View<Category> {
+	em: EditorModel;
+	config: CategoryViewConfig;
+	pfx: string;
+	caretR: string;
+	caretD: string;
+	iconClass: string;
+	activeClass: string;
+	iconEl?: HTMLElement;
+	typeEl?: HTMLElement;
+	catName: string;
+	events(): {
+		"click [data-title]": string;
+	};
+	template({ pfx, label, catName }: {
+		pfx: string;
+		label: string;
+		catName: string;
+	}): string;
+	/** @ts-ignore */
+	attributes(): Record<string, any>;
+	constructor(o: any, config: CategoryViewConfig, catName: string);
+	updateVisibility(): void;
+	open(): void;
+	close(): void;
+	toggle(): void;
+	getIconEl(): HTMLElement;
+	getTypeEl(): HTMLElement;
+	append(el: HTMLElement): void;
+	render(): this;
+}
+interface CategoryProperties {
+	/**
+	 * Category id.
+	 */
+	id: string;
+	/**
+	 * Category label.
+	 */
+	label: string;
+	/**
+	 * Category open state.
+	 * @default true
+	 */
+	open?: boolean;
+	/**
+	 * Category order.
+	 */
+	order?: string | number;
+	/**
+	 * Category attributes.
+	 * @default {}
+	 */
+	attributes?: Record<string, any>;
+}
+export interface ItemsByCategory<T> {
+	category?: Category;
+	items: T[];
+}
+export declare class Category extends Model<CategoryProperties> {
+	view?: CategoryView;
+	defaults(): {
+		id: string;
+		label: string;
+		open: boolean;
+		attributes: {};
+	};
+	getId(): string;
+	getLabel(): string;
+}
+export interface TraitManagerConfig {
+	/**
+	 * Style prefix.
+	 * @default 'trt-'
+	 */
+	stylePrefix?: string;
+	/**
+	 * Specify the element to use as a container, string (query) or HTMLElement.
+	 * With the empty value, nothing will be rendered.
+	 * @default ''
+	 */
+	appendTo?: string | HTMLElement;
+	/**
+	 * Avoid rendering the default Trait Manager UI.
+	 * More about it here: [Custom Trait Manager](https://grapesjs.com/docs/modules/Traits.html#custom-trait-manager).
+	 * @default false
+	 */
+	custom?: boolean;
+	optionsTarget?: Record<string, any>[];
 }
 declare class TraitView extends View<Trait> {
 	pfx: string;
@@ -2619,72 +2313,230 @@ declare class TraitView extends View<Trait> {
 	postUpdate(): void;
 	render(): this;
 }
-/** @private */
-export interface TraitProperties {
+declare class DomainViews extends View {
+	config?: any;
+	items: any[];
+	ns?: string;
+	itemView?: any;
+	itemsView: any;
+	itemType: string;
+	reuseView: boolean;
+	constructor(opts?: any, config?: any, autoAdd?: boolean);
 	/**
-	 * Trait type, defines how the trait should rendered.
-	 * Possible values: `text` (default), `number`, `select`, `checkbox`, `color`, `button`
-	 */
-	type?: string;
+	 * Add new model to the collection
+	 * @param {Model} model
+	 * @private
+	 * */
+	addTo(model: any): void;
+	itemViewNotFound(type: string): void;
 	/**
-	 * The name of the trait used as a key for the attribute/property.
-	 * By default, the name is used as attribute name or property in case `changeProp` in enabled.
-	 */
-	name: string;
-	/**
-	 * Trait id, eg. `my-trait-id`.
-	 * If not specified, the `name` will be used as id.
-	 */
-	id?: string;
-	/**
-	 * The trait label to show for the rendered trait.
-	 */
-	label?: string | false;
-	/**
-	 * If `true` the trait value is applied on component
-	 */
-	changeProp?: boolean;
-	attributes?: Record<string, any>;
-	valueTrue?: string;
-	valueFalse?: string;
-	min?: number;
-	max?: number;
-	unit?: string;
-	step?: number;
-	value?: any;
-	target?: Component;
-	default?: any;
-	placeholder?: string;
-	command?: string | ((editor: Editor, trait: Trait) => any);
-	options?: Record<string, any>[];
-	labelButton?: string;
-	text?: string;
-	full?: boolean;
-	getValue?: (props: {
-		editor: Editor;
-		trait: Trait;
-		component: Component;
-	}) => any;
-	setValue?: (props: {
-		value: any;
-		editor: Editor;
-		trait: Trait;
-		component: Component;
-		partial: boolean;
-		emitUpdate: () => void;
-	}) => void;
+	 * Render new model inside the view
+	 * @param {Model} model
+	 * @param {Object} fragment Fragment collection
+	 * @private
+	 * */
+	add(model: any, fragment?: DocumentFragment): void;
+	render(): this;
+	onRender(): void;
+	onRemoveBefore(items?: any, opts?: any): void;
+	onRemove(items?: any, opts?: any): void;
+	remove(opts?: {}): this;
+	clearItems(): void;
 }
-export type TraitOption = {
-	id: string;
-	label?: string;
-};
+export interface TraitsViewProps {
+	el?: HTMLElement;
+	collection: any[];
+	editor: EditorModel;
+	config: TraitManagerConfigModule;
+}
+declare class TraitsView extends DomainViews {
+	reuseView: boolean;
+	em: EditorModel;
+	pfx: string;
+	ppfx: string;
+	renderedCategories: Map<string, CategoryView>;
+	config: TraitManagerConfigModule;
+	traitContClass: string;
+	catsClass: string;
+	classNoCat: string;
+	catsEl?: HTMLElement;
+	traitsEl?: HTMLElement;
+	rendered?: boolean;
+	itemsView: TraitManager["types"];
+	collection: Traits;
+	constructor(props: TraitsViewProps, itemsView: TraitManager["types"]);
+	/**
+	 * Update view collection
+	 * @private
+	 */
+	updatedCollection(): void;
+	/**
+	 * Render new model inside the view
+	 * @param {Model} model
+	 * @param {Object} fragment Fragment collection
+	 * @private
+	 * */
+	add(model: Trait, fragment?: DocumentFragment): void;
+	getCategoriesEl(): HTMLElement;
+	getTraitsEl(): HTMLElement;
+	append(el: HTMLElement | DocumentFragment): void;
+	render(): this;
+}
+declare class TraitManager extends Module<TraitManagerConfigModule> {
+	__ctn?: HTMLElement;
+	view?: TraitsView;
+	TraitsView: typeof TraitsView;
+	events: typeof TraitsEvents;
+	state: Model<TraitModuleStateProps, SetOptions, any>;
+	types: TraitViewTypes;
+	/**
+	 * Get configuration object
+	 * @name getConfig
+	 * @function
+	 * @returns {Object}
+	 */
+	/**
+	 * Initialize module
+	 * @private
+	 */
+	constructor(em: EditorModel);
+	/**
+	 * Select traits from a component.
+	 * @param {[Component]} component
+	 * @example
+	 * tm.select(someComponent);
+	 */
+	select(component?: Component): void;
+	/**
+	 * Get trait categories from the currently selected component.
+	 * @returns {Array<Category>}
+	 * @example
+	 * const traitCategories: Category[] = tm.getCategories();
+	 *
+	 */
+	getCategories(): Category[];
+	/**
+	 * Get traits from the currently selected component.
+	 * @returns {Array<[Trait]>}
+	 * @example
+	 * const currentTraits: Trait[] = tm.getTraits();
+	 */
+	getTraits(): Trait[];
+	/**
+	 * Get traits by category from the currently selected component.
+	 * @example
+	 * tm.getTraitsByCategory();
+	 * // Returns an array of items of this type
+	 * // > { category?: Category; items: Trait[] }
+	 *
+	 * // NOTE: The item without category is the one containing traits without category.
+	 *
+	 * // You can also get the same output format by passing your own array of Traits
+	 * const myFilteredTraits: Trait[] = [...];
+	 * tm.getTraitsByCategory(myFilteredTraits);
+	 */
+	getTraitsByCategory(traits?: Trait[]): TraitsByCategory[];
+	/**
+	 * Get component from the currently selected traits.
+	 * @example
+	 * tm.getComponent();
+	 * // Component {}
+	 */
+	getComponent(): Component | undefined;
+	/**
+	 * Add new trait type.
+	 * More about it here: [Define new Trait type](https://grapesjs.com/docs/modules/Traits.html#define-new-trait-type).
+	 * @param {string} name Type name.
+	 * @param {Object} methods Object representing the trait.
+	 */
+	addType<T>(name: string, methods: CustomTrait<T>): void;
+	/**
+	 * Get trait type
+	 * @param {string} name Type name
+	 * @returns {Object}
+	 * @private
+	 * const traitView = tm.getType('text');
+	 */
+	getType(name: string): new (o: any) => TraitView;
+	/**
+	 * Get all trait types
+	 * @returns {Object}
+	 * @private
+	 */
+	getTypes(): TraitViewTypes;
+	/**
+	 *
+	 * Get Traits viewer
+	 * @private
+	 */
+	getTraitsViewer(): TraitsView | undefined;
+	getCurrent(): Trait[];
+	render(): HTMLElement;
+	postRender(): void;
+	__onSelect(): void;
+	__trgCustom(opts?: TraitCustomData): void;
+	__customData(): TraitCustomData;
+	__upSel(): void;
+	__onUp(): void;
+}
+export type CategoryCollectionParams = ConstructorParameters<typeof Collection<Category>>;
+export interface CategoryOptions {
+	events?: {
+		update?: string;
+	};
+	em?: EditorModel;
+}
+export declare class Categories extends Collection<Category> {
+	constructor(models?: CategoryCollectionParams[0], opts?: CategoryOptions);
+	/** @ts-ignore */
+	add(model: (CategoryProperties | Category)[] | CategoryProperties | Category, opts?: AddOptions): Category;
+	get(id: string | Category): Category;
+}
+export interface ModelWithCategoryProps {
+	category?: string | CategoryProperties;
+}
+declare abstract class CollectionWithCategories<T extends Model<ModelWithCategoryProps>> extends Collection<T> {
+	abstract getCategories(): Categories;
+	initCategory(model: T): Category | undefined;
+}
+declare class TraitFactory {
+	config: Partial<TraitManagerConfig>;
+	constructor(config?: Partial<TraitManagerConfig>);
+	/**
+	 * Build props object by their name
+	 */
+	build(prop: string | TraitProperties, em: EditorModel): Trait;
+	private buildFromString;
+}
+export declare class Traits extends CollectionWithCategories<Trait> {
+	em: EditorModel;
+	target: Component;
+	tf: TraitFactory;
+	categories: Categories;
+	constructor(coll: TraitProperties[], options: {
+		em: EditorModel;
+	});
+	get module(): TraitManager;
+	getCategories(): Categories;
+	handleReset(coll: TraitProperties[], { previousModels }?: {
+		previousModels?: Trait[];
+	}): void;
+	handleAdd(model: Trait): void;
+	setTarget(target: Component): void;
+	add(model: string | TraitProperties | Trait, options?: AddOptions): Trait;
+	add(models: Array<string | TraitProperties | Trait>, options?: AddOptions): Trait[];
+}
 /**
- * @typedef Trait
  * @property {String} id Trait id, eg. `my-trait-id`.
- * @property {String} type Trait type, defines how the trait should rendered. Possible values: `text` (default), `number`, `select`, `checkbox`, `color`, `button`
+ * @property {String} type Trait type, defines how the trait should be rendered. Possible values: `text` (default), `number`, `select`, `checkbox`, `color`, `button`
  * @property {String} label The trait label to show for the rendered trait.
  * @property {String} name The name of the trait used as a key for the attribute/property. By default, the name is used as attribute name or property in case `changeProp` in enabled.
- * @property {Boolean} changeProp If `true` the trait value is applied on component
+ * @property {String} default Default value to use in case the value is not defined on the component.
+ * @property {String} placeholder Placeholder to show inside the default input (if the UI type allows it).
+ * @property {String} [category=''] Trait category.
+ * @property {Boolean} changeProp If `true`, the trait value is applied on the component property, otherwise, on component attributes.
+ *
+ * @module docsjs.Trait
  *
  */
 export declare class Trait extends Model<TraitProperties> {
@@ -2701,16 +2553,21 @@ export declare class Trait extends Model<TraitProperties> {
 		value: string;
 		default: string;
 		placeholder: string;
+		category: string;
 		changeProp: boolean;
 		options: never[];
 	};
 	constructor(prop: TraitProperties, em: EditorModel);
-	setTarget(target: Component): void;
+	get parent(): Traits;
+	get category(): Category | undefined;
+	get component(): Component;
+	get changeProp(): boolean;
+	setTarget(component: Component): void;
 	/**
 	 * Get the trait id.
 	 * @returns {String}
 	 */
-	getId(): string;
+	getId(): string | number;
 	/**
 	 * Get the trait type.
 	 * @returns {String}
@@ -2733,9 +2590,11 @@ export declare class Trait extends Model<TraitProperties> {
 	/**
 	 * Get the trait value.
 	 * The value is taken from component attributes by default or from properties if the trait has the `changeProp` enabled.
+	 * @param {Object} [opts={}] Options.
+	 * @param {Boolean} [opts.useType=false] Get the value based on type (eg. the checkbox will always return a boolean).
 	 * @returns {any}
 	 */
-	getValue(): any;
+	getValue(opts?: TraitGetValueOptions): any;
 	/**
 	 * Update the trait value.
 	 * The value is applied on component attributes by default or on properties if the trait has the `changeProp` enabled.
@@ -2743,9 +2602,7 @@ export declare class Trait extends Model<TraitProperties> {
 	 * @param {Object} [opts={}] Options.
 	 * @param {Boolean} [opts.partial] If `true` the update won't be considered complete (not stored in UndoManager).
 	 */
-	setValue(value: any, opts?: {
-		partial?: boolean;
-	}): void;
+	setValue(value: any, opts?: TraitSetValueOptions): void;
 	/**
 	 * Get default value.
 	 */
@@ -2765,7 +2622,7 @@ export declare class Trait extends Model<TraitProperties> {
 	 * @param {Object} option Option object
 	 * @returns {String} Option id
 	 */
-	getOptionId(option: TraitOption): any;
+	getOptionId(option: TraitOption): string;
 	/**
 	 * Get option label.
 	 * @param {String|Object} id Option id or the option object
@@ -2773,58 +2630,199 @@ export declare class Trait extends Model<TraitProperties> {
 	 * @param {Boolean} [opts.locale=true] Use the locale string from i18n module
 	 * @returns {String} Option label
 	 */
-	getOptionLabel(id: string | TraitOption, opts?: {
-		locale?: boolean;
-	}): string;
+	getOptionLabel(id: string | TraitOption, opts?: LocaleOptions): string;
+	/**
+	 * Get category label.
+	 * @param {Object} [opts={}] Options.
+	 * @param {Boolean} [opts.locale=true] Use the locale string from i18n module.
+	 * @returns {String}
+	 */
+	getCategoryLabel(opts?: LocaleOptions): string;
+	/**
+	 * Run the trait command (used on the button trait type).
+	 */
+	runCommand(): any;
 	props(): Partial<TraitProperties>;
 	targetUpdated(): void;
-	getTargetValue(): any;
+	getTargetValue(opts?: TraitGetValueOptions): any;
 	setTargetValue(value: any, opts?: SetOptions): void;
 	setValueFromInput(value: any, final?: boolean, opts?: SetOptions): void;
 	getInitValue(): any;
 }
-export interface TraitManagerConfig {
+export interface TraitViewTypes {
+	[id: string]: {
+		new (o: any): TraitView;
+	};
+}
+export interface ITraitView {
+	noLabel?: TraitView["noLabel"];
+	eventCapture?: TraitView["eventCapture"];
+	templateInput?: TraitView["templateInput"];
+	onEvent?: TraitView["onEvent"];
+	onUpdate?: TraitView["onUpdate"];
+	createInput?: TraitView["createInput"];
+	createLabel?: TraitView["createLabel"];
+}
+export type CustomTrait<T> = ITraitView & T & ThisType<T & TraitView>;
+export interface TraitModuleStateProps {
+	component?: Component;
+	traits: Trait[];
+}
+export interface TraitsByCategory extends ItemsByCategory<Trait> {
+}
+export interface TraitManagerConfigModule extends TraitManagerConfig {
+	pStylePrefix?: string;
+	em: EditorModel;
+}
+export interface TraitCustomData {
+	container?: HTMLElement;
+}
+export interface TraitProperties {
 	/**
-	 * Style prefix.
-	 * @default 'trt-'
+	 * Trait type, defines how the trait should be rendered.
+	 * Possible values: `text` (default), `number`, `select`, `checkbox`, `color`, `button`
 	 */
-	stylePrefix?: string;
+	type?: string;
 	/**
-	 * Specify the element to use as a container, string (query) or HTMLElement.
-	 * With the empty value, nothing will be rendered.
+	 * The name of the trait used as a key for the attribute/property.
+	 * By default, the name is used as attribute name or property in case `changeProp` in enabled.
+	 */
+	name?: string;
+	/**
+	 * Trait id, eg. `my-trait-id`.
+	 * If not specified, the `name` will be used as id.
+	 */
+	id?: string | number;
+	/**
+	 * Trait category.
 	 * @default ''
 	 */
-	appendTo?: string | HTMLElement;
+	category?: string | CategoryProperties;
 	/**
-	 * Avoid rendering the default Trait Manager UI.
+	 * The trait label to show for the rendered trait.
+	 */
+	label?: string | false;
+	/**
+	 * If `true`, the trait value is applied on the component property, otherwise, on component attributes.
 	 * @default false
 	 */
-	custom?: boolean;
-	optionsTarget?: Record<string, any>[];
-}
-declare class TraitFactory {
-	config: Partial<TraitManagerConfig>;
-	constructor(config?: Partial<TraitManagerConfig>);
+	changeProp?: boolean;
 	/**
-	 * Build props object by their name
+	 * Instead of relying on component props/attributes, define your own
+	 * logic on how to get the trait value.
 	 */
-	build(prop: string | TraitProperties, em: EditorModel): Trait;
-	private buildFromString;
+	getValue?: (props: {
+		editor: Editor;
+		trait: Trait;
+		component: Component;
+	}) => any;
+	/**
+	 * In conjunction with the `getValue`, define your own logic for updating the trait value.
+	 */
+	setValue?: (props: {
+		value: any;
+		editor: Editor;
+		trait: Trait;
+		component: Component;
+		partial: boolean;
+		options: TraitSetValueOptions;
+		emitUpdate: () => void;
+	}) => void;
+	/**
+	 * Custom true value for checkbox type.
+	 * @default 'true'
+	 */
+	valueTrue?: string;
+	/**
+	 * Custom false value for checkbox type.
+	 * * @default 'false'
+	 */
+	valueFalse?: string;
+	/**
+	 * Minimum number value for number type.
+	 */
+	min?: number;
+	/**
+	 * Maximum number value for number type.
+	 */
+	max?: number;
+	unit?: string;
+	/**
+	 * Number of steps for number type.
+	 */
+	step?: number;
+	value?: any;
+	target?: Component;
+	default?: any;
+	/**
+	 * Placeholder to show inside the default input (if the UI type allows it).
+	 */
+	placeholder?: string;
+	/**
+	 * Array of options for the select type.
+	 */
+	options?: TraitOption[];
+	/**
+	 * Label text to use for the button type.
+	 */
+	text?: string;
+	labelButton?: string;
+	/**
+	 * Command to use for the button type.
+	 */
+	command?: string | ((editor: Editor, trait: Trait) => any);
+	full?: boolean;
+	attributes?: Record<string, any>;
 }
-export declare class Traits extends Collection<Trait> {
-	em: EditorModel;
-	target: Component;
-	tf: TraitFactory;
-	constructor(coll: TraitProperties[], options: {
-		em: EditorModel;
-	});
-	handleReset(coll: TraitProperties[], { previousModels }?: {
-		previousModels?: Trait[];
-	}): void;
-	handleAdd(model: Trait): void;
-	setTarget(target: Component): void;
-	add(model: string | TraitProperties | Trait, options?: AddOptions): Trait;
-	add(models: Array<string | TraitProperties | Trait>, options?: AddOptions): Trait[];
+export interface TraitSetValueOptions {
+	partial?: boolean;
+	[key: string]: unknown;
+}
+export interface TraitGetValueOptions {
+	/**
+	 * Get the value based on type.
+	 * With this option enabled, the returned value is normalized based on the
+	 * trait type (eg. the checkbox will always return a boolean).
+	 * @default false
+	 */
+	useType?: boolean;
+}
+export interface TraitOption {
+	id: string;
+	label?: string;
+	[key: string]: unknown;
+}
+declare enum TraitsEvents {
+	/**
+	 * @event `trait:select` New traits selected (eg. by changing a component).
+	 * @example
+	 * editor.on('trait:select', ({ traits, component }) => { ... });
+	 */
+	select = "trait:select",
+	/**
+	 * @event `trait:value` Trait value updated.
+	 * @example
+	 * editor.on('trait:value', ({ trait, component, value }) => { ... });
+	 */
+	value = "trait:value",
+	/**
+	 * @event `trait:category:update` Trait category updated.
+	 * @example
+	 * editor.on('trait:category:update', ({ category, changes }) => { ... });
+	 */
+	categoryUpdate = "trait:category:update",
+	/**
+	 * @event `trait:custom` Event to use in case of [custom Trait Manager UI](https://grapesjs.com/docs/modules/Traits.html#custom-trait-manager).
+	 * @example
+	 * editor.on('trait:custom', ({ container }) => { ... });
+	 */
+	custom = "trait:custom",
+	/**
+	 * @event `trait` Catch-all event for all the events mentioned above. An object containing all the available data about the triggered event is passed as an argument to the callback.
+	 * @example
+	 * editor.on('trait', ({ event, model, ... }) => { ... });
+	 */
+	all = "trait"
 }
 export type RectDim = {
 	t: number;
@@ -2844,6 +2842,17 @@ export type CallbackOptions = {
 	el: HTMLElement;
 	resizer: Resizer;
 };
+export interface ResizerUpdateTargetOptions {
+	store: boolean;
+	selectedHandler?: string;
+	resizer: Resizer;
+	config: ResizerOptions;
+}
+export interface ResizerOnUpdateContainerOptions {
+	el: HTMLElement;
+	resizer: Resizer;
+	opts: ResizerOptions;
+}
 export interface ResizerOptions {
 	/**
 	 * Function which returns custom X and Y coordinates of the mouse.
@@ -2852,11 +2861,11 @@ export interface ResizerOptions {
 	/**
 	 * Indicates custom target updating strategy.
 	 */
-	updateTarget?: (el: HTMLElement, rect: RectDim, opts: any) => void;
+	updateTarget?: (el: HTMLElement, rect: RectDim, opts: ResizerUpdateTargetOptions) => void;
 	/**
 	 * Function which gets HTMLElement as an arg and returns it relative position
 	 */
-	posFetcher?: (el: HTMLElement, opts: any) => BoundingRect;
+	posFetcher?: (el: HTMLElement, opts: ElementPosOpts) => BoundingRect;
 	/**
 	 * Indicate if the resizer should keep the default ratio.
 	 * @default false
@@ -2877,7 +2886,7 @@ export interface ResizerOptions {
 	/**
 	 * On container update callback.
 	 */
-	onUpdateContainer?: (opts: any) => void;
+	onUpdateContainer?: (opts: ResizerOnUpdateContainerOptions) => void;
 	/**
 	 * Resize unit step.
 	 * @default 1
@@ -3235,6 +3244,62 @@ export interface ToolbarButtonProps {
 }
 export type DragMode = "translate" | "absolute" | "";
 export type DraggableDroppableFn = (source: Component, target: Component, index?: number) => boolean | void;
+export interface AddComponentsOption extends AddOptions, OptionAsDocument {
+}
+export interface ComponentWithCheck<C extends Component> {
+	new (props: any, opt: ComponentOptions): C;
+	isComponent(node: HTMLElement, opts?: ParseNodeOptions): ComponentDefinitionDefined | undefined | boolean;
+}
+export interface ComponentStackItem<C extends Component = Component, CV extends ComponentView<C> = ComponentView<C>> {
+	id: string;
+	model: ComponentWithCheck<C>;
+	view: new (opt: any) => CV;
+}
+/**
+ * Delegate commands to other components.
+ */
+export interface ComponentDelegateProps {
+	/**
+	 * Delegate remove command to another component.
+	 * @example
+	 * delegate: {
+	 *  remove: (cmp) => cmp.closestType('other-type'),
+	 * }
+	 */
+	remove?: (cmp: Component) => Component | Nullable;
+	/**
+	 * Delegate move command to another component.
+	 * @example
+	 * delegate: {
+	 *  move: (cmp) => cmp.closestType('other-type'),
+	 * }
+	 */
+	move?: (cmp: Component) => Component | Nullable;
+	/**
+	 * Delegate copy command to another component.
+	 * @example
+	 * delegate: {
+	 *  copy: (cmp) => cmp.closestType('other-type'),
+	 * }
+	 */
+	copy?: (cmp: Component) => Component | Nullable;
+	/**
+	 * Delegate select command to another component.
+	 * @example
+	 * delegate: {
+	 *  select: (cmp) => cmp.findType('other-type')[0],
+	 * }
+	 */
+	select?: (cmp: Component) => Component | Nullable;
+	/**
+	 * Delegate another component as a layer in the LayerManager.
+	 * @example
+	 * delegate: {
+	 *  layer: (cmp) => cmp.findType('other-type')[0],
+	 * }
+	 */
+	layer?: (cmp: Component) => Component | Nullable;
+}
 export interface ComponentProperties {
 	/**
 	 * Component type, eg. `text`, `image`, `video`, etc.
@@ -3303,7 +3368,7 @@ export interface ComponentProperties {
 	 */
 	copyable?: boolean;
 	/**
-	 * Indicates if it's possible to resize the component. It's also possible to pass an object as [options for the Resizer](https://github.com/GrapesJS/grapesjs/blob/master/src/utils/Resizer.js). Default: `false`
+	 * Indicates if it's possible to resize the component. It's also possible to pass an object as [options for the Resizer](https://github.com/GrapesJS/grapesjs/blob/master/src/utils/Resizer.ts). Default: `false`
 	 */
 	resizable?: boolean | ResizerOptions;
 	/**
@@ -3377,6 +3442,10 @@ export interface ComponentProperties {
 	 * By default, when `toolbar` property is falsy the editor will add automatically commands `core:component-exit` (select parent component, added if there is one), `tlb-move` (added if `draggable`) , `tlb-clone` (added if `copyable`), `tlb-delete` (added if `removable`).
 	 */
 	toolbar?: ToolbarButtonProps[];
+	/**
+	 * Delegate commands to other components.
+	 */
+	delegate?: ComponentDelegateProps;
 	components?: Components;
 	classes?: Selectors;
 	dmode?: DragMode;
@@ -3408,7 +3477,7 @@ export interface ComponentDefinitionDefined extends Omit<ComponentProperties, "c
 }
 export type ComponentAddType = Component | ComponentDefinition | ComponentDefinitionDefined | string;
 export type ComponentAdd = ComponentAddType | ComponentAddType[];
-export type ToHTMLOptions = {
+export interface ToHTMLOptions extends OptionAsDocument {
 	/**
 	 * Custom tagName.
 	 */
@@ -3422,920 +3491,281 @@ export type ToHTMLOptions = {
 	 */
 	altQuoteAttr?: boolean;
 	/**
+	 * Keep inline style set intentionally by users with `setStyle({}, { inline: true })`
+	 */
+	keepInlineStyle?: boolean;
+	/**
 	 * You can pass an object of custom attributes to replace with the current ones
 	 * or you can even pass a function to generate attributes dynamically.
 	 */
 	attributes?: Record<string, any> | ((component: Component, attr: Record<string, any>) => Record<string, any>);
-};
+}
 export interface ComponentOptions {
-	em?: EditorModel;
-	config?: DomComponentsConfig;
+	em: EditorModel;
+	config: DomComponentsConfig;
 	frame?: Frame;
 	temporary?: boolean;
 	avoidChildren?: boolean;
 }
-declare class ComponentFrame extends Component {
+declare class ComponentHead extends Component {
 	get defaults(): {
 		type: string;
 		tagName: string;
-		droppable: boolean;
-		resizable: boolean;
-		traits: string[];
-		attributes: {
-			frameborder: string;
-		};
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-	};
-	static isComponent(el: HTMLElement): boolean;
-}
-declare class ComponentImage extends Component {
-	get defaults(): {
-		type: string;
-		tagName: string;
-		void: boolean;
-		droppable: number;
-		editable: number;
-		highlightable: number;
-		resizable: {
-			ratioDefault: number;
-		};
-		traits: string[];
-		src: string;
-		fallback: string;
-		file: string;
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-	};
-	initialize(props: any, opts: any): void;
-	initToolbar(): void;
-	/**
-	 * Returns object of attributes for HTML
-	 * @return {Object}
-	 * @private
-	 */
-	getAttrToHTML(): {
-		[x: string]: any;
-	};
-	getSrcResult(opt?: {
-		fallback?: boolean;
-	}): any;
-	isDefaultSrc(): boolean;
-	/**
-	 * Return a shallow copy of the model's attributes for JSON
-	 * stringification.
-	 * @return {Object}
-	 * @private
-	 */
-	toJSON(opts: Parameters<Component["toJSON"]>[0]): ComponentDefinition;
-	/**
-	 * Parse uri
-	 * @param  {string} uri
-	 * @return {object}
-	 * @private
-	 */
-	parseUri(uri: string): {
-		hostname: string;
-		pathname: string;
-		protocol: string;
-		search: string;
-		hash: string;
-		port: string;
-		query: ObjectStrings;
-	};
-	static isComponent(el: HTMLElement): boolean;
-}
-declare class ComponentText extends Component {
-	get defaults(): {
-		type: string;
-		droppable: boolean;
-		editable: boolean;
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-		traits?: (string | Partial<TraitProperties>)[] | undefined;
-	};
-	initialize(props: any, opts: any): void;
-	__checkInnerChilds(): void;
-}
-declare class ComponentLink extends ComponentText {
-	get defaults(): {
-		type: string;
-		tagName: string;
-		traits: string[];
-		droppable: boolean;
-		editable: boolean;
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-	};
-	static isComponent(el: HTMLElement, opts?: any): any;
-}
-declare class ComponentMap extends ComponentImage {
-	/** @ts-ignore */
-	get defaults(): {
-		type: string;
-		src: string;
-		void: boolean;
-		mapUrl: string;
-		tagName: string;
-		mapType: string;
-		address: string;
-		zoom: string;
-		attributes: {
-			frameborder: number;
-		};
-		toolbar: any;
-		traits: ({
-			label: string;
-			name: string;
-			placeholder: string;
-			changeProp: number;
-			type?: undefined;
-			options?: undefined;
-			min?: undefined;
-			max?: undefined;
-		} | {
-			type: string;
-			label: string;
-			name: string;
-			changeProp: number;
-			options: {
-				value: string;
-				name: string;
-			}[];
-			placeholder?: undefined;
-			min?: undefined;
-			max?: undefined;
-		} | {
-			label: string;
-			name: string;
-			type: string;
-			min: string;
-			max: string;
-			changeProp: number;
-			placeholder?: undefined;
-			options?: undefined;
-		})[];
-		droppable: number;
-		editable: number;
-		highlightable: number;
-		resizable: {
-			ratioDefault: number;
-		};
-		fallback: string;
-		file: string;
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-	};
-	initialize(props: any, opts: any): void;
-	updateSrc(): void;
-	/**
-	 * Returns url of the map
-	 * @return {string}
-	 * @private
-	 */
-	getMapUrl(): string;
-	/**
-	 * Set attributes by src string
-	 * @private
-	 */
-	parseFromSrc(): void;
-	static isComponent(el: HTMLIFrameElement): {
-		type: string;
-		src: string;
-	} | undefined;
-}
-declare class ComponentScript extends Component {
-	get defaults(): {
-		type: string;
-		tagName: string;
-		droppable: boolean;
 		draggable: boolean;
-		layerable: boolean;
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-		traits?: (string | Partial<TraitProperties>)[] | undefined;
-	};
-	static isComponent(el: HTMLImageElement): any;
-}
-declare class ComponentSvg extends Component {
-	get defaults(): {
-		type: string;
-		tagName: string;
 		highlightable: boolean;
-		resizable: {
-			ratioDefault: boolean;
-		};
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-		traits?: (string | Partial<TraitProperties>)[] | undefined;
-	};
-	getName(): any;
-	static isComponent(el: HTMLElement): boolean;
-}
-declare class ComponentSvgIn extends ComponentSvg {
-	get defaults(): {
-		selectable: boolean;
-		hoverable: boolean;
-		layerable: boolean;
-		type: string;
-		tagName: string;
-		highlightable: boolean;
-		resizable: {
-			ratioDefault: boolean;
-		};
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-		traits?: (string | Partial<TraitProperties>)[] | undefined;
-	};
-	static isComponent(el: any, opts?: any): boolean;
-}
-declare class ComponentTable extends Component {
-	get defaults(): {
-		type: string;
-		tagName: string;
-		droppable: string[];
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-		traits?: (string | Partial<TraitProperties>)[] | undefined;
-	};
-	initialize(props: any, opts: any): void;
-	static isComponent(el: HTMLElement): boolean;
-}
-declare class ComponentTableCell extends Component {
-	get defaults(): {
-		type: string;
-		tagName: string;
-		draggable: string[];
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-		traits?: (string | Partial<TraitProperties>)[] | undefined;
+		droppable: DraggableDroppableFn;
+		components?: ComponentDefinitionDefined[] | ComponentDefinitionDefined;
+		traits?: (Partial<TraitProperties> | string)[];
 	};
 	static isComponent(el: HTMLElement): boolean;
 }
-declare class ComponentTableRow extends Component {
+declare class ComponentWrapper extends Component {
 	get defaults(): {
 		tagName: string;
-		draggable: string[];
-		droppable: string[];
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-		traits?: (string | Partial<TraitProperties>)[] | undefined;
+		removable: boolean;
+		copyable: boolean;
+		draggable: boolean;
+		components: never[];
+		traits: never[];
+		doctype: string;
+		head: null;
+		docEl: null;
+		stylable: string[];
 	};
-	static isComponent(el: HTMLElement): boolean;
-}
-declare class ComponentTextNode extends Component {
-	get defaults(): {
-		tagName: string;
-		droppable: boolean;
-		layerable: boolean;
-		selectable: boolean;
-		editable: boolean;
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-		traits?: (string | Partial<TraitProperties>)[] | undefined;
-	};
-	toHTML(): string;
-	__escapeContent(content: string): string;
-	static isComponent(el: HTMLElement): {
-		type: string;
-		content: string;
-	} | undefined;
-}
-declare class ComponentVideo extends ComponentImage {
-	get defaults(): {
-		type: string;
-		tagName: string;
-		videoId: string;
-		void: boolean;
-		provider: string;
-		ytUrl: string;
-		ytncUrl: string;
-		viUrl: string;
-		loop: boolean;
-		poster: string;
-		muted: number;
-		autoplay: boolean;
-		controls: boolean;
-		color: string;
-		list: string;
-		rel: number;
-		modestbranding: number;
-		sources: never[];
-		attributes: {
-			allowfullscreen: string;
-		};
-		droppable: number;
-		editable: number;
-		highlightable: number;
-		resizable: {
-			ratioDefault: number;
-		};
-		traits: string[];
-		src: string;
-		fallback: string;
-		file: string;
-		components?: ComponentDefinitionDefined | ComponentDefinitionDefined[] | undefined;
-	};
-	initialize(props: any, opts: any): void;
-	updatePropsFromAttr(): void;
-	/**
-	 * Update traits by provider
-	 * @private
-	 */
-	updateTraits(): void;
-	/**
-	 * Set attributes by src string
-	 */
-	parseFromSrc(): void;
-	/**
-	 * Update src on change of video ID
-	 * @private
-	 */
-	updateSrc(): void;
-	/**
-	 * Returns object of attributes for HTML
-	 * @return {Object}
-	 * @private
-	 */
-	getAttrToHTML(): {
-		[x: string]: any;
-	};
-	/**
-	 * Return the provider trait
-	 * @return {Object}
-	 * @private
-	 */
-	getProviderTrait(): {
-		type: string;
-		label: string;
-		name: string;
-		changeProp: boolean;
-		options: {
-			value: string;
-			name: string;
-		}[];
-	};
-	/**
-	 * Return traits for the source provider
-	 * @return {Array<Object>}
-	 * @private
-	 */
-	getSourceTraits(): ({
-		type: string;
-		label: string;
-		name: string;
-		changeProp: boolean;
-	} | {
-		label: string;
-		name: string;
-		placeholder: string;
-		changeProp: boolean;
-	} | {
-		label: string;
-		name: string;
-		placeholder: string;
-		changeProp?: undefined;
-	})[];
-	/**
-	 * Return traits for the source provider
-	 * @return {Array<Object>}
-	 * @private
-	 */
-	getYoutubeTraits(): ({
-		type: string;
-		label: string;
-		name: string;
-		changeProp: boolean;
-	} | {
-		label: string;
-		name: string;
-		placeholder: string;
-		changeProp: boolean;
-	})[];
-	/**
-	 * Return traits for the source provider
-	 * @return {Array<Object>}
-	 * @private
-	 */
-	getVimeoTraits(): ({
-		type: string;
-		label: string;
-		name: string;
-		changeProp: boolean;
-	} | {
-		label: string;
-		name: string;
-		placeholder: string;
-		changeProp: boolean;
-	})[];
-	/**
-	 * Return object trait
-	 * @return {Object}
-	 * @private
-	 */
-	getAutoplayTrait(): {
-		type: string;
-		label: string;
-		name: string;
-		changeProp: boolean;
-	};
-	/**
-	 * Return object trait
-	 * @return {Object}
-	 * @private
-	 */
-	getLoopTrait(): {
-		type: string;
-		label: string;
-		name: string;
-		changeProp: boolean;
-	};
-	/**
-	 * Return object trait
-	 * @return {Object}
-	 * @private
-	 */
-	getControlsTrait(): {
-		type: string;
-		label: string;
-		name: string;
-		changeProp: boolean;
-	};
-	/**
-	 * Returns url to youtube video
-	 * @return {string}
-	 * @private
-	 */
-	getYoutubeSrc(): string;
-	/**
-	 * Returns url to youtube no cookie video
-	 * @return {string}
-	 * @private
-	 */
-	getYoutubeNoCookieSrc(): string;
-	/**
-	 * Returns url to vimeo video
-	 * @return {string}
-	 * @private
-	 */
-	getVimeoSrc(): string;
-	static isComponent(el: HTMLVideoElement): any;
-}
-declare class ComponentFrameView extends ComponentView {
-	tagName(): string;
-	initialize(props: any): void;
-	updateSrc(): void;
-	render(): this;
-	__getSrc(): any;
-}
-declare class ComponentImageView extends ComponentView {
-	classEmpty: string;
-	model: ComponentImage;
-	el: HTMLImageElement;
-	tagName(): string;
-	events(): ObjectAny;
-	initialize(props: any): void;
-	/**
-	 * Fetch file if exists
-	 */
-	fetchFile(): void;
-	/**
-	 * Update src attribute
-	 * @private
-	 * */
-	updateSrc(): void;
-	updateClasses(): void;
-	/**
-	 * Open dialog for image changing
-	 * @param  {Object}  e  Event
-	 * @private
-	 * */
-	onActive(ev: Event): void;
-	onError(): void;
-	onLoad(): void;
-	noDrag(ev: Event): boolean;
-	render(): this;
-}
-export interface CustomRTE<T = any> {
-	/**
-	 * If true, the returned HTML content will be parsed into Components, allowing
-	 * the custom RTE to behave in the same way as the native one.
-	 * If false, the HTML content will be used as it is in the canvas and the export code.
-	 */
-	parseContent?: boolean;
-	/**
-	 * Create or enable the custom RTE.
-	 */
-	enable: (el: HTMLElement, rte: T | undefined) => T | Promise<T>;
-	/**
-	 * Disable the custom RTE.
-	 */
-	disable: (el: HTMLElement, rte: T) => any | Promise<any>;
-	/**
-	 * Get HTML content from the custom RTE.
-	 * If not specified, it will use the innerHTML of the element (passed also as `content` in options).
-	 */
-	getContent?: (el: HTMLElement, rte: T | undefined) => string | Promise<string>;
-	/**
-	 * Destroy the custom RTE.
-	 * Will be triggered on editor destroy.
-	 */
-	destroy?: () => void;
-	[key: string]: unknown;
-}
-export interface RichTextEditorConfig {
-	/**
-	 * Class name prefix for styles
-	 * @default 'rte-'
-	 */
-	stylePrefix?: string;
-	/**
-	 * If true, moves the toolbar below the element when the top canvas edge is reached.
-	 * @default true
-	 */
-	adjustToolbar?: boolean;
-	/**
-	 * Default RTE actions.
-	 * @default ['bold', 'italic', 'underline', 'strikethrough', 'link', 'wrap']
-	 */
-	actions?: string[];
-	/**
-	 * Avoid rendering the default RTE UI.
-	 * @default false
-	 */
-	custom?: boolean;
-}
-export interface RichTextEditorAction {
-	name: string;
-	icon: string | HTMLElement;
-	event?: string;
-	attributes?: Record<string, any>;
-	result: (rte: RichTextEditor, action: RichTextEditorAction) => void;
-	update?: (rte: RichTextEditor, action: RichTextEditorAction) => number;
-	state?: (rte: RichTextEditor, doc: Document) => number;
-	btn?: HTMLElement;
-	currentState?: RichTextEditorActionState;
-}
-declare enum RichTextEditorActionState {
-	ACTIVE = 1,
-	INACTIVE = 0,
-	DISABLED = -1
-}
-export interface RichTextEditorOptions {
-	actions?: (RichTextEditorAction | string)[];
-	classes?: Record<string, string>;
-	actionbar?: HTMLElement;
-	actionbarContainer?: HTMLElement;
-	styleWithCSS?: boolean;
-	module?: RichTextEditorModule;
-}
-export type EffectOptions = {
-	event?: Event;
-};
-declare class RichTextEditor {
-	em: EditorModel;
-	settings: RichTextEditorOptions;
-	classes: Record<string, string>;
-	actionbar?: HTMLElement;
-	actions: RichTextEditorAction[];
-	el: HTMLElement;
-	doc: Document;
-	enabled?: boolean;
-	getContent?: () => string;
-	constructor(em: EditorModel, el: HTMLElement & {
-		_rte?: RichTextEditor;
-	}, settings?: RichTextEditorOptions);
-	isCustom(module?: RichTextEditorModule): boolean;
-	destroy(): void;
-	setEl(el: HTMLElement): void;
-	updateActiveActions(): void;
-	enable(opts: EffectOptions): this;
-	disable(): this;
-	__toggleEffects(enable?: boolean, opts?: EffectOptions): this;
-	__onKeydown(event: Event): void;
-	__onPaste(ev: Event): void;
-	/**
-	 * Sync actions with the current RTE
-	 */
-	syncActions(): void;
-	/**
-	 * Add new action to the actionbar
-	 * @param {Object} action
-	 * @param {Object} [opts={}]
-	 */
-	addAction(action: RichTextEditorAction, opts?: {
-		sync?: boolean;
-	}): void;
-	/**
-	 * Get the array of current actions
-	 * @return {Array}
-	 */
-	getActions(): RichTextEditorAction[];
-	/**
-	 * Returns the Selection instance
-	 * @return {Selection}
-	 */
-	selection(): Selection | null;
-	/**
-	 * Wrapper around [execCommand](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand) to allow
-	 * you to perform operations like `insertText`
-	 * @param  {string} command Command name
-	 * @param  {any} [value=null Command's arguments
-	 */
-	exec(command: string, value?: string): void;
-	/**
-	 * Get the actionbar element
-	 * @return {HTMLElement}
-	 */
-	actionbarEl(): HTMLElement | undefined;
-	/**
-	 * Set custom HTML to the selection, useful as the default 'insertHTML' command
-	 * doesn't work in the same way on all browsers
-	 * @param  {string} value HTML string
-	 */
-	insertHTML(value: string | HTMLElement, { select }?: {
-		select?: boolean;
-	}): void;
-}
-export type RichTextEditorEvent = "rte:enable" | "rte:disable" | "rte:custom";
-export interface ModelRTE {
-	currentView?: ComponentView;
-}
-declare class RichTextEditorModule extends Module<RichTextEditorConfig & {
-	pStylePrefix?: string;
-}> {
-	pfx: string;
-	toolbar: HTMLElement;
-	globalRte?: RichTextEditor;
-	actionbar?: HTMLElement;
-	lastEl?: HTMLElement;
-	actions?: (RichTextEditorAction | string)[];
-	customRte?: CustomRTE;
-	model: Model<ModelRTE>;
-	__dbdTrgCustom: Debounced;
-	events: {
-		enable: string;
-		disable: string;
-		custom: string;
-	};
-	/**
-	 * Get configuration object
-	 * @name getConfig
-	 * @function
-	 * @return {Object}
-	 */
-	constructor(em: EditorModel);
-	onLoad(): void;
-	__trgCustom(): void;
-	destroy(): void;
-	/**
-	 * Post render callback
-	 * @param  {View} ev
-	 * @private
-	 */
-	postRender(ev: any): void;
-	/**
-	 * Init the built-in RTE
-	 * @param  {HTMLElement} el
-	 * @return {RichTextEditor}
-	 * @private
-	 */
-	initRte(el: HTMLElement): RichTextEditor;
-	/**
-	 * Add a new action to the built-in RTE toolbar
-	 * @param {string} name Action name
-	 * @param {Object} action Action options
-	 * @example
-	 * rte.add('bold', {
-	 *   icon: '<b>B</b>',
-	 *   attributes: {title: 'Bold'},
-	 *   result: rte => rte.exec('bold')
-	 * });
-	 * rte.add('link', {
-	 *   icon: document.getElementById('t'),
-	 *   attributes: { title: 'Link' },
-	 *   // Example on how to wrap selected content
-	 *   result: rte => rte.insertHTML(`<a href="#">${rte.selection()}</a>`)
-	 * });
-	 * // An example with fontSize
-	 * rte.add('fontSize', {
-	 *   icon: `<select class="gjs-field">
-	 *         <option>1</option>
-	 *         <option>4</option>
-	 *         <option>7</option>
-	 *       </select>`,
-	 *     // Bind the 'result' on 'change' listener
-	 *   event: 'change',
-	 *   result: (rte, action) => rte.exec('fontSize', action.btn.firstChild.value),
-	 *   // Callback on any input change (mousedown, keydown, etc..)
-	 *   update: (rte, action) => {
-	 *     const value = rte.doc.queryCommandValue(action.name);
-	 *     if (value != 'false') { // value is a string
-	 *       action.btn.firstChild.value = value;
-	 *     }
-	 *    }
-	 *   })
-	 * // An example with state
-	 * const isValidAnchor = (rte) => {
-	 *   // a utility function to help determine if the selected is a valid anchor node
-	 *   const anchor = rte.selection().anchorNode;
-	 *   const parentNode  = anchor && anchor.parentNode;
-	 *   const nextSibling = anchor && anchor.nextSibling;
-	 *   return (parentNode && parentNode.nodeName == 'A') || (nextSibling && nextSibling.nodeName == 'A')
-	 * }
-	 * rte.add('toggleAnchor', {
-	 *   icon: `<span style="transform:rotate(45deg)">&supdsub;</span>`,
-	 *   state: (rte, doc) => {
-	 *    if (rte && rte.selection()) {
-	 *      // `btnState` is a integer, -1 for disabled, 0 for inactive, 1 for active
-	 *      return isValidAnchor(rte) ? btnState.ACTIVE : btnState.INACTIVE;
-	 *    } else {
-	 *      return btnState.INACTIVE;
-	 *    }
-	 *   },
-	 *   result: (rte, action) => {
-	 *     if (isValidAnchor(rte)) {
-	 *       rte.exec('unlink');
-	 *     } else {
-	 *       rte.insertHTML(`<a class="link" href="">${rte.selection()}</a>`);
-	 *     }
-	 *   }
-	 * })
-	 */
-	add(name: string, action?: Partial<RichTextEditorAction>): void;
-	/**
-	 * Get the action by its name
-	 * @param {string} name Action name
-	 * @return {Object}
-	 * @example
-	 * const action = rte.get('bold');
-	 * // {name: 'bold', ...}
-	 */
-	get(name: string): RichTextEditorAction | undefined;
-	/**
-	 * Get all actions
-	 * @return {Array}
-	 */
-	getAll(): RichTextEditorAction[];
-	/**
-	 * Remove the action from the toolbar
-	 * @param  {string} name
-	 * @return {Object} Removed action
-	 * @example
-	 * const action = rte.remove('bold');
-	 * // {name: 'bold', ...}
-	 */
-	remove(name: string): RichTextEditorAction | undefined;
-	/**
-	 * Run action command.
-	 * @param action Action to run
-	 * @example
-	 * const action = rte.get('bold');
-	 * rte.run(action) // or rte.run('bold')
-	 */
-	run(action: string | RichTextEditorAction): void;
-	/**
-	 * Get the toolbar element
-	 * @return {HTMLElement}
-	 */
-	getToolbarEl(): HTMLElement;
-	/**
-	 * Triggered when the offset of the editor is changed
-	 * @private
-	 */
-	updatePosition(): void;
-	/**
-	 * Enable rich text editor on the element
-	 * @param {View} view Component view
-	 * @param {Object} rte The instance of already defined RTE
-	 * @private
-	 * */
-	enable(view: ComponentView, rte: RichTextEditor, opts?: any): Promise<any>;
-	getContent(view: ComponentView, rte: RichTextEditor): Promise<string>;
-	hideToolbar(): void;
-	/**
-	 * Unbind rich text editor from the element
-	 * @param {View} view
-	 * @param {Object} rte The instance of already defined RTE
-	 * @private
-	 * */
-	disable(view: ComponentView, rte?: RichTextEditor): void;
-}
-declare class ComponentTextView extends ComponentView {
-	rte?: RichTextEditorModule;
-	rteEnabled?: boolean;
-	activeRte?: RichTextEditor;
-	lastContent?: string;
-	events(): {
-		dblclick: string;
-		input: string;
-	};
-	initialize(props: any): void;
-	updateContentText(m: any, v: any, opts?: {
-		fromDisable?: boolean;
-	}): void;
-	canActivate(): {
-		result: boolean;
-		delegate: Component | undefined;
-	};
-	/**
-	 * Enable element content editing
-	 * @private
-	 * */
-	onActive(ev: Event): Promise<void>;
-	onDisable(): void;
-	/**
-	 * Disable element content editing
-	 * @private
-	 * */
-	disableEditing(opts?: {}): Promise<void>;
-	/**
-	 * get content from RTE
-	 * @return string
-	 */
-	getContent(): Promise<string>;
-	/**
-	 * Merge content from the DOM to the model
-	 */
-	syncContent(opts?: ObjectAny): Promise<void>;
-	insertComponent(content: ComponentDefinition, opts?: {}): Component | Component[];
-	/**
-	 * Callback on input event
-	 * @param  {Event} e
-	 */
-	onInput(): void;
-	/**
-	 * Isolate disable propagation method
-	 * @param {Event}
-	 * @private
-	 * */
-	disablePropagation(e: Event): void;
-	/**
-	 * Enable/Disable events
-	 * @param {Boolean} enable
-	 */
-	toggleEvents(enable?: boolean): void;
-}
-declare class ComponentLinkView extends ComponentTextView {
-	render(): this;
-}
-declare class ComponentMapView extends ComponentImageView {
-	iframe?: HTMLIFrameElement;
-	tagName(): string;
-	events(): {};
-	initialize(props: any): void;
-	/**
-	 * Update the map on the canvas
-	 * @private
-	 */
-	updateSrc(): void;
-	getIframe(): HTMLIFrameElement;
-	render(): this;
-}
-declare class ComponentScriptView extends ComponentView {
-	tagName(): string;
-	events(): {};
-	render(): this;
-}
-declare class ComponentSvgView extends ComponentView {
-	_createElement(tagName: string): SVGElement;
-}
-declare class ComponentTableCellView extends ComponentView {
-}
-declare class ComponentTableRowView extends ComponentView {
-}
-declare class ComponentTextNodeView extends ComponentView {
-	_setAttributes(): void;
-	renderAttributes(): void;
-	updateStatus(): void;
-	updateClasses(): void;
-	setAttribute(): void;
-	updateAttributes(): void;
-	initClasses(): void;
-	initComponents(): void;
-	delegateEvents(): this;
-	_createElement(): Text;
-	render(): this;
-}
-declare class ComponentVideoView extends ComponentImageView {
-	videoEl?: HTMLVideoElement | HTMLIFrameElement;
-	model: ComponentVideo;
-	tagName(): string;
-	events(): {};
-	initialize(): void;
-	/**
-	 * Rerender on update of the provider
-	 * @private
-	 */
-	updateProvider(): void;
-	/**
-	 * Update the source of the video
-	 * @private
-	 */
-	updateSrc(): void;
-	/**
-	 * Update video parameters
-	 * @private
-	 */
-	updateVideo(): void;
-	renderByProvider(prov: string): HTMLIFrameElement | HTMLVideoElement;
-	renderSource(): HTMLVideoElement;
-	renderYoutube(): HTMLIFrameElement;
-	renderYoutubeNoCookie(): HTMLIFrameElement;
-	renderVimeo(): HTMLIFrameElement;
-	initVideoEl(el: HTMLElement): void;
-	render(): this;
+	constructor(...args: ConstructorParameters<typeof Component>);
+	get head(): ComponentHead;
+	get docEl(): Component;
+	get doctype(): string;
+	toHTML(opts?: ToHTMLOptions): string;
+	__postAdd(): void;
+	__postRemove(): void;
+	static isComponent(): boolean;
 }
 declare class ComponentWrapperView extends ComponentView {
 	tagName(): string;
+}
+export interface SymbolInfo {
+	isSymbol: boolean;
+	isMain: boolean;
+	isInstance: boolean;
+	isRoot: boolean;
+	main?: Component;
+	instances: Component[];
+	relatives: Component[];
+}
+export interface ParseStringOptions extends AddOptions, OptionAsDocument, WithHTMLParserOptions {
+	keepIds?: string[];
+}
+declare enum ComponentsEvents {
+	/**
+	 * @event `component:add` New component added.
+	 * @example
+	 * editor.on('component:add', (component) => { ... });
+	 */
+	add = "component:add",
+	/**
+	 * @event `component:remove` Component removed.
+	 * @example
+	 * editor.on('component:remove', (component) => { ... });
+	 */
+	remove = "component:remove",
+	removeBefore = "component:remove:before",
+	/**
+	 * @event `component:create` Component created.
+	 * @example
+	 * editor.on('component:create', (component) => { ... });
+	 */
+	create = "component:create",
+	/**
+	 * @event `component:update` Component is updated, the component is passed as an argument to the callback.
+	 * @example
+	 * editor.on('component:update', (component) => { ... });
+	 */
+	update = "component:update",
+	updateInside = "component:update-inside",
+	/**
+	 * @event `symbol:main:add` Added new main symbol.
+	 * @example
+	 * editor.on('symbol:main:add', ({ component }) => { ... });
+	 */
+	symbolMainAdd = "symbol:main:add",
+	/**
+	 * @event `symbol:main:update` Main symbol updated.
+	 * @example
+	 * editor.on('symbol:main:update', ({ component }) => { ... });
+	 */
+	symbolMainUpdate = "symbol:main:update",
+	symbolMainUpdateDeep = "symbol:main:update-deep",
+	/**
+	 * @event `symbol:main:remove` Main symbol removed.
+	 * @example
+	 * editor.on('symbol:main:remove', ({ component }) => { ... });
+	 */
+	symbolMainRemove = "symbol:main:remove",
+	/**
+	 * @event `symbol:main` Catch-all event related to main symbol updates.
+	 * @example
+	 * editor.on('symbol:main', ({ event, component }) => { ... });
+	 */
+	symbolMain = "symbol:main",
+	/**
+	 * @event `symbol:instance:add` Added new root instance symbol.
+	 * @example
+	 * editor.on('symbol:instance:add', ({ component }) => { ... });
+	 */
+	symbolInstanceAdd = "symbol:instance:add",
+	/**
+	 * @event `symbol:instance:remove` Root instance symbol removed.
+	 * @example
+	 * editor.on('symbol:instance:remove', ({ component }) => { ... });
+	 */
+	symbolInstanceRemove = "symbol:instance:remove",
+	/**
+	 * @event `symbol:instance` Catch-all event related to instance symbol updates.
+	 * @example
+	 * editor.on('symbol:instance', ({ event, component }) => { ... });
+	 */
+	symbolInstance = "symbol:instance",
+	/**
+	 * @event `symbol` Catch-all event for any symbol update (main or instance).
+	 * @example
+	 * editor.on('symbol', () => { ... });
+	 */
+	symbol = "symbol"
+}
+export interface PropsComponentUpdate {
+	component: Component;
+	changed: ObjectAny;
+	options: ObjectAny;
+}
+declare class Symbols extends Components {
+	refreshDbn: Debounced;
+	constructor(...args: ConstructorParameters<typeof Components>);
+	removeChildren(component: Component, coll?: Components, opts?: any): void;
+	onAdd(...args: Parameters<Components["onAdd"]>): void;
+	onUpdate(props: PropsComponentUpdate): void;
+	onUpdateDeep(props: PropsComponentUpdate): void;
+	refresh(): void;
+	__trgEvent(event: string, props: ObjectAny, isInstance?: boolean): void;
+}
+export declare class Blocks extends CollectionWithCategories<Block> {
+	em: EditorModel;
+	constructor(coll: any[], options: {
+		em: EditorModel;
+	});
+	getCategories(): Categories;
+	handleAdd(model: Block): void;
+}
+/** @private */
+export interface BlockProperties {
+	/**
+	 * Block label, eg. `My block`
+	 */
+	label: string;
+	/**
+	 * The content of the block. Might be an HTML string or a [Component Defintion](/modules/Components.html#component-definition)
+	 */
+	content: string | ComponentDefinition | (string | ComponentDefinition)[];
+	/**
+	 * HTML string for the media/icon of the block, eg. `<svg ...`, `<img ...`, etc.
+	 * @default ''
+	 */
+	media?: string;
+	/**
+	 * Block category, eg. `Basic blocks`
+	 * @default ''
+	 */
+	category?: string | CategoryProperties;
+	/**
+	 * If true, triggers the `active` event on the dropped component.
+	 * @default false
+	 */
+	activate?: boolean;
+	/**
+	 * If true, the dropped component will be selected.
+	 * @default false
+	 */
+	select?: boolean;
+	/**
+	 * If true, all IDs of dropped components and their styles will be changed.
+	 * @default false
+	 */
+	resetId?: boolean;
+	/**
+	 * Disable the block from being interacted.
+	 * @default false
+	 */
+	disable?: boolean;
+	/**
+	 * Custom behavior on click.
+	 * @example
+	 * onClick: (block, editor) => editor.getWrapper().append(block.get('content'))
+	 */
+	onClick?: (block: Block, editor: Editor) => void;
+	/**
+	 * Block attributes
+	 */
+	attributes?: Record<string, any>;
+	id?: string;
+	/**
+	 * @deprecated
+	 */
+	activeOnRender?: boolean;
+}
+/**
+ * @property {String} label Block label, eg. `My block`
+ * @property {String|Object} content The content of the block. Might be an HTML string or a [Component Defintion](/modules/Components.html#component-definition)
+ * @property {String} [media=''] HTML string for the media/icon of the block, eg. `<svg ...`, `<img ...`, etc.
+ * @property {String} [category=''] Block category, eg. `Basic blocks`
+ * @property {Boolean} [activate=false] If true, triggers the `active` event on the dropped component.
+ * @property {Boolean} [select=false] If true, the dropped component will be selected.
+ * @property {Boolean} [resetId=false] If true, all IDs of dropped components and their styles will be changed.
+ * @property {Boolean} [disable=false] Disable the block from being interacted
+ * @property {Function} [onClick] Custom behavior on click, eg. `(block, editor) => editor.getWrapper().append(block.get('content'))`
+ * @property {Object} [attributes={}] Block attributes to apply in the view element
+ *
+ * @module docsjs.Block
+ */
+export declare class Block extends Model<BlockProperties> {
+	defaults(): {
+		label: string;
+		content: string;
+		media: string;
+		category: string;
+		activate: boolean;
+		select: undefined;
+		resetId: boolean;
+		disable: boolean;
+		onClick: undefined;
+		attributes: {};
+	};
+	get category(): Category | undefined;
+	get parent(): Blocks;
+	/**
+	 * Get block id
+	 * @returns {String}
+	 */
+	getId(): string;
+	/**
+	 * Get block label
+	 * @returns {String}
+	 */
+	getLabel(): string;
+	/**
+	 * Get block media
+	 * @returns {String}
+	 */
+	getMedia(): string | undefined;
+	/**
+	 * Get block content
+	 * @returns {Object|String|Array<Object|String>}
+	 */
+	getContent(): string | ComponentDefinition | (string | ComponentDefinition)[] | undefined;
+	/**
+	 * Get block category label
+	 * @returns {String}
+	 */
+	getCategoryLabel(): string;
 }
 export type ComponentEvent = "component:create" | "component:mount" | "component:add" | "component:remove" | "component:remove:before" | "component:clone" | "component:update" | "component:styleUpdate" | "component:selected" | "component:deselected" | "component:toggled" | "component:type:add" | "component:type:update" | "component:drag:start" | "component:drag" | "component:drag:end" | "component:resize";
 export interface ComponentModelDefinition extends IComponent {
@@ -4349,6 +3779,7 @@ export interface AddComponentTypeOptions {
 	isComponent?: (el: HTMLElement) => boolean | ComponentDefinitionDefined | undefined;
 	model?: Partial<ComponentModelDefinition> & ThisType<ComponentModelDefinition & Component>;
 	view?: Partial<ComponentViewDefinition> & ThisType<ComponentViewDefinition & ComponentView>;
+	block?: boolean | Partial<BlockProperties>;
 	extend?: string;
 	extendView?: string;
 	extendFn?: string[];
@@ -4375,67 +3806,7 @@ export interface CanMoveResult {
 	source?: Component | null;
 }
 export declare class ComponentManager extends ItemManagerModule<DomComponentsConfig, any> {
-	componentTypes: ({
-		id: string;
-		model: typeof ComponentTableCell;
-		view: typeof ComponentTableCellView;
-	} | {
-		id: string;
-		model: typeof ComponentTableRow;
-		view: typeof ComponentTableRowView;
-	} | {
-		id: string;
-		model: typeof ComponentTable;
-		view: any;
-	} | {
-		id: string;
-		model: typeof ComponentMap;
-		view: typeof ComponentMapView;
-	} | {
-		id: string;
-		model: typeof ComponentLink;
-		view: typeof ComponentLinkView;
-	} | {
-		id: string;
-		model: typeof ComponentVideo;
-		view: typeof ComponentVideoView;
-	} | {
-		id: string;
-		model: typeof ComponentImage;
-		view: typeof ComponentImageView;
-	} | {
-		id: string;
-		model: typeof ComponentScript;
-		view: typeof ComponentScriptView;
-	} | {
-		id: string;
-		model: typeof ComponentSvgIn;
-		view: typeof ComponentSvgView;
-	} | {
-		id: string;
-		model: typeof ComponentSvg;
-		view: typeof ComponentSvgView;
-	} | {
-		id: string;
-		model: typeof ComponentFrame;
-		view: typeof ComponentFrameView;
-	} | {
-		id: string;
-		model: typeof ComponentTextNode;
-		view: typeof ComponentTextNodeView;
-	} | {
-		id: string;
-		model: typeof ComponentText;
-		view: typeof ComponentTextView;
-	} | {
-		id: string;
-		model: typeof ComponentWrapper;
-		view: typeof ComponentWrapperView;
-	} | {
-		id: string;
-		model: typeof Component;
-		view: typeof ComponentView;
-	})[];
+	componentTypes: ComponentStackItem[];
 	componentsById: {
 		[id: string]: Component;
 	};
@@ -4450,7 +3821,10 @@ export declare class ComponentManager extends ItemManagerModule<DomComponentsCon
 	 * @private
 	 */
 	storageKey: string;
+	keySymbols: string;
 	shallow?: Component;
+	symbols: Symbols;
+	events: typeof ComponentsEvents;
 	/**
 	 * Initialize module. Called on a new instance of the editor with configurations passed
 	 * inside 'domComponents' field
@@ -4458,8 +3832,11 @@ export declare class ComponentManager extends ItemManagerModule<DomComponentsCon
 	 * @private
 	 */
 	constructor(em: EditorModel);
+	postLoad(): void;
 	load(data: any): any;
-	store(): {};
+	store(): {
+		[x: string]: Symbols;
+	};
 	/**
 	 * Returns the main wrapper.
 	 * @return {Object}
@@ -4595,67 +3972,7 @@ export declare class ComponentManager extends ItemManagerModule<DomComponentsCon
 	 * Return the array of all types
 	 * @return {Array}
 	 */
-	getTypes(): ({
-		id: string;
-		model: typeof ComponentTableCell;
-		view: typeof ComponentTableCellView;
-	} | {
-		id: string;
-		model: typeof ComponentTableRow;
-		view: typeof ComponentTableRowView;
-	} | {
-		id: string;
-		model: typeof ComponentTable;
-		view: any;
-	} | {
-		id: string;
-		model: typeof ComponentMap;
-		view: typeof ComponentMapView;
-	} | {
-		id: string;
-		model: typeof ComponentLink;
-		view: typeof ComponentLinkView;
-	} | {
-		id: string;
-		model: typeof ComponentVideo;
-		view: typeof ComponentVideoView;
-	} | {
-		id: string;
-		model: typeof ComponentImage;
-		view: typeof ComponentImageView;
-	} | {
-		id: string;
-		model: typeof ComponentScript;
-		view: typeof ComponentScriptView;
-	} | {
-		id: string;
-		model: typeof ComponentSvgIn;
-		view: typeof ComponentSvgView;
-	} | {
-		id: string;
-		model: typeof ComponentSvg;
-		view: typeof ComponentSvgView;
-	} | {
-		id: string;
-		model: typeof ComponentFrame;
-		view: typeof ComponentFrameView;
-	} | {
-		id: string;
-		model: typeof ComponentTextNode;
-		view: typeof ComponentTextNodeView;
-	} | {
-		id: string;
-		model: typeof ComponentText;
-		view: typeof ComponentTextView;
-	} | {
-		id: string;
-		model: typeof ComponentWrapper;
-		view: typeof ComponentWrapperView;
-	} | {
-		id: string;
-		model: typeof Component;
-		view: typeof ComponentView;
-	})[];
+	getTypes(): ComponentStackItem<Component, ComponentView<Component>>[];
 	selectAdd(component: Component, opts?: {}): void;
 	selectRemove(component: Component, opts?: {}): void;
 	/**
@@ -4673,6 +3990,50 @@ export declare class ComponentManager extends ItemManagerModule<DomComponentsCon
 	 * cmp.isComponent({}); // false
 	 */
 	isComponent(obj?: ObjectAny): obj is Component;
+	/**
+	 * Add a new symbol from a component.
+	 * If the passed component is not a symbol, it will be converted to an instance and will return the main symbol.
+	 * If the passed component is already an instance, a new instance will be created and returned.
+	 * If the passed component is the main symbol, a new instance will be created and returned.
+	 * @param {[Component]} component Component from which create a symbol.
+	 * @returns {[Component]}
+	 * @example
+	 * const symbol = cmp.addSymbol(editor.getSelected());
+	 * // cmp.getSymbolInfo(symbol).isSymbol === true;
+	 */
+	addSymbol(component: Component): Component | undefined;
+	/**
+	 * Get the array of main symbols.
+	 * @returns {Array<[Component]>}
+	 * @example
+	 * const symbols = cmp.getSymbols();
+	 * // [Component, Component, ...]
+	 * // Removing the main symbol will detach all the relative instances.
+	 * symbols[0].remove();
+	 */
+	getSymbols(): Component[];
+	/**
+	 * Detach symbol instance from the main one.
+	 * The passed symbol instance will become a regular component.
+	 * @param {[Component]} component The component symbol to detach.
+	 * @example
+	 * const cmpInstance = editor.getSelected();
+	 * // cmp.getSymbolInfo(cmpInstance).isInstance === true;
+	 * cmp.detachSymbol(cmpInstance);
+	 * // cmp.getSymbolInfo(cmpInstance).isInstance === false;
+	 */
+	detachSymbol(component: Component): void;
+	/**
+	 * Get info about the symbol.
+	 * @param {[Component]} component Component symbol from which to get the info.
+	 * @returns {Object} Object containing symbol info.
+	 * @example
+	 * cmp.getSymbolInfo(editor.getSelected());
+	 * // > { isSymbol: true, isMain: false, isInstance: true, ... }
+	 */
+	getSymbolInfo(component: Component, opts?: {
+		withChanges?: string;
+	}): SymbolInfo;
 	/**
 	 * Check if a component can be moved inside another one.
 	 * @param {[Component]} target The target component is the one that is supposed to receive the source one.
@@ -4703,9 +4064,13 @@ export declare class ComponentManager extends ItemManagerModule<DomComponentsCon
 	destroy(): void;
 }
 export interface ComponentsOptions {
-	em?: EditorModel;
+	em: EditorModel;
 	config?: DomComponentsConfig;
 	domc?: ComponentManager;
+}
+export interface AddComponentOptions extends AddOptions {
+	previousModels?: Component[];
+	keepIds?: string[];
 }
 export declare class Components extends Collection</**
  * Keep this format to avoid errors in TS bundler */ 
@@ -4716,8 +4081,8 @@ Component> {
 	em: EditorModel;
 	domc?: ComponentManager;
 	parent?: Component;
-	__firstAdd?: any;
-	initialize(models: any, opt?: ComponentsOptions): void;
+	constructor(models: any, opt: ComponentsOptions);
+	get events(): typeof ComponentsEvents;
 	resetChildren(models: Components, opts?: {
 		previousModels?: Component[];
 		keepIds?: string[];
@@ -4729,24 +4094,390 @@ Component> {
 	removeChildren(removed: Component, coll?: Components, opts?: any): void;
 	/** @ts-ignore */
 	model(attrs: Partial<ComponentProperties>, options: any): Component;
-	parseString(value: string, opt?: AddOptions & {
-		temporary?: boolean;
-		keepIds?: string[];
-	}): ComponentDefinitionDefined | ComponentDefinitionDefined[];
-	/** @ts-ignore */
-	add(models: ComponentAdd, opt?: AddOptions & {
-		previousModels?: Component[];
-		keepIds?: string[];
-	}): any[];
+	parseString(value: string, opt?: ParseStringOptions): ComponentDefinitionDefined | ComponentDefinitionDefined[];
+	add(model: Exclude<ComponentAddType, string>, opt?: AddComponentOptions): Component;
+	add(models: ComponentAddType[], opt?: AddComponentOptions): Component[];
+	add(models: ComponentAdd, opt?: AddComponentOptions): Component | Component[];
 	/**
 	 * Process component definition.
 	 */
-	processDef(mdl: any): any;
+	processDef(mdl: Component | ComponentDefinition | ComponentDefinitionDefined): Component | ComponentDefinitionDefined | ComponentDefinition;
 	onAdd(model: Component, c?: any, opts?: {
 		temporary?: boolean;
 	}): void;
 }
+export interface LayerManagerConfig {
+	stylePrefix?: string;
+	/**
+	 * Specify the element to use as a container, string (query) or HTMLElement.
+	 * With the empty value, nothing will be rendered.
+	 * @default ''
+	 */
+	appendTo?: string | HTMLElement;
+	/**
+	 * Enable/Disable globally the possibility to sort layers.
+	 * @default true
+	 */
+	sortable?: boolean;
+	/**
+	 * Enable/Disable globally the possibility to hide layers.
+	 * @default true
+	 */
+	hidable?: boolean;
+	/**
+	 * Hide textnodes.
+	 * @default true
+	 */
+	hideTextnode?: boolean;
+	/**
+	 * Indicate a query string of the element to be selected as the root of layers.
+	 * By default the root is the wrapper.
+	 * @default ''
+	 */
+	root?: string;
+	/**
+	 * Indicates if the wrapper is visible in layers.
+	 * @default true
+	 */
+	showWrapper?: boolean;
+	/**
+	 * Show hovered components in canvas.
+	 * @default true
+	 */
+	showHover?: boolean;
+	/**
+	 * Scroll to selected component in Canvas when it's selected in Layers.
+	 * true, false or `scrollIntoView`-like options,
+	 * `block: 'nearest'` avoids the issue of window scrolling.
+	 * @default { behavior: 'smooth', block: 'nearest' }
+	 */
+	scrollCanvas?: boolean | ScrollIntoViewOptions;
+	/**
+	 * Scroll to selected component in Layers when it's selected in Canvas.
+	 * @default { behavior: 'auto', block: 'nearest' }
+	 */
+	scrollLayers?: boolean | ScrollIntoViewOptions;
+	/**
+	 * Highlight when a layer component is hovered.
+	 * @default true
+	 */
+	highlightHover?: boolean;
+	/**
+	 * Avoid rendering the default layer manager.
+	 * @default false
+	 */
+	custom?: boolean;
+	/**
+	 * WARNING: Experimental option.
+	 * A callback triggered once the component layer is initialized.
+	 * Useful to trigger updates on some component prop change.
+	 * @example
+	 * onInit({ component, render, listenTo }) {
+	 *  listenTo(component, 'change:some-prop', render);
+	 * };
+	 */
+	onInit?: () => void;
+	/**
+	 * WARNING: Experimental option.
+	 * A callback triggered once the component layer is rendered.
+	 * A callback useful to update the layer DOM on some component change
+	 * @example
+	 * onRender({ component, el }) { // el is the DOM of the layer
+	 *  if (component.get('some-prop')) {
+	 *    // do changes using the `el` DOM
+	 *  }
+	 * }
+	 */
+	onRender?: () => void;
+	/**
+	 * Extend Layer view object (view/ItemView.js)
+	 * @example
+	 * extend: {
+	 *   setName(name) {
+	 *     // this.model is the component of the layer
+	 *     this.model.set('another-prop-for-name', name);
+	 *   },
+	 * },
+	 */
+	extend?: Record<string, any>;
+}
+export interface LayerData {
+	name: string;
+	open: boolean;
+	selected: boolean;
+	hovered: boolean;
+	visible: boolean;
+	locked: boolean;
+	components: Component[];
+}
+declare class LayerManager extends Module<LayerManagerConfig> {
+	model: ModuleModel;
+	__ctn?: HTMLElement;
+	view?: View;
+	events: {
+		all: string;
+		root: string;
+		component: string;
+		custom: string;
+	};
+	constructor(em: EditorModel);
+	onLoad(): void;
+	/**
+	 * Update the root layer with another component.
+	 * @param {[Component]|String} component Component to be set as root
+	 * @return {[Component]}
+	 * @example
+	 * const component = editor.getSelected();
+	 * layers.setRoot(component);
+	 */
+	setRoot(component: Component | string): Component;
+	/**
+	 * Get the current root layer.
+	 * @return {[Component]}
+	 * @example
+	 * const layerRoot = layers.getRoot();
+	 */
+	getRoot(): Component;
+	/**
+	 * Get valid layer child components (eg. excludes non layerable components).
+	 * @param {[Component]} component Component from which you want to get child components
+	 * @returns {Array<[Component]>}
+	 * @example
+	 * const component = editor.getSelected();
+	 * const components = layers.getComponents(component);
+	 * console.log(components);
+	 */
+	getComponents(component: Component): Component[];
+	/**
+	 * Update the layer open state of the component.
+	 * @param {[Component]} component Component to update
+	 * @param {Boolean} value
+	 */
+	setOpen(component: Component, value: boolean): void;
+	/**
+	 * Check the layer open state of the component.
+	 * @param {[Component]} component
+	 * @returns {Boolean}
+	 */
+	isOpen(component: Component): boolean;
+	/**
+	 * Update the layer visibility state of the component.
+	 * @param {[Component]} component Component to update
+	 * @param {Boolean} value
+	 */
+	setVisible(component: Component, value: boolean): void;
+	/**
+	 * Check the layer visibility state of the component.
+	 * @param {[Component]} component
+	 * @returns {Boolean}
+	 */
+	isVisible(component: Component): boolean;
+	/**
+	 * Update the layer locked state of the component.
+	 * @param {[Component]} component Component to update
+	 * @param {Boolean} value
+	 */
+	setLocked(component: Component, value: boolean): void;
+	/**
+	 * Check the layer locked state of the component.
+	 * @param {[Component]} component
+	 * @returns {Boolean}
+	 */
+	isLocked(component: Component): boolean;
+	/**
+	 * Update the layer name of the component.
+	 * @param {[Component]} component Component to update
+	 * @param {String} value New name
+	 */
+	setName(component: Component, value: string): void;
+	/**
+	 * Get the layer name of the component.
+	 * @param {[Component]} component
+	 * @returns {String} Component layer name
+	 */
+	getName(component: Component): any;
+	/**
+	 * Get layer data from a component.
+	 * @param {[Component]} component Component from which you want to read layer data.
+	 * @returns {Object} Object containing the layer data.
+	 * @example
+	 * const component = editor.getSelected();
+	 * const layerData = layers.getLayerData(component);
+	 * console.log(layerData);
+	 */
+	getLayerData(component: Component): LayerData;
+	setLayerData(component: Component, data: Partial<Omit<LayerData, "components">>, opts?: {}): void;
+	/**
+	 * Triggered when the selected component is changed
+	 * @private
+	 */
+	componentChanged(sel?: Component, opts?: {}): void;
+	getAll(): View | undefined;
+	render(): HTMLElement;
+	destroy(): void;
+	__onRootChange(): void;
+	__getLayerFromComponent(cmp: Component): Component;
+	__onComponent(component: Component): void;
+	__isLayerable(cmp: Component): boolean;
+	__trgCustom(opts?: any): void;
+	updateLayer(component: Component, opts?: any): void;
+}
+declare class ItemsView extends View {
+	items: ItemView[];
+	opt: any;
+	config: any;
+	parentView: ItemView;
+	module: LayerManager;
+	/** @ts-ignore */
+	collection: Components;
+	constructor(opt?: any);
+	removeChildren(removed: Component): void;
+	/**
+	 * Add to collection
+	 * @param Object Model
+	 *
+	 * @return Object
+	 * */
+	addTo(model: Component): void;
+	/**
+	 * Add new object to collection
+	 * @param  Object  Model
+	 * @param  Object   Fragment collection
+	 * @param  integer  Index of append
+	 *
+	 * @return Object Object created
+	 * */
+	addToCollection(model: Component, fragment: DocumentFragment | null, index?: number): HTMLElement;
+	remove(...args: [
+	]): this;
+	render(): this;
+}
+export type ItemViewProps = ViewOptions & {
+	ItemView: ItemView;
+	level: number;
+	config: any;
+	opened: {};
+	model: Component;
+	module: LayerManager;
+	sorter: any;
+	parentView: ItemView;
+};
+declare class ItemView extends View {
+	events(): {
+		"mousedown [data-toggle-move]": string;
+		"touchstart [data-toggle-move]": string;
+		"click [data-toggle-visible]": string;
+		"click [data-toggle-open]": string;
+		"click [data-toggle-select]": string;
+		"mouseover [data-toggle-select]": string;
+		"mouseout [data-toggle-select]": string;
+		"dblclick [data-name]": string;
+		"keydown [data-name]": string;
+		"focusout [data-name]": string;
+	};
+	template(model: Component): string;
+	get em(): EditorModel;
+	get ppfx(): string;
+	get pfx(): string;
+	opt: ItemViewProps;
+	module: LayerManager;
+	config: any;
+	sorter: any;
+	/** @ts-ignore */
+	model: Component;
+	parentView: ItemView;
+	items?: ItemsView;
+	inputNameCls: string;
+	clsTitleC: string;
+	clsTitle: string;
+	clsCaret: string;
+	clsCount: string;
+	clsMove: string;
+	clsChildren: string;
+	clsNoChild: string;
+	clsEdit: string;
+	clsNoEdit: string;
+	_rendered?: boolean;
+	caret?: JQuery<HTMLElement>;
+	inputName?: HTMLElement;
+	constructor(opt: ItemViewProps);
+	initComponent(): void;
+	updateName(): void;
+	getVisibilityEl(): JQuery<HTMLElement>;
+	updateVisibility(): void;
+	updateMove(): void;
+	/**
+	 * Toggle visibility
+	 * @param	Event
+	 *
+	 * @return 	void
+	 * */
+	toggleVisibility(ev?: MouseEvent): void;
+	/**
+	 * Handle the edit of the component name
+	 */
+	handleEdit(ev?: MouseEvent): void;
+	handleEditKey(ev: KeyboardEvent): void;
+	/**
+	 * Handle with the end of editing of the component name
+	 */
+	handleEditEnd(ev?: KeyboardEvent): void;
+	/**
+	 * Get the input containing the name of the component
+	 * @return {HTMLElement}
+	 */
+	getInputName(): HTMLElement;
+	/**
+	 * Update item opening
+	 *
+	 * @return void
+	 * */
+	updateOpening(): void;
+	/**
+	 * Toggle item opening
+	 * @param {Object}	e
+	 *
+	 * @return void
+	 * */
+	toggleOpening(ev?: MouseEvent): void;
+	/**
+	 * Handle component selection
+	 */
+	handleSelect(event?: MouseEvent): void;
+	/**
+	 * Handle component selection
+	 */
+	handleHover(ev?: MouseEvent): void;
+	handleHoverOut(ev?: MouseEvent): void;
+	/**
+	 * Delegate to sorter
+	 * @param	Event
+	 * */
+	startSort(ev: MouseEvent): void;
+	/**
+	 * Update item on status change
+	 * @param	Event
+	 * */
+	updateStatus(): void;
+	getItemContainer(): JQuery<HTMLElement>;
+	/**
+	 * Update item aspect after children changes
+	 *
+	 * @return void
+	 * */
+	checkChildren(): void;
+	getCaret(): JQuery<HTMLElement>;
+	setRoot(cmp: Component | string): void;
+	updateLayerable(): void;
+	__clearItems(): void;
+	remove(...args: [
+	]): this;
+	render(): this;
+	__render(): void;
+}
 export interface IComponent extends ExtractMethods<Component> {
+}
+export interface SetAttrOptions extends SetOptions, UpdateStyleOptions {
 }
 /**
  * The Component object represents a single node of our template structure, so when you update its properties the changes are
@@ -4784,12 +4515,12 @@ export interface IComponent extends ExtractMethods<Component> {
  * @property {Array<String>} [unstylable=[]] Indicate an array of style properties which should be hidden from the style manager. Default: `[]`
  * @property {Boolean} [highlightable=true] It can be highlighted with 'dotted' borders if true. Default: `true`
  * @property {Boolean} [copyable=true] True if it's possible to clone the component. Default: `true`
- * @property {Boolean} [resizable=false] Indicates if it's possible to resize the component. It's also possible to pass an object as [options for the Resizer](https://github.com/GrapesJS/grapesjs/blob/master/src/utils/Resizer.js). Default: `false`
+ * @property {Boolean} [resizable=false] Indicates if it's possible to resize the component. It's also possible to pass an object as [options for the Resizer](https://github.com/GrapesJS/grapesjs/blob/master/src/utils/Resizer.ts). Default: `false`
  * @property {Boolean} [editable=false] Allow to edit the content of the component (used on Text components). Default: `false`
  * @property {Boolean} [layerable=true] Set to `false` if you need to hide the component inside Layers. Default: `true`
  * @property {Boolean} [selectable=true] Allow component to be selected when clicked. Default: `true`
  * @property {Boolean} [hoverable=true] Shows a highlight outline when hovering on the element if `true`. Default: `true`
- * @property {Boolean} [locked=false] Disable the selection of the component and its children in the canvas. Default: `false`
+ * @property {Boolean} [locked] Disable the selection of the component and its children in the canvas. You can unlock a children by setting its locked property to `false`. Default: `undefined`
  * @property {Boolean} [void=false] This property is used by the HTML exporter as void elements don't have closing tags, eg. `<br/>`, `<hr/>`, etc. Default: `false`
  * @property {Object} [style={}] Component default style, eg. `{ width: '100px', height: '100px', 'background-color': 'red' }`
  * @property {String} [styles=''] Component related styles, eg. `.my-component-class { color: red }`
@@ -4806,6 +4537,7 @@ export interface IComponent extends ExtractMethods<Component> {
  * Eg. `toolbar: [ { attributes: {class: 'fa fa-arrows'}, command: 'tlb-move' }, ... ]`.
  * By default, when `toolbar` property is falsy the editor will add automatically commands `core:component-exit` (select parent component, added if there is one), `tlb-move` (added if `draggable`) , `tlb-clone` (added if `copyable`), `tlb-delete` (added if `removable`).
  * @property {Collection<Component>} [components=null] Children components. Default: `null`
+ * @property {Object} [delegate=null] Delegate commands to other components. Available commands `remove` | `move` | `copy` | `select`. eg. `{ remove: (cmp) => cmp.closestType('other-type') }`
  *
  * @module docsjs.Component
  */
@@ -4814,11 +4546,14 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * @private
 	 * @ts-ignore */
 	get defaults(): ComponentDefinitionDefined;
+	get tagName(): string;
 	get classes(): Selectors;
 	get traits(): Traits;
 	get content(): string;
 	get toolbar(): ToolbarButtonProps[];
 	get resizable(): boolean | ResizerOptions;
+	get delegate(): ComponentDelegateProps | undefined;
+	get locked(): boolean | undefined;
 	/**
 	 * Hook method, called once the model is created
 	 */
@@ -4840,6 +4575,7 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	ccid: string;
 	views: ComponentView[];
 	view?: ComponentView;
+	viewLayer?: ItemView;
 	frame?: Frame;
 	rule?: CssRule;
 	prevColl?: Components;
@@ -4849,16 +4585,23 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * @private
 	 * @ts-ignore */
 	collection: Components;
-	initialize(props?: {}, opt?: ComponentOptions): void;
+	constructor(props: ComponentProperties | undefined, opt: ComponentOptions);
 	__postAdd(opts?: {
 		recursive?: boolean;
 	}): void;
 	__postRemove(): void;
 	__onChange(m: any, opts: any): void;
+	__onStyleChange(newStyles: StyleProps): void;
 	__changesUp(opts: any): void;
 	__propSelfToParent(props: any): void;
 	__propToParent(props: any): void;
 	__emitUpdateTlb(): void;
+	__getAllById(): {
+		[id: string]: Component;
+	};
+	__upSymbProps(m: any, opts?: SymbolToUpOptions): void;
+	__upSymbCls(m: any, c: any, opts?: {}): void;
+	__upSymbComps(m: Component, c: Components, o: any): void;
 	/**
 	 * Check component's type
 	 * @param  {string}  type Component type
@@ -4891,6 +4634,20 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 */
 	getDragMode(): DragMode;
 	/**
+	 * Set symbol override.
+	 * By setting override to `true`, none of its property changes will be propagated to relative symbols.
+	 * By setting override to specific properties, changes of those properties will be skipped from propagation.
+	 * @param {Boolean|String|Array<String>} value
+	 * @example
+	 * component.setSymbolOverride(['children', 'classes']);
+	 */
+	setSymbolOverride(value?: boolean | string | string[]): void;
+	/**
+	 * Get symbol override value.
+	 * @returns {Boolean|Array<String>}
+	 */
+	getSymbolOverride(): boolean | string[] | undefined;
+	/**
 	 * Find inner components by query string.
 	 * **ATTENTION**: this method works only with already rendered component
 	 * @param  {String} query Query string
@@ -4911,6 +4668,18 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * console.log(allImages[0]) // prints the first found component
 	 */
 	findType(type: string): Component[];
+	/**
+	 * Find the first inner component by component type.
+	 * If no component is found, it returns `undefined`.
+	 * @param {String} type Component type
+	 * @returns {Component|undefined}
+	 * @example
+	 * const image = component.findFirstType('image');
+	 * if (image) {
+	 *  console.log(image);
+	 * }
+	 */
+	findFirstType(type: string): Component | undefined;
 	/**
 	 * Find the closest parent component by query string.
 	 * **ATTENTION**: this method works only with already rendered component
@@ -4947,17 +4716,18 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	/**
 	 * Replace a component with another one
 	 * @param {String|Component} el Component or HTML string
-	 * @return {Component|Array<Component>} New added component/s
+	 * @param {Object} [opts={}] Options for the append action
+	 * @returns {Array<Component>} New replaced components
 	 * @example
-	 * component.replaceWith('<div>Some new content</div>');
-	 * // -> Component
+	 * const result = component.replaceWith('<div>Some new content</div>');
+	 * // result -> [Component]
 	 */
-	replaceWith(el: Component): any[];
+	replaceWith<C extends Component = Component>(el: ComponentAdd, opts?: AddOptions): C[];
 	/**
 	 * Emit changes for each updated attribute
 	 * @private
 	 */
-	attrUpdated(m: any, v: any, opts?: any): void;
+	attrUpdated(m: any, v: any, opts?: SetAttrOptions): void;
 	/**
 	 * Update attributes of the component
 	 * @param {Object} attrs Key value attributes
@@ -4966,7 +4736,7 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * @example
 	 * component.setAttributes({ id: 'test', 'data-key': 'value' });
 	 */
-	setAttributes(attrs: ObjectAny, opts?: SetOptions): this;
+	setAttributes(attrs: ObjectAny, opts?: SetAttrOptions): this;
 	/**
 	 * Add attributes to the component
 	 * @param {Object} attrs Key value attributes
@@ -4975,7 +4745,7 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * @example
 	 * component.addAttributes({ 'data-key': 'value' });
 	 */
-	addAttributes(attrs: ObjectAny, opts?: SetOptions): this;
+	addAttributes(attrs: ObjectAny, opts?: SetAttrOptions): this;
 	/**
 	 * Remove attributes from the component
 	 * @param {String|Array<String>} attrs Array of attributes to remove
@@ -4985,7 +4755,7 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * component.removeAttributes('some-attr');
 	 * component.removeAttributes(['some-attr1', 'some-attr2']);
 	 */
-	removeAttributes(attrs?: string[], opts?: SetOptions): this;
+	removeAttributes(attrs?: string | string[], opts?: SetOptions): this;
 	/**
 	 * Get the style of the component
 	 * @return {Object}
@@ -4998,7 +4768,7 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * @example
 	 * component.setStyle({ color: 'red' });
 	 */
-	setStyle(prop?: StyleProps, opts?: any): StyleProps;
+	setStyle(prop?: StyleProps, opts?: UpdateStyleOptions): StyleProps;
 	/**
 	 * Return all component's attributes
 	 * @return {Object}
@@ -5047,23 +4817,6 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * @return {Array}
 	 */
 	getClasses(): any;
-	__logSymbol(type: string, toUp: Component[], opts?: any): void;
-	__initSymb(): void;
-	__isSymbol(): boolean;
-	__isSymbolOrInst(): boolean;
-	__isSymbolTop(): boolean;
-	__isSymbolNested(): boolean;
-	__getAllById(): {
-		[id: string]: Component;
-	};
-	__getSymbol(): Component | undefined;
-	__getSymbols(): Component[] | undefined;
-	__isSymbOvrd(prop?: string): boolean;
-	__getSymbToUp(opts?: SymbolToUpOptions): Component[];
-	__getSymbTop(opts?: any): Component;
-	__upSymbProps(m: any, opts?: SymbolToUpOptions): void;
-	__upSymbCls(m: any, c: any, opts?: {}): void;
-	__upSymbComps(m: Component, c: Components, o: any): void;
 	initClasses(m?: any, c?: any, opts?: any): this;
 	initComponents(): this;
 	initTraits(changed?: any): this;
@@ -5100,7 +4853,7 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * console.log(collection.length);
 	 * // -> 2
 	 */
-	components<T extends ComponentAdd | undefined>(components?: T, opts?: any): undefined extends T ? Components : Component[];
+	components<T extends ComponentAdd | undefined>(components?: T, opts?: AddComponentsOption): undefined extends T ? Components : Component[];
 	/**
 	 * If exists, returns the child component at specific index.
 	 * @param {Number} index Index of the component to return
@@ -5231,11 +4984,11 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	/**
 	 * Override original clone method
 	 * @private
-	 */
+	 * @ts-ignore */
 	clone(opt?: {
 		symbol?: boolean;
 		symbolInv?: boolean;
-	}): any;
+	}): this;
 	/**
 	 * Get the name of the component.
 	 * @param {Object} [opts={}] Options
@@ -5245,6 +4998,11 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	getName(opts?: {
 		noCustom?: boolean;
 	}): any;
+	/**
+	 * Update component name.
+	 * @param {String} name New name.
+	 */
+	setName(name?: string, opts?: SetOptions): void;
 	/**
 	 * Get the icon string
 	 * @return {String}
@@ -5293,7 +5051,7 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * @return {Object}
 	 * @private
 	 */
-	getAttrToHTML(): {
+	getAttrToHTML(opts?: ToHTMLOptions): {
 		[x: string]: any;
 	};
 	/**
@@ -5333,8 +5091,8 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	 * @param {Frame} frame Get View of a specific frame
 	 * @return {ComponentView}
 	 */
-	getView(frame?: Frame): ComponentView | undefined;
-	getCurrentView(): ComponentView | undefined;
+	getView(frame?: Frame): ComponentView<Component> | undefined;
+	getCurrentView(): ComponentView<Component> | undefined;
 	__getScriptProps(): Partial<ComponentProperties>;
 	/**
 	 * Return script in string format, cleans 'function() {..' from scripts
@@ -5424,17 +5182,21 @@ export declare class Component extends StyleableModel<ComponentProperties> {
 	_idUpdated(m: any, v: any, opts?: {
 		idUpdate?: boolean;
 	}): this | undefined;
+	static typeExtends: Set<string>;
 	static getDefaults(): any;
-	static isComponent(el: HTMLElement): ComponentDefinitionDefined | boolean | undefined;
+	static isComponent(el: HTMLElement, opts?: any): ComponentDefinitionDefined | boolean | undefined;
 	static ensureInList(model: Component): void;
 	static createId(model: Component, opts?: any): string;
 	static getNewId(list: ObjectAny): string;
 	static getIncrementId(id: string, list: ObjectAny, opts?: {
 		keepIds?: string[];
 	}): string;
-	static getList(model: Component): any;
+	static getList(model: Component): {
+		[id: string]: Component;
+	};
 	static checkId(components: ComponentDefinitionDefined | ComponentDefinitionDefined[], styles?: CssRuleJSON[], list?: ObjectAny, opts?: {
 		keepIds?: string[];
+		idMap?: PrevToNewIdMap;
 	}): void;
 }
 declare class Selectable extends Model {
@@ -5500,10 +5262,15 @@ export interface AssetManagerConfig {
 	 */
 	credentials?: RequestCredentials;
 	/**
-	 * Allow uploading multiple files per request. If disabled filename will not have '[]' appended.
+	 * Allow uploading multiple files per request. If disabled filename will not have the 'multiUploadSuffix' appended.
 	 * @default true
 	 */
 	multiUpload?: boolean;
+	/**
+	 * The suffix to append to 'uploadName' when 'multiUpload' is true.
+	 * @default '[]'
+	 */
+	multiUploadSuffix?: string;
 	/**
 	 * If true, tries to add automatically uploaded assets. To make it work the server should respond with a JSON containing assets in a data key, eg:
 	 * { data: [ 'https://.../image.png', {src: 'https://.../image2.png'} ]
@@ -5586,181 +5353,6 @@ export interface AssetManagerConfig {
 	 * @deprecated
 	 */
 	dropzoneContent?: string;
-}
-export interface CategoryViewConfig {
-	em: EditorModel;
-	pStylePrefix?: string;
-}
-declare class CategoryView extends View<Category> {
-	em: EditorModel;
-	config: CategoryViewConfig;
-	pfx: string;
-	caretR: string;
-	caretD: string;
-	iconClass: string;
-	activeClass: string;
-	iconEl?: HTMLElement;
-	blocksEl?: HTMLElement;
-	events(): {
-		"click [data-title]": string;
-	};
-	template({ pfx, label }: {
-		pfx: string;
-		label: string;
-	}): string;
-	/** @ts-ignore */
-	attributes(): Record<string, any>;
-	constructor(o: any, config: CategoryViewConfig);
-	updateVisibility(): void;
-	open(): void;
-	close(): void;
-	toggle(): void;
-	getIconEl(): HTMLElement;
-	getBlocksEl(): HTMLElement;
-	append(el: HTMLElement): void;
-	render(): this;
-}
-export interface BlockCategoryProperties {
-	/**
-	 * Category id.
-	 */
-	id: string;
-	/**
-	 * Category label.
-	 */
-	label: string;
-	/**
-	 * Category open state.
-	 * @default true
-	 */
-	open?: boolean;
-	/**
-	 * Category order.
-	 */
-	order?: string | number;
-	/**
-	 * Category attributes.
-	 * @default {}
-	 */
-	attributes?: Record<string, any>;
-}
-export declare class Category extends Model<BlockCategoryProperties> {
-	view?: CategoryView;
-	defaults(): {
-		id: string;
-		label: string;
-		open: boolean;
-		attributes: {};
-	};
-}
-/** @private */
-export interface BlockProperties {
-	/**
-	 * Block label, eg. `My block`
-	 */
-	label: string;
-	/**
-	 * The content of the block. Might be an HTML string or a [Component Defintion](/modules/Components.html#component-definition)
-	 */
-	content: string | ComponentDefinition;
-	/**
-	 * HTML string for the media/icon of the block, eg. `<svg ...`, `<img ...`, etc.
-	 * @default ''
-	 */
-	media?: string;
-	/**
-	 * Block category, eg. `Basic blocks`
-	 * @default ''
-	 */
-	category?: string | BlockCategoryProperties;
-	/**
-	 * If true, triggers the `active` event on the dropped component.
-	 * @default false
-	 */
-	activate?: boolean;
-	/**
-	 * If true, the dropped component will be selected.
-	 * @default false
-	 */
-	select?: boolean;
-	/**
-	 * If true, all IDs of dropped components and their styles will be changed.
-	 * @default false
-	 */
-	resetId?: boolean;
-	/**
-	 * Disable the block from being interacted.
-	 * @default false
-	 */
-	disable?: boolean;
-	/**
-	 * Custom behavior on click.
-	 * @example
-	 * onClick: (block, editor) => editor.getWrapper().append(block.get('content'))
-	 */
-	onClick?: (block: Block, editor: Editor) => void;
-	/**
-	 * Block attributes
-	 */
-	attributes?: Record<string, any>;
-	id?: string;
-	/**
-	 * @deprecated
-	 */
-	activeOnRender?: boolean;
-}
-/**
- * @property {String} label Block label, eg. `My block`
- * @property {String|Object} content The content of the block. Might be an HTML string or a [Component Defintion](/modules/Components.html#component-definition)
- * @property {String} [media=''] HTML string for the media/icon of the block, eg. `<svg ...`, `<img ...`, etc.
- * @property {String} [category=''] Block category, eg. `Basic blocks`
- * @property {Boolean} [activate=false] If true, triggers the `active` event on the dropped component.
- * @property {Boolean} [select=false] If true, the dropped component will be selected.
- * @property {Boolean} [resetId=false] If true, all IDs of dropped components and their styles will be changed.
- * @property {Boolean} [disable=false] Disable the block from being interacted
- * @property {Function} [onClick] Custom behavior on click, eg. `(block, editor) => editor.getWrapper().append(block.get('content'))`
- * @property {Object} [attributes={}] Block attributes to apply in the view element
- *
- * @module docsjs.Block
- */
-export declare class Block extends Model<BlockProperties> {
-	defaults(): {
-		label: string;
-		content: string;
-		media: string;
-		category: string;
-		activate: boolean;
-		select: undefined;
-		resetId: boolean;
-		disable: boolean;
-		onClick: undefined;
-		attributes: {};
-	};
-	/**
-	 * Get block id
-	 * @returns {String}
-	 */
-	getId(): string;
-	/**
-	 * Get block label
-	 * @returns {String}
-	 */
-	getLabel(): string;
-	/**
-	 * Get block media
-	 * @returns {String}
-	 */
-	getMedia(): string | undefined;
-	/**
-	 * Get block content
-	 * @returns {Object|String|Array<Object|String>}
-	 */
-	getContent(): string | ComponentDefinition | undefined;
-	/**
-	 * Get block category label
-	 * @returns {String}
-	 */
-	getCategoryLabel(): string;
 }
 export interface BlockManagerConfig {
 	/**
@@ -5942,100 +5534,28 @@ export interface ModalConfig {
 	 */
 	extend?: Record<string, any>;
 }
-export interface LayerManagerConfig {
-	stylePrefix?: string;
+export interface Keymap {
+	id: string;
+	keys: string;
+	handler: string | CommandFunction;
+}
+export interface KeymapOptions {
 	/**
-	 * Specify the element to use as a container, string (query) or HTMLElement.
-	 * With the empty value, nothing will be rendered.
-	 * @default ''
+	 * Force the handler to be executed.
 	 */
-	appendTo?: string | HTMLElement;
+	force?: boolean;
 	/**
-	 * Enable/Disable globally the possibility to sort layers.
-	 * @default true
+	 * Prevent default of the original triggered event.
 	 */
-	sortable?: boolean;
+	prevent?: boolean;
+}
+export interface KeymapsConfig {
 	/**
-	 * Enable/Disable globally the possibility to hide layers.
-	 * @default true
+	 * Default keymaps.
 	 */
-	hidable?: boolean;
-	/**
-	 * Hide textnodes.
-	 * @default true
-	 */
-	hideTextnode?: boolean;
-	/**
-	 * Indicate a query string of the element to be selected as the root of layers.
-	 * By default the root is the wrapper.
-	 * @default ''
-	 */
-	root?: string;
-	/**
-	 * Indicates if the wrapper is visible in layers.
-	 * @default true
-	 */
-	showWrapper?: boolean;
-	/**
-	 * Show hovered components in canvas.
-	 * @default true
-	 */
-	showHover?: boolean;
-	/**
-	 * Scroll to selected component in Canvas when it's selected in Layers.
-	 * true, false or `scrollIntoView`-like options,
-	 * `block: 'nearest'` avoids the issue of window scrolling.
-	 * @default { behavior: 'smooth', block: 'nearest' }
-	 */
-	scrollCanvas?: boolean | ScrollIntoViewOptions;
-	/**
-	 * Scroll to selected component in Layers when it's selected in Canvas.
-	 * @default { behavior: 'auto', block: 'nearest' }
-	 */
-	scrollLayers?: boolean | ScrollIntoViewOptions;
-	/**
-	 * Highlight when a layer component is hovered.
-	 * @default true
-	 */
-	highlightHover?: boolean;
-	/**
-	 * Avoid rendering the default layer manager.
-	 * @default false
-	 */
-	custom?: boolean;
-	/**
-	 * WARNING: Experimental option.
-	 * A callback triggered once the component layer is initialized.
-	 * Useful to trigger updates on some component prop change.
-	 * @example
-	 * onInit({ component, render, listenTo }) {
-	 *  listenTo(component, 'change:some-prop', render);
-	 * };
-	 */
-	onInit?: () => void;
-	/**
-	 * WARNING: Experimental option.
-	 * A callback triggered once the component layer is rendered.
-	 * A callback useful to update the layer DOM on some component change
-	 * @example
-	 * onRender({ component, el }) { // el is the DOM of the layer
-	 *  if (component.get('some-prop')) {
-	 *    // do changes using the `el` DOM
-	 *  }
-	 * }
-	 */
-	onRender?: () => void;
-	/**
-	 * Extend Layer view object (view/ItemView.js)
-	 * @example
-	 * extend: {
-	 *   setName(name) {
-	 *     // this.model is the component of the layer
-	 *     this.model.set('another-prop-for-name', name);
-	 *   },
-	 * },
-	 */
-	extend?: Record<string, any>;
+	defaults?: Record<string, Omit<Keymap, "id"> & {
+		opts?: KeymapOptions;
+	}>;
 }
 export declare class Panels extends ModuleCollection<Panel> {
 	constructor(module: PanelManager, models: Panel[] | Array<Record<string, any>>);
@@ -6308,6 +5828,7 @@ export declare class Panel extends ModuleModel<PanelManager, PanelPropertiesDefi
 export interface ButtonProps {
 	id?: string;
 	active?: boolean;
+	label?: string;
 	togglable?: boolean;
 	className?: string;
 	command?: string | (() => any);
@@ -6325,63 +5846,340 @@ export interface PanelsConfig {
 	 */
 	defaults?: PanelProps[];
 }
-export interface ParsedCssRule {
-	selectors: string | string[];
-	style: Record<string, string>;
-	atRule?: string;
-	params?: string;
+export type RichTextEditorEvent = "rte:enable" | "rte:disable" | "rte:custom";
+export interface ModelRTE {
+	currentView?: ComponentView;
 }
-export type CustomParserCss = (input: string, editor: Editor) => ParsedCssRule[];
-export type CustomParserHtml = (input: string, options: HTMLParserOptions) => HTMLElement;
-export interface HTMLParserOptions {
+declare class RichTextEditorModule extends Module<RichTextEditorConfig & {
+	pStylePrefix?: string;
+}> {
+	pfx: string;
+	toolbar: HTMLElement;
+	globalRte?: RichTextEditor;
+	actionbar?: HTMLElement;
+	lastEl?: HTMLElement;
+	actions?: (RichTextEditorAction | string)[];
+	customRte?: CustomRTE;
+	model: Model<ModelRTE>;
+	__dbdTrgCustom: Debounced;
+	events: {
+		enable: string;
+		disable: string;
+		custom: string;
+	};
 	/**
-	 * DOMParser mime type.
-	 * If you use the `text/html` parser, it will fix the invalid syntax automatically.
-	 * @see https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/parseFromString
-	 * @default 'text/html'
+	 * Get configuration object
+	 * @name getConfig
+	 * @function
+	 * @return {Object}
 	 */
-	htmlType?: DOMParserSupportedType;
+	constructor(em: EditorModel);
+	onLoad(): void;
+	__trgCustom(): void;
+	destroy(): void;
 	/**
-	 * Allow <script> tags.
-	 * @default false
+	 * Post render callback
+	 * @param  {View} ev
+	 * @private
 	 */
-	allowScripts?: boolean;
+	postRender(ev: any): void;
 	/**
-	 * Allow unsafe HTML attributes (eg. `on*` inline event handlers).
-	 * @default false
+	 * Init the built-in RTE
+	 * @param  {HTMLElement} el
+	 * @return {RichTextEditor}
+	 * @private
 	 */
-	allowUnsafeAttr?: boolean;
+	initRte(el: HTMLElement): RichTextEditor;
 	/**
-	 * When false, removes empty text nodes when parsed, unless they contain a space.
-	 * @default false
-	 */
-	keepEmptyTextNodes?: boolean;
-}
-export interface ParserConfig {
-	/**
-	 * Let the editor know which HTML tags should be treated as part of the text component.
-	 * @default ['br', 'b', 'i', 'u', 'a', 'ul', 'ol']
-	 */
-	textTags?: string[];
-	/**
-	 * Custom CSS parser.
-	 * @see https://grapesjs.com/docs/guides/Custom-CSS-parser.html
-	 */
-	parserCss?: CustomParserCss;
-	/**
-	 * Custom HTML parser.
-	 * At the moment, the custom HTML parser should rely on DOM Node instance as the result.
+	 * Add a new action to the built-in RTE toolbar
+	 * @param {string} name Action name
+	 * @param {Object} action Action options
 	 * @example
-	 * // The return should be an instance of an Node as the root to traverse
-	 * // https://developer.mozilla.org/en-US/docs/Web/API/Node
-	 * // Here the result will be XMLDocument, which extends Node.
-	 * parserHtml: (input, opts = {}) => (new DOMParser()).parseFromString(input, 'text/xml')
+	 * rte.add('bold', {
+	 *   icon: '<b>B</b>',
+	 *   attributes: {title: 'Bold'},
+	 *   result: rte => rte.exec('bold')
+	 * });
+	 * rte.add('link', {
+	 *   icon: document.getElementById('t'),
+	 *   attributes: { title: 'Link' },
+	 *   // Example on how to wrap selected content
+	 *   result: rte => rte.insertHTML(`<a href="#">${rte.selection()}</a>`)
+	 * });
+	 * // An example with fontSize
+	 * rte.add('fontSize', {
+	 *   icon: `<select class="gjs-field">
+	 *         <option>1</option>
+	 *         <option>4</option>
+	 *         <option>7</option>
+	 *       </select>`,
+	 *     // Bind the 'result' on 'change' listener
+	 *   event: 'change',
+	 *   result: (rte, action) => rte.exec('fontSize', action.btn.firstChild.value),
+	 *   // Callback on any input change (mousedown, keydown, etc..)
+	 *   update: (rte, action) => {
+	 *     const value = rte.doc.queryCommandValue(action.name);
+	 *     if (value != 'false') { // value is a string
+	 *       action.btn.firstChild.value = value;
+	 *     }
+	 *    }
+	 *   })
+	 * // An example with state
+	 * const isValidAnchor = (rte) => {
+	 *   // a utility function to help determine if the selected is a valid anchor node
+	 *   const anchor = rte.selection().anchorNode;
+	 *   const parentNode  = anchor && anchor.parentNode;
+	 *   const nextSibling = anchor && anchor.nextSibling;
+	 *   return (parentNode && parentNode.nodeName == 'A') || (nextSibling && nextSibling.nodeName == 'A')
+	 * }
+	 * rte.add('toggleAnchor', {
+	 *   icon: `<span style="transform:rotate(45deg)">&supdsub;</span>`,
+	 *   state: (rte, doc) => {
+	 *    if (rte && rte.selection()) {
+	 *      // `btnState` is a integer, -1 for disabled, 0 for inactive, 1 for active
+	 *      return isValidAnchor(rte) ? btnState.ACTIVE : btnState.INACTIVE;
+	 *    } else {
+	 *      return btnState.INACTIVE;
+	 *    }
+	 *   },
+	 *   result: (rte, action) => {
+	 *     if (isValidAnchor(rte)) {
+	 *       rte.exec('unlink');
+	 *     } else {
+	 *       rte.insertHTML(`<a class="link" href="">${rte.selection()}</a>`);
+	 *     }
+	 *   }
+	 * })
 	 */
-	parserHtml?: CustomParserHtml;
+	add(name: string, action?: Partial<RichTextEditorAction>): void;
 	/**
-	 * Default HTML parser options (used in `parserModule.parseHtml('<div...', options)`).
+	 * Get the action by its name
+	 * @param {string} name Action name
+	 * @return {Object}
+	 * @example
+	 * const action = rte.get('bold');
+	 * // {name: 'bold', ...}
 	 */
-	optionsHtml?: HTMLParserOptions;
+	get(name: string): RichTextEditorAction | undefined;
+	/**
+	 * Get all actions
+	 * @return {Array}
+	 */
+	getAll(): RichTextEditorAction[];
+	/**
+	 * Remove the action from the toolbar
+	 * @param  {string} name
+	 * @return {Object} Removed action
+	 * @example
+	 * const action = rte.remove('bold');
+	 * // {name: 'bold', ...}
+	 */
+	remove(name: string): RichTextEditorAction | undefined;
+	/**
+	 * Run action command.
+	 * @param action Action to run
+	 * @example
+	 * const action = rte.get('bold');
+	 * rte.run(action) // or rte.run('bold')
+	 */
+	run(action: string | RichTextEditorAction): void;
+	/**
+	 * Get the toolbar element
+	 * @return {HTMLElement}
+	 */
+	getToolbarEl(): HTMLElement;
+	/**
+	 * Triggered when the offset of the editor is changed
+	 * @private
+	 */
+	updatePosition(): void;
+	/**
+	 * Enable rich text editor on the element
+	 * @param {View} view Component view
+	 * @param {Object} rte The instance of already defined RTE
+	 * @private
+	 * */
+	enable(view: ComponentView, rte: RichTextEditor, opts?: any): Promise<any>;
+	getContent(view: ComponentView, rte: RichTextEditor): Promise<string>;
+	hideToolbar(): void;
+	/**
+	 * Unbind rich text editor from the element
+	 * @param {View} view
+	 * @param {Object} rte The instance of already defined RTE
+	 * @private
+	 * */
+	disable(view: ComponentView, rte?: RichTextEditor, opts?: DisableOptions): void;
+}
+export interface RichTextEditorAction {
+	name: string;
+	icon: string | HTMLElement;
+	event?: string;
+	attributes?: Record<string, any>;
+	result: (rte: RichTextEditor, action: RichTextEditorAction) => void;
+	update?: (rte: RichTextEditor, action: RichTextEditorAction) => number;
+	state?: (rte: RichTextEditor, doc: Document) => number;
+	btn?: HTMLElement;
+	currentState?: RichTextEditorActionState;
+}
+declare enum RichTextEditorActionState {
+	ACTIVE = 1,
+	INACTIVE = 0,
+	DISABLED = -1
+}
+export interface RichTextEditorOptions {
+	actions?: (RichTextEditorAction | string)[];
+	classes?: Record<string, string>;
+	actionbar?: HTMLElement;
+	actionbarContainer?: HTMLElement;
+	styleWithCSS?: boolean;
+	module?: RichTextEditorModule;
+}
+export type EffectOptions = {
+	event?: Event;
+};
+declare class RichTextEditor {
+	em: EditorModel;
+	settings: RichTextEditorOptions;
+	classes: Record<string, string>;
+	actionbar?: HTMLElement;
+	actions: RichTextEditorAction[];
+	el: HTMLElement;
+	doc: Document;
+	enabled?: boolean;
+	getContent?: () => string;
+	constructor(em: EditorModel, el: HTMLElement & {
+		_rte?: RichTextEditor;
+	}, settings?: RichTextEditorOptions);
+	isCustom(module?: RichTextEditorModule): boolean;
+	destroy(): void;
+	setEl(el: HTMLElement): void;
+	updateActiveActions(): void;
+	enable(opts: EffectOptions): this;
+	disable(): this;
+	__toggleEffects(enable?: boolean, opts?: EffectOptions): this;
+	__onKeydown(ev: KeyboardEvent): void;
+	__onPaste(ev: ClipboardEvent): void;
+	/**
+	 * Sync actions with the current RTE
+	 */
+	syncActions(): void;
+	/**
+	 * Add new action to the actionbar
+	 * @param {Object} action
+	 * @param {Object} [opts={}]
+	 */
+	addAction(action: RichTextEditorAction, opts?: {
+		sync?: boolean;
+	}): void;
+	/**
+	 * Get the array of current actions
+	 * @return {Array}
+	 */
+	getActions(): RichTextEditorAction[];
+	/**
+	 * Returns the Selection instance
+	 * @return {Selection}
+	 */
+	selection(): Selection | null;
+	/**
+	 * Wrapper around [execCommand](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand) to allow
+	 * you to perform operations like `insertText`
+	 * @param  {string} command Command name
+	 * @param  {any} [value=null Command's arguments
+	 */
+	exec(command: string, value?: string): void;
+	/**
+	 * Get the actionbar element
+	 * @return {HTMLElement}
+	 */
+	actionbarEl(): HTMLElement | undefined;
+	/**
+	 * Set custom HTML to the selection, useful as the default 'insertHTML' command
+	 * doesn't work in the same way on all browsers
+	 * @param  {string} value HTML string
+	 */
+	insertHTML(value: string | HTMLElement, { select }?: {
+		select?: boolean;
+	}): void;
+}
+export interface CustomRTE<T = any> {
+	/**
+	 * If true, the returned HTML content will be parsed into Components, allowing
+	 * the custom RTE to behave in the same way as the native one.
+	 * If false, the HTML content will be used as it is in the canvas and the export code.
+	 */
+	parseContent?: boolean;
+	/**
+	 * Create or enable the custom RTE.
+	 */
+	enable: (el: HTMLElement, rte: T | undefined) => T | Promise<T>;
+	/**
+	 * Disable the custom RTE.
+	 */
+	disable: (el: HTMLElement, rte: T) => any | Promise<any>;
+	/**
+	 * Get HTML content from the custom RTE.
+	 * If not specified, it will use the innerHTML of the element (passed also as `content` in options).
+	 */
+	getContent?: (el: HTMLElement, rte: T | undefined) => string | Promise<string>;
+	/**
+	 * Destroy the custom RTE.
+	 * Will be triggered on editor destroy.
+	 */
+	destroy?: () => void;
+	[key: string]: unknown;
+}
+export interface RichTextEditorConfig {
+	/**
+	 * Class name prefix for styles
+	 * @default 'rte-'
+	 */
+	stylePrefix?: string;
+	/**
+	 * If true, moves the toolbar below the element when the top canvas edge is reached.
+	 * @default true
+	 */
+	adjustToolbar?: boolean;
+	/**
+	 * Default RTE actions.
+	 * @default ['bold', 'italic', 'underline', 'strikethrough', 'link', 'wrap']
+	 */
+	actions?: string[];
+	/**
+	 * Custom on paste logic for the built-in RTE.
+	 * @example
+	 * onPaste: ({ ev, rte }) => {
+	 *  ev.preventDefault();
+	 *  const { clipboardData } = ev;
+	 *  const text = clipboardData.getData('text');
+	 *  rte.exec('insertHTML', `<b>[ ${text} ]</b>`);
+	 * }
+	 */
+	onPaste?: (data: {
+		ev: ClipboardEvent;
+		editor: Editor;
+		rte: RichTextEditor;
+	}) => void;
+	/**
+	 * Custom on keydown logic for the built-in RTE.
+	 * @example
+	 * onKeydown: ({ ev, rte }) => {
+	 *  if (ev.key === 'Enter') {
+	 *    ev.preventDefault();
+	 *    rte.exec('insertHTML', `<br>-- custom line break --<br>`);
+	 *  }
+	 * }
+	 */
+	onKeydown?: (data: {
+		ev: KeyboardEvent;
+		editor: Editor;
+		rte: RichTextEditor;
+	}) => void;
+	/**
+	 * Avoid rendering the default RTE UI.
+	 * @default false
+	 */
+	custom?: boolean;
 }
 export interface SelectorManagerConfig {
 	/**
@@ -6706,104 +6504,6 @@ export interface CommandsConfig {
 	 */
 	strict?: boolean;
 }
-/** @private */
-export interface SectorProperties {
-	id?: string;
-	name: string;
-	open?: boolean;
-	visible?: boolean;
-	buildProps?: string[];
-	extendBuilded?: boolean;
-	properties?: PropertyProps[];
-}
-/**
- *
- * [Property]: property.html
- *
- * @typedef Sector
- * @property {String} id Sector id, eg. `typography`
- * @property {String} name Sector name, eg. `Typography`
- * @property {Boolean} [open=true] Indicates the open state.
- * @property {Array<Object>} [properties=[]] Indicate an array of Property defintions.
- */
-export declare class Sector extends Model<SectorProperties> {
-	em: EditorModel;
-	defaults(): {
-		id: string;
-		name: string;
-		open: boolean;
-		visible: boolean;
-		extendBuilded: boolean;
-		properties: never[];
-	};
-	/**
-	 * @hideconstructor
-	 */
-	constructor(prp: SectorProperties, opts?: {
-		em?: EditorModel;
-	});
-	get properties(): Collection<Property<PropertyProps>>;
-	/**
-	 * Get sector id.
-	 * @returns {String}
-	 */
-	getId(): string;
-	/**
-	 * Get sector name.
-	 * @returns {String}
-	 */
-	getName(): string;
-	/**
-	 * Update sector name.
-	 * @param {String} value New sector name
-	 */
-	setName(value: string): this;
-	/**
-	 * Check if the sector is open
-	 * @returns {Boolean}
-	 */
-	isOpen(): boolean;
-	/**
-	 * Update Sector open state
-	 * @param {Boolean} value
-	 */
-	setOpen(value: boolean): this;
-	/**
-	 * Check if the sector is visible
-	 * @returns {Boolean}
-	 */
-	isVisible(): boolean;
-	/**
-	 * Get sector properties.
-	 * @param {Object} [opts={}] Options
-	 * @param {Boolean} [opts.withValue=false] Get only properties with value
-	 * @param {Boolean} [opts.withParentValue=false] Get only properties with parent value
-	 * @returns {Array<[Property]>}
-	 */
-	getProperties(opts?: {
-		withValue?: boolean;
-		withParentValue?: boolean;
-	}): Property<PropertyProps>[];
-	getProperty(id: string): Property | undefined;
-	addProperty(property: PropertyProps, opts: AddOptions): any;
-	/**
-	 * Extend properties
-	 * @param {Array<Object>} props Start properties
-	 * @param {Array<Object>} moProps Model props
-	 * @param {Boolean} ex Returns the same amount of passed model props
-	 * @return {Array<Object>} Final props
-	 * @private
-	 */
-	extendProperties(props: PropertyProps[], moProps?: PropertyProps[], ex?: boolean): PropertyProps[];
-	checkExtend(prop: any): PropertyProps;
-	/**
-	 * Build properties
-	 * @param {Array<string>} propr Array of props as sting
-	 * @return {Array<Object>}
-	 * @private
-	 */
-	buildProperties(props: string | string[]): PropertyProps[];
-}
 declare class Input extends View {
 	ppfx: string;
 	em: EditorModel;
@@ -7093,7 +6793,7 @@ export interface PropertyCompositeProps extends PropertyProps {
 	/**
 	 * Value used to split property values, default `" "`.
 	 */
-	separator: string;
+	separator?: string;
 	/**
 	 * Value used to join property values, default `" "`.
 	 */
@@ -7503,821 +7203,103 @@ export declare class Property<T extends Record<string, any> = PropertyProps> ext
 		sectors?: Sector[];
 	}): boolean;
 }
-export interface StyleManagerConfig {
-	/**
-	 * Default sectors and properties
-	 */
-	sectors?: (Omit<SectorProperties, "properties"> & {
-		properties?: (string | PropertyProps)[];
-	})[];
-	/**
-	 * Specify the element to use as a container, string (query) or HTMLElement.
-	 * With the empty value, nothing will be rendered.
-	 */
-	appendTo?: string | HTMLElement;
-	/**
-	 * Style prefix.
-	 * @default 'sm-'
-	 */
-	stylePrefix?: string;
-	/**
-	 * Avoid rendering the default style manager.
-	 * @default false
-	 */
-	custom?: boolean;
-	/**
-	 * Hide the property in case it's not stylable for the
-	 * selected component (each component has 'stylable' property).
-	 * @deprecated
-	 */
-	hideNotStylable?: boolean;
-	/**
-	 * Highlight changed properties of the selected component.
-	 * @deprecated
-	 */
-	highlightChanged?: boolean;
-	/**
-	 * Highlight computed properties of the selected component.
-	 * @deprecated
-	 */
-	highlightComputed?: boolean;
-	/**
-	 * Show computed properties of the selected component, if this value
-	 * is set to false, highlightComputed will not take effect.
-	 * @deprecated
-	 */
-	showComputed?: boolean;
-	/**
-	 * Adds the possibility to clear property value from the target style.
-	 * @deprecated
-	 */
-	clearProperties?: boolean;
-	/**
-	 * Properties not to take in account for computed styles.
-	 * @deprecated
-	 */
-	avoidComputed?: string[];
-	pStylePrefix?: string;
-}
-export type HTMLGeneratorBuildOptions = {
-	/**
-	 * Remove unnecessary IDs (eg. those created automatically).
-	 */
-	cleanId?: boolean;
-	/**
-	 * You can pass an object of custom attributes to replace with the current ones
-	 * or you can even pass a function to generate attributes dynamically.
-	 */
-	attributes?: Record<string, any> | ((component: Component, attr: Record<string, any>) => Record<string, any>);
-};
-export type CssGeneratorBuildOptions = {
-	/**
-	 * Return an array of CssRules instead of the CSS string.
-	 */
-	json?: boolean;
-	/**
-	 * Return only rules matched by the passed component.
-	 */
-	onlyMatched?: boolean;
-	/**
-	 * Force keep all defined rules. Toggle on in case output looks different inside/outside of the editor.
-	 */
-	keepUnusedStyles?: boolean;
-	rules?: CssRule[];
-	clearStyles?: boolean;
-};
-export interface EditorConfig {
-	/**
-	 * Style class name prefix.
-	 * @default 'gjs-'
-	 */
-	stylePrefix?: string;
-	/**
-	 * Selector which indicates where render the editor.
-	 */
-	container?: string | HTMLElement;
-	/**
-	 * If true, auto-render the content
-	 * @default true
-	 */
-	autorender?: boolean;
-	/**
-	 * Array of plugins to execute on start.
-	 * @default []
-	 */
-	plugins?: (string | Plugin<any>)[];
-	/**
-	 * Custom options for plugins
-	 * @default {}
-	 */
-	pluginsOpts?: Record<string, any>;
-	/**
-	 * Init headless editor.
-	 * @default false
-	 */
-	headless?: boolean;
-	/**
-	 * Initial project data (JSON containing your components/styles/etc) to load.
-	 */
-	projectData?: ObjectAny;
-	/**
-	 * HTML string or object of components
-	 * @deprecated Rely on `projectData` option
-	 * @default ''
-	 */
-	components?: string;
-	/**
-	 * CSS string or object of rules
-	 * @deprecated Rely on `projectData` option
-	 * @default ''
-	 */
-	style?: string;
-	/**
-	 * If true, will fetch HTML and CSS from the selected container.
-	 * @deprecated
-	 * @default false
-	 */
-	fromElement?: boolean;
-	/**
-	 * Show an alert before unload the page with unsaved changes
-	 * @default true
-	 */
-	noticeOnUnload?: boolean;
-	/**
-	 * Show paddings and margins.
-	 * @default false
-	 */
-	showOffsets?: boolean;
-	/**
-	 * Show paddings and margins on selected component
-	 * @default false
-	 */
-	showOffsetsSelected?: boolean;
-	/**
-	 * On creation of a new Component (via object), if the 'style' attribute is not
-	 * empty, all those roles will be moved in its new class.
-	 * @default true
-	 */
-	forceClass?: boolean;
-	/**
-	 * Height for the editor container
-	 * @default '900px'
-	 */
-	height?: string;
-	/**
-	 * Width for the editor container
-	 * @default '100%'
-	 */
-	width?: string;
-	/**
-	 * Type of logs to print with the logger (by default is used the devtool console).
-	 * Available by default: debug, info, warning, error.
-	 * You can use `false` to disable all of them or `true` to print all of them.
-	 * @default ['warning', 'error']
-	 */
-	log?: ("debug" | "info" | "warning" | "error")[] | boolean;
-	/**
-	 * By default Grapes injects base CSS into the canvas. For example, it sets body margin to 0
-	 * and sets a default background color of white. This CSS is desired in most cases.
-	 * use this property if you wish to overwrite the base CSS to your own CSS. This is most
-	 * useful if for example your template is not based off a document with 0 as body margin.
-	 * @deprecated in favor of `config.canvas.frameStyle`
-	 * @default ''
-	 */
-	baseCss?: string;
-	/**
-	 * CSS that could only be seen (for instance, inside the code viewer)
-	 * @default '* { box-sizing: border-box; } body {margin: 0;}'
-	 */
-	protectedCss?: string;
-	/**
-	 * CSS for the iframe which containing the canvas, useful if you need to customize
-	 * something inside (eg. the style of the selected component).
-	 * @default ''
-	 */
-	canvasCss?: string;
-	/**
-	 * Default command
-	 * @default 'select-comp'
-	 */
-	defaultCommand?: string;
-	/**
-	 * Show a toolbar when the component is selected
-	 * @default true
-	 */
-	showToolbar?: boolean;
-	/**
-	 * If true render a select of available devices
-	 * @default true
-	 */
-	showDevices?: boolean;
-	/**
-	 * When enabled, on device change media rules won't be created
-	 * @default false
-	 */
-	devicePreviewMode?: boolean;
-	/**
-	 * The condition to use for media queries, eg. 'max-width'.
-	 * Comes handy for mobile-first cases.
-	 * @default 'max-width'
-	 */
-	mediaCondition?: string;
-	/**
-	 * Starting tag for variable inside scripts in Components
-	 * @deprecated Rely on 'script-props' https://grapesjs.com/docs/modules/Components-js.html#passing-properties-to-scripts
-	 * @default '{[ '
-	 */
-	tagVarStart?: string;
-	/**
-	 * Ending tag for variable inside scripts in Components
-	 * @deprecated Rely on 'script-props' https://grapesjs.com/docs/modules/Components-js.html#passing-properties-to-scripts
-	 * @default ' ]}'
-	 */
-	tagVarEnd?: string;
-	/**
-	 * When false, removes empty text nodes when parsed, unless they contain a space.
-	 * @default false
-	 */
-	keepEmptyTextNodes?: boolean;
-	/**
-	 * Return JS of components inside HTML from 'editor.getHtml()'.
-	 * @default true
-	 */
-	jsInHtml?: boolean;
-	/**
-	 * Enable native HTML5 drag and drop.
-	 * @default true
-	 */
-	nativeDnD?: boolean;
-	/**
-	 * Enable multiple component selection.
-	 * @default true
-	 */
-	multipleSelection?: boolean;
-	/**
-	 * Pass default available options wherever `editor.getHtml()` is called.
-	 * @default {}
-	 */
-	optsHtml?: HTMLGeneratorBuildOptions;
-	/**
-	 * Pass default available options wherever `editor.getCss()` is called
-	 * @default {}
-	 */
-	optsCss?: CssGeneratorBuildOptions;
-	/**
-	 * Usually when you update the `style` of the component this changes the
-	 * element's `style` attribute. Unfortunately, inline styling doesn't allow
-	 * use of media queries (@media) or even pseudo selectors (eg. :hover).
-	 * When `avoidInlineStyle` is true all styles are inserted inside the css rule
-	 * @deprecated Don't use this option, we don't support inline styling anymore.
-	 */
-	avoidInlineStyle?: boolean;
-	/**
-	 * Avoid default properties from storable JSON data, like `components` and `styles`.
-	 * With this option enabled your data will be smaller (usefull if need to
-	 * save some storage space).
-	 * @default true
-	 */
-	avoidDefaults?: boolean;
-	/**
-	 * (experimental)
-	 * The structure of components is always on the screen but it's not the same
-	 * for style rules. When you delete a component you might leave a lot of styles
-	 * which will never be used again, therefore they might be removed.
-	 * With this option set to true, styles not used from the CSS generator (so in
-	 * any case where `CssGenerator.build` is used) will be removed automatically.
-	 * But be careful, not always leaving the style not used mean you wouldn't
-	 * use it later, but this option comes really handy when deal with big templates.
-	 * @default false
-	 */
-	clearStyles?: boolean;
-	/**
-	 * Specify the global drag mode of components. By default, components are moved
-	 * following the HTML flow. Two other options are available:
-	 * 'absolute' - Move components absolutely (design tools way)
-	 * 'translate' - Use translate CSS from transform property
-	 * To get more about this feature read: https://github.com/GrapesJS/grapesjs/issues/1936.
-	 */
-	dragMode?: "translate" | "absolute";
-	/**
-	 * When the editor is placed in a scrollable container (eg. modals) this might
-	 * cause elements inside the canvas (eg. floating toolbars) to be misaligned.
-	 * To avoid that, you can specify an array of DOM elements on which their scroll will
-	 * trigger the canvas update.
-	 * Be default, if the array is empty, the first parent element will be appended.
-	 * listenToEl: [document.querySelector('#scrollable-el')],
-	 * @default []
-	 * */
-	listenToEl?: HTMLElement[];
-	/**
-	 * Import asynchronously CSS to use as icons.
-	 * @default 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
-	 * */
-	cssIcons?: string;
-	/**
-	 * Experimental: don't use.
-	 * Editor icons
-	 */
-	icons?: ObjectAny;
-	/**
-	 * Configurations for I18n.
-	 */
-	i18n?: I18nConfig;
-	/**
-	 * Configurations for Undo Manager
-	 */
-	undoManager?: UndoManagerConfig | boolean;
-	/**
-	 * Configurations for Asset Manager.
-	 */
-	assetManager?: AssetManagerConfig;
-	/**
-	 * Configurations for Canvas.
-	 */
-	canvas?: CanvasConfig;
-	/**
-	 * Configurations for Storage Manager.
-	 */
-	storageManager?: StorageManagerConfig | boolean;
-	/**
-	 * Configurations for Rich Text Editor.
-	 */
-	richTextEditor?: RichTextEditorConfig;
-	/**
-	 * Configurations for DomComponents
-	 */
-	domComponents?: DomComponentsConfig;
-	/**
-	 * Configurations for Modal Dialog.
-	 */
-	modal?: ModalConfig;
-	/**
-	 * Configurations for Code Manager.
-	 */
-	codeManager?: CodeManagerConfig;
-	/**
-	 * Configurations for Panels.
-	 */
-	panels?: PanelsConfig;
-	/**
-	 * Configurations for Commands.
-	 */
-	commands?: CommandsConfig;
-	/**
-	 * Configurations for Css Composer.
-	 */
-	cssComposer?: CssComposerConfig;
-	/**
-	 * Configurations for Selector Manager.
-	 */
-	selectorManager?: SelectorManagerConfig;
-	/**
-	 * Configurations for Device Manager.
-	 */
-	deviceManager?: DeviceManagerConfig;
-	/**
-	 * Configurations for Style Manager.
-	 */
-	styleManager?: StyleManagerConfig;
-	/**
-	 * Configurations for Block Manager.
-	 */
-	blockManager?: BlockManagerConfig;
-	/**
-	 * Configurations for Trait Manager.
-	 */
-	traitManager?: TraitManagerConfig;
-	/**
-	 * Configurations for Page Manager.
-	 */
-	pageManager?: PageManagerConfig;
-	/**
-	 * Configurations for Layer Manager.
-	 */
-	layerManager?: LayerManagerConfig;
-	/**
-	 * Configurations for Parser module.
-	 */
-	parser?: ParserConfig;
-	/** Texts **/
-	textViewCode?: string;
-	/**
-	 * Keep unused styles within the editor.
-	 * @default false
-	 */
-	keepUnusedStyles?: boolean;
-	/**
-	 * Experimental: don't use.
-	 * Avoid default UI styles.
-	 */
-	customUI?: boolean;
-	el?: HTMLElement;
-	/**
-	 * Color picker options.
-	 */
-	colorPicker?: ObjectAny;
-	pStylePrefix?: string;
-}
-export type EditorConfigKeys = keyof EditorConfig;
-export declare class Blocks extends Collection<Block> {
-}
-export declare class Categories extends Collection<Category> {
-}
-declare enum BlocksEvents {
-	/**
-	 * @event `block:add` New block added to the collection. The [Block] is passed as an argument to the callback.
-	 * @example
-	 * editor.on('block:add', (block) => { ... });
-	 */
-	add = "block:add",
-	/**
-	 * @event `block:remove` Block removed from the collection. The [Block] is passed as an argument to the callback.
-	 * @example
-	 * editor.on('block:remove', (block) => { ... });
-	 */
-	remove = "block:remove",
-	/**
-	 * @event `block:remove:before` Event triggered before Block remove.
-	 * @example
-	 * editor.on('block:remove:before', (block, remove, opts) => { ... });
-	 */
-	removeBefore = "block:remove:before",
-	/**
-	 * @event `block:update` Block updated. The [Block] and the object containing changes are passed as arguments to the callback.
-	 * @example
-	 * editor.on('block:update', (block, updatedProps) => { ... });
-	 */
-	update = "block:update",
-	/**
-	 * @event `block:drag:start` Started dragging block. The [Block] is passed as an argument.
-	 * @example
-	 * editor.on('block:drag:start', (block) => { ... });
-	 */
-	dragStart = "block:drag:start",
-	/**
-	 * @event `block:drag` The block is dragging. The [Block] is passed as an argument.
-	 * @example
-	 * editor.on('block:drag', (block) => { ... });
-	 */
-	drag = "block:drag",
-	/**
-	 * @event `block:drag:stop` Dragging of the block is stopped. The dropped [Component] (if dropped successfully) and the [Block] are passed as arguments.
-	 * @example
-	 * editor.on('block:drag:stop', (component, block) => { ... });
-	 */
-	dragEnd = "block:drag:stop",
-	/**
-	 * @event `block:custom` Event to use in case of [custom Block Manager UI](https://grapesjs.com/docs/modules/Blocks.html#customization).
-	 * @example
-	 * editor.on('block:custom', ({ container, blocks, ... }) => { ... });
-	 */
-	custom = "block:custom",
-	/**
-	 * @event `block` Catch-all event for all the events mentioned above. An object containing all the available data about the triggered event is passed as an argument to the callback.
-	 * @example
-	 * editor.on('block', ({ event, model, ... }) => { ... });
-	 */
-	all = "block"
-}
-export interface BlocksViewConfig {
-	em: EditorModel;
-	pStylePrefix?: string;
-	ignoreCategories?: boolean;
-	getSorter?: any;
-}
-declare class BlocksView extends View {
-	em: EditorModel;
-	config: BlocksViewConfig;
-	categories: Categories;
-	renderedCategories: Record<string, CategoryView>;
-	ppfx: string;
-	noCatClass: string;
-	blockContClass: string;
-	catsClass: string;
-	catsEl?: HTMLElement;
-	blocksEl?: HTMLElement;
-	rendered?: boolean;
-	sorter: any;
-	constructor(opts: any, config: BlocksViewConfig);
-	__getModule(): BlockManager;
-	updateConfig(opts?: {}): void;
-	/**
-	 * Get sorter
-	 * @private
-	 */
-	getSorter(): any;
-	onDrag(ev: Event): void;
-	onMove(ev: Event): void;
-	onDrop(component?: Component): void;
-	/**
-	 * Add new model to the collection
-	 * @param {Model} model
-	 * @private
-	 * */
-	addTo(model: Block): void;
-	/**
-	 * Render new model inside the view
-	 * @param {Model} model
-	 * @param {Object} fragment Fragment collection
-	 * @private
-	 * */
-	add(model: Block, fragment?: DocumentFragment): void;
-	getCategoriesEl(): HTMLElement;
-	getBlocksEl(): HTMLElement;
-	append(el: HTMLElement | DocumentFragment): void;
-	render(): this;
-}
-export type BlockEvent = `${BlocksEvents}`;
-declare class BlockManager extends ItemManagerModule<BlockManagerConfig, Blocks> {
-	blocks: Blocks;
-	blocksVisible: Blocks;
-	categories: Categories;
-	blocksView?: BlocksView;
-	_dragBlock?: Block;
-	_bhv?: Record<string, any>;
-	events: typeof BlocksEvents;
-	Block: typeof Block;
-	Blocks: typeof Blocks;
-	Category: typeof Category;
-	Categories: typeof Categories;
-	storageKey: string;
-	constructor(em: EditorModel);
-	/**
-	 * Get configuration object
-	 * @name getConfig
-	 * @function
-	 * @return {Object}
-	 */
-	__trgCustom(): void;
-	__customData(): {
-		bm: BlockManager;
-		blocks: Block[];
-		container: any;
-		dragStart: (block: Block, ev?: Event) => void;
-		drag: (ev: Event) => void;
-		dragStop: (cancel?: boolean) => void;
-	};
-	__startDrag(block: Block, ev?: Event): void;
-	__drag(ev: Event): void;
-	__endDrag(opts?: {
-		component?: Component;
-	}): void;
-	__getFrameViews(): FrameView[];
-	__behaviour(opts?: {}): {};
-	__getBehaviour(): Record<string, any>;
-	startDrag(block: Block, ev?: Event): void;
-	endDrag(cancel?: boolean): void;
-	postRender(): void;
-	/**
-	 * Add new block.
-	 * @param {String} id Block ID
-	 * @param {[Block]} props Block properties
-	 * @returns {[Block]} Added block
-	 * @example
-	 * blockManager.add('h1-block', {
-	 *   label: 'Heading',
-	 *   content: '<h1>Put your title here</h1>',
-	 *   category: 'Basic',
-	 *   attributes: {
-	 *     title: 'Insert h1 block'
-	 *   }
-	 * });
-	 */
-	add(id: string, props: BlockProperties, opts?: {}): Block;
-	/**
-	 * Get the block by id.
-	 * @param  {String} id Block id
-	 * @returns {[Block]}
-	 * @example
-	 * const block = blockManager.get('h1-block');
-	 * console.log(JSON.stringify(block));
-	 * // {label: 'Heading', content: '<h1>Put your ...', ...}
-	 */
-	get(id: string): Block;
-	/**
-	 * Return all blocks.
-	 * @returns {Collection<[Block]>}
-	 * @example
-	 * const blocks = blockManager.getAll();
-	 * console.log(JSON.stringify(blocks));
-	 * // [{label: 'Heading', content: '<h1>Put your ...'}, ...]
-	 */
-	getAll(): Blocks;
-	/**
-	 * Return the visible collection, which containes blocks actually rendered
-	 * @returns {Collection<[Block]>}
-	 */
-	getAllVisible(): Blocks;
-	/**
-	 * Remove block.
-	 * @param {String|[Block]} block Block or block ID
-	 * @returns {[Block]} Removed block
-	 * @example
-	 * const removed = blockManager.remove('BLOCK_ID');
-	 * // or by passing the Block
-	 * const block = blockManager.get('BLOCK_ID');
-	 * blockManager.remove(block);
-	 */
-	remove(block: string | Block, opts?: {}): any;
-	/**
-	 * Get all available categories.
-	 * It's possible to add categories only within blocks via 'add()' method
-	 * @return {Array|Collection}
-	 */
-	getCategories(): Categories;
-	/**
-	 * Return the Blocks container element
-	 * @return {HTMLElement}
-	 */
-	getContainer(): HTMLElement | undefined;
-	/**
-	 * Returns currently dragging block.
-	 * Updated when the drag starts and cleared once it's done.
-	 * @returns {[Block]|undefined}
-	 */
-	getDragBlock(): Block | undefined;
-	/**
-	 * Render blocks
-	 * @param  {Array} blocks Blocks to render, without the argument will render all global blocks
-	 * @param  {Object} [opts={}] Options
-	 * @param  {Boolean} [opts.external] Render blocks in a new container (HTMLElement will be returned)
-	 * @param  {Boolean} [opts.ignoreCategories] Render blocks without categories
-	 * @return {HTMLElement} Rendered element
-	 * @example
-	 * // Render all blocks (inside the global collection)
-	 * blockManager.render();
-	 *
-	 * // Render new set of blocks
-	 * const blocks = blockManager.getAll();
-	 * const filtered = blocks.filter(block => block.get('category') == 'sections')
-	 *
-	 * blockManager.render(filtered);
-	 * // Or a new set from an array
-	 * blockManager.render([
-	 *  {label: 'Label text', content: '<div>Content</div>'}
-	 * ]);
-	 *
-	 * // Back to blocks from the global collection
-	 * blockManager.render();
-	 *
-	 * // You can also render your blocks outside of the main block container
-	 * const newBlocksEl = blockManager.render(filtered, { external: true });
-	 * document.getElementById('some-id').appendChild(newBlocksEl);
-	 */
-	render(blocks?: Block[], opts?: {
-		external?: boolean;
-	}): HTMLElement | undefined;
-	destroy(): void;
+/** @private */
+export interface SectorProperties {
+	id?: string;
+	name: string;
+	open?: boolean;
+	visible?: boolean;
+	buildProps?: string[];
+	extendBuilded?: boolean;
+	properties?: PropertyTypes[];
 }
 /**
- * @typedef State
- * @property {String} name State name, eg. `hover`, `nth-of-type(2n)`
- * @property {String} label State label, eg. `Hover`, `Even/Odd`
+ *
+ * [Property]: property.html
+ *
+ * @typedef Sector
+ * @property {String} id Sector id, eg. `typography`
+ * @property {String} name Sector name, eg. `Typography`
+ * @property {Boolean} [open=true] Indicates the open state.
+ * @property {Array<Object>} [properties=[]] Indicate an array of Property defintions.
  */
-export declare class State extends Model {
+export declare class Sector extends Model<SectorProperties> {
+	em: EditorModel;
 	defaults(): {
+		id: string;
 		name: string;
-		label: string;
+		open: boolean;
+		visible: boolean;
+		extendBuilded: boolean;
+		properties: never[];
 	};
 	/**
-	 * Get state name
+	 * @hideconstructor
+	 */
+	constructor(prp: SectorProperties, opts?: {
+		em?: EditorModel;
+	});
+	get properties(): Collection<Property>;
+	/**
+	 * Get sector id.
+	 * @returns {String}
+	 */
+	getId(): string;
+	/**
+	 * Get sector name.
 	 * @returns {String}
 	 */
 	getName(): string;
 	/**
-	 * Get state label. If label was not provided, the name will be returned.
-	 * @returns {String}
+	 * Update sector name.
+	 * @param {String} value New sector name
 	 */
-	getLabel(): string;
-}
-declare class ClassTagsView extends View<Selector> {
-	template({ labelInfo, labelHead, iconSync, iconAdd, pfx, ppfx }: any): string;
-	events(): {
-		"change [data-states]": string;
-		"click [data-add]": string;
-		"focusout [data-input]": string;
-		"keyup [data-input]": string;
-		"click [data-sync-style]": string;
-	};
-	$input?: JQuery<HTMLElement>;
-	$addBtn?: JQuery<HTMLElement>;
-	$classes?: JQuery<HTMLElement>;
-	$btnSyncEl?: JQuery<HTMLElement>;
-	$states?: JQuery<HTMLElement>;
-	$statesC?: JQuery<HTMLElement>;
-	em: EditorModel;
-	target: EditorModel;
-	module: SelectorManager;
-	pfx: string;
-	ppfx: string;
-	stateInputId: string;
-	stateInputC: string;
-	config: any;
-	states: State[];
-	constructor(o?: any);
-	syncStyle(): void;
+	setName(value: string): this;
 	/**
-	 * Triggered when a tag is removed from collection
-	 * @param {Object} model Removed model
+	 * Check if the sector is open
+	 * @returns {Boolean}
+	 */
+	isOpen(): boolean;
+	/**
+	 * Update Sector open state
+	 * @param {Boolean} value
+	 */
+	setOpen(value: boolean): this;
+	/**
+	 * Check if the sector is visible
+	 * @returns {Boolean}
+	 */
+	isVisible(): boolean;
+	/**
+	 * Get sector properties.
+	 * @param {Object} [opts={}] Options
+	 * @param {Boolean} [opts.withValue=false] Get only properties with value
+	 * @param {Boolean} [opts.withParentValue=false] Get only properties with parent value
+	 * @returns {Array<[Property]>}
+	 */
+	getProperties(opts?: {
+		withValue?: boolean;
+		withParentValue?: boolean;
+	}): Property<PropertyProps>[];
+	getProperty(id: string): Property | undefined;
+	addProperty(property: PropertyTypes, opts: AddOptions): Property<PropertyProps>;
+	/**
+	 * Extend properties
+	 * @param {Array<Object>} props Start properties
+	 * @param {Array<Object>} moProps Model props
+	 * @param {Boolean} ex Returns the same amount of passed model props
+	 * @return {Array<Object>} Final props
 	 * @private
 	 */
-	tagRemoved(model?: State): void;
+	extendProperties(props: PropertyTypes[], moProps?: PropertyTypes[], ex?: boolean): PropertyTypes[];
+	checkExtend(prop: any): PropertyTypes;
 	/**
-	 * Add new model
-	 * @param {Object} model
+	 * Build properties
+	 * @param {Array<string>} propr Array of props as sting
+	 * @return {Array<Object>}
 	 * @private
 	 */
-	addNew(model: State): void;
-	/**
-	 * Start tag creation
-	 * @param {Object} e
-	 * @private
-	 */
-	startNewTag(): void;
-	/**
-	 * End tag creation
-	 * @param {Object} e
-	 * @private
-	 */
-	endNewTag(): void;
-	/**
-	 * Checks what to do on keyup event
-	 * @param  {Object} e
-	 * @private
-	 */
-	onInputKeyUp(e: KeyboardEvent): void;
-	checkStates(): void;
-	/**
-	 * Triggered when component is changed
-	 * @param  {Object} e
-	 * @public
-	 */
-	componentChanged({ targets }?: any): void;
-	updateSelection(targets: Component | Component[]): Selector[];
-	getCommonSelectors({ targets, opts }?: any): Selector[];
-	_commonSelectors(...args: any): Selector[];
-	checkSync(): void;
-	getTarget(): Component | undefined;
-	getTargets(): Component[];
-	/**
-	 * Update states visibility. Hides states in case there is no tags
-	 * inside collection
-	 * @private
-	 */
-	updateStateVis(targets?: Component[] | Component): void;
-	__handleStateChange(): void;
-	/**
-	 * Update selector helper
-	 * @return {this}
-	 * @private
-	 */
-	updateSelector(targets?: Component[] | Component): void;
-	__getName(target: Component): string;
-	/**
-	 * Triggered when the select with states is changed
-	 * @param  {Object} e
-	 * @private
-	 */
-	stateChanged(ev: any): void;
-	/**
-	 * Add new tag to collection, if possible, and to the component
-	 * @param  {Object} e
-	 * @private
-	 */
-	addNewTag(value: any): void;
-	/**
-	 * Add new object to collection
-	 * @param   {Object} model  Model
-	 * @param   {Object} fragmentEl   Fragment collection
-	 * @return {Object} Object created
-	 * @private
-	 * */
-	addToClasses(model: State, fragmentEl?: DocumentFragment): HTMLElement;
-	/**
-	 * Render the collection of classes
-	 * @private
-	 */
-	renderClasses(): void;
-	/**
-	 * Return classes element
-	 * @return {HTMLElement}
-	 * @private
-	 */
-	getClasses(): JQuery<HTMLElement>;
-	/**
-	 * Return states element
-	 * @return {HTMLElement}
-	 * @private
-	 */
-	getStates(): JQuery<HTMLElement>;
-	/**
-	 * Return states container element
-	 * @return {HTMLElement}
-	 * @private
-	 */
-	getStatesC(): JQuery<HTMLElement>;
-	renderStates(): void;
-	render(): this;
+	buildProperties(props: string | string[]): PropertyTypes[];
 }
 export declare class Sectors extends Collection<Sector> {
 	em: EditorModel;
@@ -8661,6 +7643,7 @@ export type OptionStyleStack = OptionsStyle & {
 		min?: number;
 		max?: number;
 	};
+	__clear?: boolean;
 };
 /** @private */
 export interface PropertyStackProps extends Omit<PropertyCompositeProps, "toStyle" | "fromStyle"> {
@@ -8685,6 +7668,21 @@ export interface PropertyStackProps extends Omit<PropertyCompositeProps, "toStyl
 		values: LayerValues;
 		property: PropertyStack;
 	}) => string;
+	/**
+	 * Empty value to apply when all layers are removed.
+	 * @default 'unset'
+	 * @example
+	 * // use simple string
+	 * emptyValue: 'inherit',
+	 * // or a function for a custom style object
+	 * emptyValue: () => ({
+	 *  color: 'unset',
+	 *  width: 'auto'
+	 * }),
+	 */
+	emptyValue?: string | ((data: {
+		property: PropertyStack;
+	}) => PropValues);
 	toStyle?: (values: PropValues, data: ToStyleDataStack) => ReturnType<ToStyle>;
 	fromStyle?: (style: StyleProps, data: FromStyleDataStack) => ReturnType<FromStyle>;
 	parseLayer?: (data: {
@@ -8694,6 +7692,7 @@ export interface PropertyStackProps extends Omit<PropertyCompositeProps, "toStyl
 	selectedLayer?: Layer;
 	prepend?: boolean;
 	__layers?: PropValues[];
+	isEmptyValue?: boolean;
 }
 /**
  *
@@ -8712,17 +7711,33 @@ export interface PropertyStackProps extends Omit<PropertyCompositeProps, "toStyl
  *    return `A: ${values['prop-a']} B: ${values['prop-b']}`;
  *  }
  *  ```
+ * @property {String|Function} [emptyValue='unset'] Empty value to apply when all layers are removed.
+ * \n
+ * ```js
+ *  // use simple string
+ *  emptyValue: 'inherit',
+ *  // or a function for a custom style object
+ *  emptyValue: () => ({
+ *    color: 'unset',
+ *    width: 'auto'
+ *  }),
+ *  ```
  *
  */
 export declare class PropertyStack extends PropertyComposite<PropertyStackProps> {
 	defaults(): any;
 	initialize(props?: {}, opts?: {}): void;
+	get layers(): Layers;
 	/**
 	 * Get all available layers.
 	 * @returns {Array<[Layer]>}
 	 */
 	getLayers(): Layer[];
-	__getLayers(): Layers;
+	/**
+	 * Check if the property has layers.
+	 * @returns {Boolean}
+	 */
+	hasLayers(): boolean;
 	/**
 	 * Get layer by index.
 	 * @param {Number} [index=0] Layer index position.
@@ -8824,6 +7839,11 @@ export declare class PropertyStack extends PropertyComposite<PropertyStackProps>
 	 * @return {RegExp}
 	 */
 	getLayerSeparator(): RegExp;
+	/**
+	 * Check if the property is with an empty value.
+	 * @returns {Boolean}
+	 */
+	hasEmptyValue(): boolean;
 	__upProperties(prop: Property, opts?: any): void;
 	__upLayers(m: any, c: any, o: any): void;
 	__upTargets(p: this, opts?: any): void;
@@ -8833,12 +7853,22 @@ export declare class PropertyStack extends PropertyComposite<PropertyStackProps>
 		noEvent?: boolean;
 	}, opts?: OptionsUpdate): void;
 	_up(props: Partial<PropertyStackProps>, opts?: OptionsUpdate): this;
-	__setLayers(newLayers?: PropValues[]): void;
+	__setLayers(newLayers?: LayerValues[], opts?: {
+		isEmptyValue?: boolean;
+	}): void;
 	__parseValue(value: string): Partial<PropertyStackProps>;
 	__parseLayer(value: string): PropValues;
-	__getLayersFromStyle(style?: StyleProps): any[] | null;
-	getStyle(opts?: OptionStyleStack): StyleProps;
-	getStyleFromLayers(opts?: OptionStyleStack): StyleProps;
+	__getLayersFromStyle(style?: StyleProps): LayerValues[] | null;
+	getStyle(opts?: OptionStyleStack): {
+		[x: string]: any;
+	};
+	getStyleFromLayers(opts?: OptionStyleStack): {
+		[x: string]: any;
+	};
+	isEmptyValueStyle(style?: StyleProps): boolean;
+	getEmptyValueStyle(opts?: {
+		force?: boolean;
+	}): PropValues;
 	__getJoinLayers(): string;
 	__getFullValue(): string;
 	/**
@@ -8854,6 +7884,11 @@ export declare class PropertyStack extends PropertyComposite<PropertyStackProps>
 	 */
 	clear(opts?: {}): this;
 	__canClearProp(): boolean;
+	/**
+	 * @deprecated
+	 * @private
+	 */
+	__getLayers(): Layers;
 }
 export type PropertyTypes = PropertyStackProps | PropertySelectProps | PropertyNumberProps;
 export type StyleManagerEvent = "style:sector:add" | "style:sector:remove" | "style:sector:update" | "style:property:add" | "style:property:remove" | "style:property:update" | "style:target";
@@ -9064,9 +8099,7 @@ Sectors> {
 	 *  options: [{ id: 'value1', label: 'Some label' }, ...],
 	 * })
 	 */
-	addBuiltIn(prop: string, definition: Omit<PropertyProps, "property"> & {
-		proeperty?: "string";
-	}): any;
+	addBuiltIn(prop: string, definition: PropertyProps): any;
 	/**
 	 * Get what to style inside Style Manager. If you select the component
 	 * without classes the entity is the Component itself and all changes will
@@ -9155,8 +8188,881 @@ Sectors> {
 		components?: Component | Component[];
 	}): void;
 	__upProps(opts?: {}): void;
-	__upProp(prop: any, style: StyleProps, parentStyles: any[], opts: any): void;
+	__upProp(prop: Property, style: StyleProps, parentStyles: any[], opts: any): void;
 	destroy(): void;
+}
+export interface StyleManagerConfig {
+	/**
+	 * Default sectors and properties
+	 */
+	sectors?: (Omit<SectorProperties, "properties"> & {
+		properties?: (string | PropertyTypes)[];
+	})[];
+	/**
+	 * Specify the element to use as a container, string (query) or HTMLElement.
+	 * With the empty value, nothing will be rendered.
+	 */
+	appendTo?: string | HTMLElement;
+	/**
+	 * Style prefix.
+	 * @default 'sm-'
+	 */
+	stylePrefix?: string;
+	/**
+	 * Avoid rendering the default style manager.
+	 * @default false
+	 */
+	custom?: boolean;
+	/**
+	 * Hide the property in case it's not stylable for the
+	 * selected component (each component has 'stylable' property).
+	 * @deprecated
+	 */
+	hideNotStylable?: boolean;
+	/**
+	 * Highlight changed properties of the selected component.
+	 * @deprecated
+	 */
+	highlightChanged?: boolean;
+	/**
+	 * Highlight computed properties of the selected component.
+	 * @deprecated
+	 */
+	highlightComputed?: boolean;
+	/**
+	 * Show computed properties of the selected component, if this value
+	 * is set to false, highlightComputed will not take effect.
+	 * @deprecated
+	 */
+	showComputed?: boolean;
+	/**
+	 * Adds the possibility to clear property value from the target style.
+	 * @deprecated
+	 */
+	clearProperties?: boolean;
+	/**
+	 * Properties not to take in account for computed styles.
+	 * @deprecated
+	 */
+	avoidComputed?: string[];
+	pStylePrefix?: string;
+}
+export interface HTMLGeneratorBuildOptions extends ToHTMLOptions {
+	/**
+	 * Remove unnecessary IDs (eg. those created automatically).
+	 */
+	cleanId?: boolean;
+}
+export type CssGeneratorBuildOptions = {
+	/**
+	 * Return an array of CssRules instead of the CSS string.
+	 */
+	json?: boolean;
+	/**
+	 * Return only rules matched by the passed component.
+	 */
+	onlyMatched?: boolean;
+	/**
+	 * Force keep all defined rules. Toggle on in case output looks different inside/outside of the editor.
+	 */
+	keepUnusedStyles?: boolean;
+	rules?: CssRule[];
+	clearStyles?: boolean;
+};
+export interface ColorPickerOptions {
+	beforeShow?: () => void;
+	move?: () => void;
+	change?: () => void;
+	show?: () => void;
+	hide?: () => void;
+	color?: boolean | string;
+	flat?: boolean;
+	showInput?: boolean;
+	allowEmpty?: boolean;
+	showButtons?: boolean;
+	clickoutFiresChange?: boolean;
+	showInitial?: boolean;
+	showPalette?: boolean;
+	showPaletteOnly?: boolean;
+	hideAfterPaletteSelect?: boolean;
+	togglePaletteOnly?: boolean;
+	showSelectionPalette?: boolean;
+	localStorageKey?: boolean | string;
+	appendTo?: string | HTMLElement;
+	maxSelectionSize?: number;
+	cancelText?: string;
+	chooseText?: string;
+	togglePaletteMoreText?: string;
+	togglePaletteLessText?: string;
+	clearText?: string;
+	noColorSelectedText?: string;
+	preferredFormat?: boolean | string;
+	containerClassName?: string;
+	replacerClassName?: string;
+	showAlpha?: boolean;
+	theme?: string;
+	palette?: string[][];
+	selectionPalette?: string[];
+	disabled?: boolean;
+	offset?: {
+		top: number;
+		left: number;
+	};
+}
+export interface EditorConfig {
+	/**
+	 * Style class name prefix.
+	 * @default 'gjs-'
+	 */
+	stylePrefix?: string;
+	/**
+	 * Selector which indicates where render the editor.
+	 */
+	container?: string | HTMLElement;
+	/**
+	 * If true, auto-render the content
+	 * @default true
+	 */
+	autorender?: boolean;
+	/**
+	 * Array of plugins to execute on start.
+	 * @default []
+	 */
+	plugins?: (string | Plugin<any>)[];
+	/**
+	 * Custom options for plugins
+	 * @default {}
+	 */
+	pluginsOpts?: Record<string, any>;
+	/**
+	 * Init headless editor.
+	 * @default false
+	 */
+	headless?: boolean;
+	/**
+	 * Initial project data (JSON containing your components/styles/etc) to load.
+	 */
+	projectData?: ObjectAny;
+	/**
+	 * HTML string or object of components
+	 * @deprecated Rely on `projectData` option
+	 * @default ''
+	 */
+	components?: string;
+	/**
+	 * CSS string or object of rules
+	 * @deprecated Rely on `projectData` option
+	 * @default ''
+	 */
+	style?: string;
+	/**
+	 * If true, will fetch HTML and CSS from the selected container.
+	 * @deprecated
+	 * @default false
+	 */
+	fromElement?: boolean;
+	/**
+	 * Show an alert before unload the page with unsaved changes
+	 * @default true
+	 */
+	noticeOnUnload?: boolean;
+	/**
+	 * Show paddings and margins.
+	 * @default false
+	 */
+	showOffsets?: boolean;
+	/**
+	 * Show paddings and margins on selected component
+	 * @default false
+	 */
+	showOffsetsSelected?: boolean;
+	/**
+	 * On creation of a new Component (via object), if the 'style' attribute is not
+	 * empty, all those roles will be moved in its new class.
+	 * @default true
+	 */
+	forceClass?: boolean;
+	/**
+	 * Height for the editor container
+	 * @default '900px'
+	 */
+	height?: string;
+	/**
+	 * Width for the editor container
+	 * @default '100%'
+	 */
+	width?: string;
+	/**
+	 * Type of logs to print with the logger (by default is used the devtool console).
+	 * Available by default: debug, info, warning, error.
+	 * You can use `false` to disable all of them or `true` to print all of them.
+	 * @default ['warning', 'error']
+	 */
+	log?: ("debug" | "info" | "warning" | "error")[] | boolean;
+	/**
+	 * By default Grapes injects base CSS into the canvas. For example, it sets body margin to 0
+	 * and sets a default background color of white. This CSS is desired in most cases.
+	 * use this property if you wish to overwrite the base CSS to your own CSS. This is most
+	 * useful if for example your template is not based off a document with 0 as body margin.
+	 * @deprecated in favor of `config.canvas.frameStyle`
+	 * @default ''
+	 */
+	baseCss?: string;
+	/**
+	 * CSS that could only be seen (for instance, inside the code viewer)
+	 * @default '* { box-sizing: border-box; } body {margin: 0;}'
+	 */
+	protectedCss?: string;
+	/**
+	 * CSS for the iframe which containing the canvas, useful if you need to customize
+	 * something inside (eg. the style of the selected component).
+	 * @default ''
+	 */
+	canvasCss?: string;
+	/**
+	 * Default command
+	 * @default 'select-comp'
+	 */
+	defaultCommand?: string;
+	/**
+	 * Show a toolbar when the component is selected
+	 * @default true
+	 */
+	showToolbar?: boolean;
+	/**
+	 * If true render a select of available devices
+	 * @default true
+	 */
+	showDevices?: boolean;
+	/**
+	 * When enabled, on device change media rules won't be created
+	 * @default false
+	 */
+	devicePreviewMode?: boolean;
+	/**
+	 * The condition to use for media queries, eg. 'max-width'.
+	 * Comes handy for mobile-first cases.
+	 * @default 'max-width'
+	 */
+	mediaCondition?: string;
+	/**
+	 * Starting tag for variable inside scripts in Components
+	 * @deprecated Rely on 'script-props' https://grapesjs.com/docs/modules/Components-js.html#passing-properties-to-scripts
+	 * @default '{[ '
+	 */
+	tagVarStart?: string;
+	/**
+	 * Ending tag for variable inside scripts in Components
+	 * @deprecated Rely on 'script-props' https://grapesjs.com/docs/modules/Components-js.html#passing-properties-to-scripts
+	 * @default ' ]}'
+	 */
+	tagVarEnd?: string;
+	/**
+	 * When false, removes empty text nodes when parsed, unless they contain a space.
+	 * @default false
+	 */
+	keepEmptyTextNodes?: boolean;
+	/**
+	 * Return JS of components inside HTML from 'editor.getHtml()'.
+	 * @default true
+	 */
+	jsInHtml?: boolean;
+	/**
+	 * Enable native HTML5 drag and drop.
+	 * @default true
+	 */
+	nativeDnD?: boolean;
+	/**
+	 * Enable multiple component selection.
+	 * @default true
+	 */
+	multipleSelection?: boolean;
+	/**
+	 * Pass default available options wherever `editor.getHtml()` is called.
+	 * @default {}
+	 */
+	optsHtml?: HTMLGeneratorBuildOptions;
+	/**
+	 * Pass default available options wherever `editor.getCss()` is called
+	 * @default {}
+	 */
+	optsCss?: CssGeneratorBuildOptions;
+	/**
+	 * Usually when you update the `style` of the component this changes the
+	 * element's `style` attribute. Unfortunately, inline styling doesn't allow
+	 * use of media queries (@media) or even pseudo selectors (eg. :hover).
+	 * When `avoidInlineStyle` is true all styles are inserted inside the css rule
+	 * @deprecated Don't use this option, we don't support inline styling anymore.
+	 */
+	avoidInlineStyle?: boolean;
+	/**
+	 * Avoid default properties from storable JSON data, like `components` and `styles`.
+	 * With this option enabled your data will be smaller (usefull if need to
+	 * save some storage space).
+	 * @default true
+	 */
+	avoidDefaults?: boolean;
+	/**
+	 * (experimental)
+	 * The structure of components is always on the screen but it's not the same
+	 * for style rules. When you delete a component you might leave a lot of styles
+	 * which will never be used again, therefore they might be removed.
+	 * With this option set to true, styles not used from the CSS generator (so in
+	 * any case where `CssGenerator.build` is used) will be removed automatically.
+	 * But be careful, not always leaving the style not used mean you wouldn't
+	 * use it later, but this option comes really handy when deal with big templates.
+	 * @default false
+	 */
+	clearStyles?: boolean;
+	/**
+	 * Specify the global drag mode of components. By default, components are moved
+	 * following the HTML flow. Two other options are available:
+	 * 'absolute' - Move components absolutely (design tools way)
+	 * 'translate' - Use translate CSS from transform property
+	 * To get more about this feature read: https://github.com/GrapesJS/grapesjs/issues/1936.
+	 */
+	dragMode?: "translate" | "absolute";
+	/**
+	 * When the editor is placed in a scrollable container (eg. modals) this might
+	 * cause elements inside the canvas (eg. floating toolbars) to be misaligned.
+	 * To avoid that, you can specify an array of DOM elements on which their scroll will
+	 * trigger the canvas update.
+	 * Be default, if the array is empty, the first parent element will be appended.
+	 * listenToEl: [document.querySelector('#scrollable-el')],
+	 * @default []
+	 * */
+	listenToEl?: HTMLElement[];
+	/**
+	 * Import asynchronously CSS to use as icons.
+	 * @default 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+	 * */
+	cssIcons?: string;
+	/**
+	 * Experimental: don't use.
+	 * Editor icons
+	 */
+	icons?: ObjectAny;
+	/**
+	 * Configurations for I18n.
+	 */
+	i18n?: I18nConfig;
+	/**
+	 * Configurations for Undo Manager
+	 */
+	undoManager?: UndoManagerConfig | boolean;
+	/**
+	 * Configurations for Asset Manager.
+	 */
+	assetManager?: AssetManagerConfig;
+	/**
+	 * Configurations for Canvas.
+	 */
+	canvas?: CanvasConfig;
+	/**
+	 * Configurations for Storage Manager.
+	 */
+	storageManager?: StorageManagerConfig | boolean;
+	/**
+	 * Configurations for Rich Text Editor.
+	 */
+	richTextEditor?: RichTextEditorConfig;
+	/**
+	 * Configurations for DomComponents
+	 */
+	domComponents?: DomComponentsConfig;
+	/**
+	 * Configurations for Modal Dialog.
+	 */
+	modal?: ModalConfig;
+	/**
+	 * Configurations for Code Manager.
+	 */
+	codeManager?: CodeManagerConfig;
+	/**
+	 * Configurations for Panels.
+	 */
+	panels?: PanelsConfig;
+	/**
+	 * Configurations for Commands.
+	 */
+	commands?: CommandsConfig;
+	/**
+	 * Configurations for keymaps
+	 */
+	keymaps?: KeymapsConfig;
+	/**
+	 * Configurations for Css Composer.
+	 */
+	cssComposer?: CssComposerConfig;
+	/**
+	 * Configurations for Selector Manager.
+	 */
+	selectorManager?: SelectorManagerConfig;
+	/**
+	 * Configurations for Device Manager.
+	 */
+	deviceManager?: DeviceManagerConfig;
+	/**
+	 * Configurations for Style Manager.
+	 */
+	styleManager?: StyleManagerConfig;
+	/**
+	 * Configurations for Block Manager.
+	 */
+	blockManager?: BlockManagerConfig;
+	/**
+	 * Configurations for Trait Manager.
+	 */
+	traitManager?: TraitManagerConfig;
+	/**
+	 * Configurations for Page Manager.
+	 */
+	pageManager?: PageManagerConfig;
+	/**
+	 * Configurations for Layer Manager.
+	 */
+	layerManager?: LayerManagerConfig;
+	/**
+	 * Configurations for Parser module.
+	 */
+	parser?: ParserConfig;
+	/** Texts **/
+	textViewCode?: string;
+	/**
+	 * Keep unused styles within the editor.
+	 * @default false
+	 */
+	keepUnusedStyles?: boolean;
+	/**
+	 * Experimental: don't use.
+	 * Avoid default UI styles.
+	 */
+	customUI?: boolean;
+	el?: HTMLElement;
+	/**
+	 * Color picker options.
+	 */
+	colorPicker?: ColorPickerOptions;
+	pStylePrefix?: string;
+}
+export type EditorConfigKeys = keyof EditorConfig;
+export interface BlocksByCategory extends ItemsByCategory<Block> {
+}
+declare enum BlocksEvents {
+	/**
+	 * @event `block:add` New block added to the collection. The [Block] is passed as an argument to the callback.
+	 * @example
+	 * editor.on('block:add', (block) => { ... });
+	 */
+	add = "block:add",
+	/**
+	 * @event `block:remove` Block removed from the collection. The [Block] is passed as an argument to the callback.
+	 * @example
+	 * editor.on('block:remove', (block) => { ... });
+	 */
+	remove = "block:remove",
+	/**
+	 * @event `block:remove:before` Event triggered before Block remove.
+	 * @example
+	 * editor.on('block:remove:before', (block, remove, opts) => { ... });
+	 */
+	removeBefore = "block:remove:before",
+	/**
+	 * @event `block:update` Block updated. The [Block] and the object containing changes are passed as arguments to the callback.
+	 * @example
+	 * editor.on('block:update', (block, updatedProps) => { ... });
+	 */
+	update = "block:update",
+	/**
+	 * @event `block:drag:start` Started dragging block. The [Block] is passed as an argument.
+	 * @example
+	 * editor.on('block:drag:start', (block) => { ... });
+	 */
+	dragStart = "block:drag:start",
+	/**
+	 * @event `block:drag` The block is dragging. The [Block] is passed as an argument.
+	 * @example
+	 * editor.on('block:drag', (block) => { ... });
+	 */
+	drag = "block:drag",
+	/**
+	 * @event `block:drag:stop` Dragging of the block is stopped. The dropped [Component] (if dropped successfully) and the [Block] are passed as arguments.
+	 * @example
+	 * editor.on('block:drag:stop', (component, block) => { ... });
+	 */
+	dragEnd = "block:drag:stop",
+	/**
+	 * @event `block:category:update` Block category updated.
+	 * @example
+	 * editor.on('block:category:update', ({ category, changes }) => { ... });
+	 */
+	categoryUpdate = "block:category:update",
+	/**
+	 * @event `block:custom` Event to use in case of [custom Block Manager UI](https://grapesjs.com/docs/modules/Blocks.html#customization).
+	 * @example
+	 * editor.on('block:custom', ({ container, blocks, ... }) => { ... });
+	 */
+	custom = "block:custom",
+	/**
+	 * @event `block` Catch-all event for all the events mentioned above. An object containing all the available data about the triggered event is passed as an argument to the callback.
+	 * @example
+	 * editor.on('block', ({ event, model, ... }) => { ... });
+	 */
+	all = "block"
+}
+export interface BlocksViewConfig {
+	em: EditorModel;
+	pStylePrefix?: string;
+	ignoreCategories?: boolean;
+	getSorter?: any;
+}
+declare class BlocksView extends View {
+	em: EditorModel;
+	config: BlocksViewConfig;
+	categories: Categories;
+	renderedCategories: Map<string, CategoryView>;
+	ppfx: string;
+	noCatClass: string;
+	blockContClass: string;
+	catsClass: string;
+	catsEl?: HTMLElement;
+	blocksEl?: HTMLElement;
+	rendered?: boolean;
+	sorter: any;
+	constructor(opts: any, config: BlocksViewConfig);
+	__getModule(): BlockManager;
+	updateConfig(opts?: {}): void;
+	/**
+	 * Get sorter
+	 * @private
+	 */
+	getSorter(): any;
+	onDrag(ev: Event): void;
+	onMove(ev: Event): void;
+	onDrop(component?: Component): void;
+	/**
+	 * Add new model to the collection
+	 * @param {Model} model
+	 * @private
+	 * */
+	addTo(model: Block): void;
+	/**
+	 * Render new model inside the view
+	 * @param {Model} model
+	 * @param {Object} fragment Fragment collection
+	 * @private
+	 * */
+	add(model: Block, fragment?: DocumentFragment): void;
+	getCategoriesEl(): HTMLElement;
+	getBlocksEl(): HTMLElement;
+	append(el: HTMLElement | DocumentFragment): void;
+	render(): this;
+}
+export type BlockEvent = `${BlocksEvents}`;
+declare class BlockManager extends ItemManagerModule<BlockManagerConfig, Blocks> {
+	blocks: Blocks;
+	blocksVisible: Blocks;
+	categories: Categories;
+	blocksView?: BlocksView;
+	_dragBlock?: Block;
+	_bhv?: Record<string, any>;
+	events: typeof BlocksEvents;
+	Block: typeof Block;
+	Blocks: typeof Blocks;
+	Category: typeof Category;
+	Categories: typeof Categories;
+	storageKey: string;
+	constructor(em: EditorModel);
+	/**
+	 * Get configuration object
+	 * @name getConfig
+	 * @function
+	 * @return {Object}
+	 */
+	__trgCustom(): void;
+	__customData(): {
+		bm: BlockManager;
+		blocks: Block[];
+		container: any;
+		dragStart: (block: Block, ev?: Event) => void;
+		drag: (ev: Event) => void;
+		dragStop: (cancel?: boolean) => void;
+	};
+	__startDrag(block: Block, ev?: Event): void;
+	__drag(ev: Event): void;
+	__endDrag(opts?: {
+		component?: Component;
+	}): void;
+	__getFrameViews(): FrameView[];
+	__behaviour(opts?: {}): {};
+	__getBehaviour(): Record<string, any>;
+	startDrag(block: Block, ev?: Event): void;
+	endDrag(cancel?: boolean): void;
+	postRender(): void;
+	/**
+	 * Add new block.
+	 * @param {String} id Block ID
+	 * @param {[Block]} props Block properties
+	 * @returns {[Block]} Added block
+	 * @example
+	 * blockManager.add('h1-block', {
+	 *   label: 'Heading',
+	 *   content: '<h1>Put your title here</h1>',
+	 *   category: 'Basic',
+	 *   attributes: {
+	 *     title: 'Insert h1 block'
+	 *   }
+	 * });
+	 */
+	add(id: string, props: BlockProperties, opts?: {}): Block;
+	/**
+	 * Get the block by id.
+	 * @param  {String} id Block id
+	 * @returns {[Block]}
+	 * @example
+	 * const block = blockManager.get('h1-block');
+	 * console.log(JSON.stringify(block));
+	 * // {label: 'Heading', content: '<h1>Put your ...', ...}
+	 */
+	get(id: string): Block;
+	/**
+	 * Return all blocks.
+	 * @returns {Collection<[Block]>}
+	 * @example
+	 * const blocks = blockManager.getAll();
+	 * console.log(JSON.stringify(blocks));
+	 * // [{label: 'Heading', content: '<h1>Put your ...'}, ...]
+	 */
+	getAll(): Blocks;
+	/**
+	 * Return the visible collection, which containes blocks actually rendered
+	 * @returns {Collection<[Block]>}
+	 */
+	getAllVisible(): Blocks;
+	/**
+	 * Remove block.
+	 * @param {String|[Block]} block Block or block ID
+	 * @returns {[Block]} Removed block
+	 * @example
+	 * const removed = blockManager.remove('BLOCK_ID');
+	 * // or by passing the Block
+	 * const block = blockManager.get('BLOCK_ID');
+	 * blockManager.remove(block);
+	 */
+	remove(block: string | Block, opts?: {}): any;
+	/**
+	 * Get all available categories.
+	 * It's possible to add categories only within blocks via 'add()' method
+	 * @return {Array|Collection}
+	 */
+	getCategories(): Categories;
+	/**
+	 * Return the Blocks container element
+	 * @return {HTMLElement}
+	 */
+	getContainer(): HTMLElement | undefined;
+	/**
+	 * Returns currently dragging block.
+	 * Updated when the drag starts and cleared once it's done.
+	 * @returns {[Block]|undefined}
+	 */
+	getDragBlock(): Block | undefined;
+	/**
+	 * Get blocks by category.
+	 * @example
+	 * blockManager.getBlocksByCategory();
+	 * // Returns an array of items of this type
+	 * // > { category?: Category; items: Block[] }
+	 *
+	 * // NOTE: The item without category is the one containing blocks without category.
+	 *
+	 * // You can also get the same output format by passing your own array of Blocks
+	 * const myFilteredBlocks: Block[] = [...];
+	 * blockManager.getBlocksByCategorymyFilteredBlocks
+	 */
+	getBlocksByCategory(blocks?: Block[]): BlocksByCategory[];
+	/**
+	 * Render blocks
+	 * @param  {Array} blocks Blocks to render, without the argument will render all global blocks
+	 * @param  {Object} [opts={}] Options
+	 * @param  {Boolean} [opts.external] Render blocks in a new container (HTMLElement will be returned)
+	 * @param  {Boolean} [opts.ignoreCategories] Render blocks without categories
+	 * @return {HTMLElement} Rendered element
+	 * @example
+	 * // Render all blocks (inside the global collection)
+	 * blockManager.render();
+	 *
+	 * // Render new set of blocks
+	 * const blocks = blockManager.getAll();
+	 * const filtered = blocks.filter(block => block.get('category') == 'sections')
+	 *
+	 * blockManager.render(filtered);
+	 * // Or a new set from an array
+	 * blockManager.render([
+	 *  {label: 'Label text', content: '<div>Content</div>'}
+	 * ]);
+	 *
+	 * // Back to blocks from the global collection
+	 * blockManager.render();
+	 *
+	 * // You can also render your blocks outside of the main block container
+	 * const newBlocksEl = blockManager.render(filtered, { external: true });
+	 * document.getElementById('some-id').appendChild(newBlocksEl);
+	 */
+	render(blocks?: Block[], opts?: {
+		external?: boolean;
+	}): HTMLElement | undefined;
+	destroy(): void;
+}
+/**
+ * @typedef State
+ * @property {String} name State name, eg. `hover`, `nth-of-type(2n)`
+ * @property {String} label State label, eg. `Hover`, `Even/Odd`
+ */
+export declare class State extends Model {
+	defaults(): {
+		name: string;
+		label: string;
+	};
+	/**
+	 * Get state name
+	 * @returns {String}
+	 */
+	getName(): string;
+	/**
+	 * Get state label. If label was not provided, the name will be returned.
+	 * @returns {String}
+	 */
+	getLabel(): string;
+}
+declare class ClassTagsView extends View<Selector> {
+	template({ labelInfo, labelHead, iconSync, iconAdd, pfx, ppfx }: any): string;
+	events(): {
+		"change [data-states]": string;
+		"click [data-add]": string;
+		"focusout [data-input]": string;
+		"keyup [data-input]": string;
+		"click [data-sync-style]": string;
+	};
+	$input?: JQuery<HTMLElement>;
+	$addBtn?: JQuery<HTMLElement>;
+	$classes?: JQuery<HTMLElement>;
+	$btnSyncEl?: JQuery<HTMLElement>;
+	$states?: JQuery<HTMLElement>;
+	$statesC?: JQuery<HTMLElement>;
+	em: EditorModel;
+	target: EditorModel;
+	module: SelectorManager;
+	pfx: string;
+	ppfx: string;
+	stateInputId: string;
+	stateInputC: string;
+	config: any;
+	states: State[];
+	constructor(o?: any);
+	syncStyle(): void;
+	/**
+	 * Triggered when a tag is removed from collection
+	 * @param {Object} model Removed model
+	 * @private
+	 */
+	tagRemoved(model?: State): void;
+	/**
+	 * Add new model
+	 * @param {Object} model
+	 * @private
+	 */
+	addNew(model: State): void;
+	/**
+	 * Start tag creation
+	 * @param {Object} e
+	 * @private
+	 */
+	startNewTag(): void;
+	/**
+	 * End tag creation
+	 * @param {Object} e
+	 * @private
+	 */
+	endNewTag(): void;
+	/**
+	 * Checks what to do on keyup event
+	 * @param  {Object} e
+	 * @private
+	 */
+	onInputKeyUp(e: KeyboardEvent): void;
+	checkStates(): void;
+	/**
+	 * Triggered when component is changed
+	 * @param  {Object} e
+	 * @public
+	 */
+	componentChanged({ targets }?: any): void;
+	updateSelection(targets: Component | Component[]): Selector[];
+	getCommonSelectors({ targets, opts }?: any): Selector[];
+	_commonSelectors(...args: any): Selector[];
+	checkSync(): void;
+	getTarget(): Component | undefined;
+	getTargets(): Component[];
+	/**
+	 * Update states visibility. Hides states in case there is no tags
+	 * inside collection
+	 * @private
+	 */
+	updateStateVis(targets?: Component[] | Component): void;
+	__handleStateChange(): void;
+	/**
+	 * Update selector helper
+	 * @return {this}
+	 * @private
+	 */
+	updateSelector(targets?: Component[] | Component): void;
+	__getName(target: Component): string;
+	/**
+	 * Triggered when the select with states is changed
+	 * @param  {Object} e
+	 * @private
+	 */
+	stateChanged(ev: any): void;
+	/**
+	 * Add new tag to collection, if possible, and to the component
+	 * @param  {Object} e
+	 * @private
+	 */
+	addNewTag(value: any): void;
+	/**
+	 * Add new object to collection
+	 * @param   {Object} model  Model
+	 * @param   {Object} fragmentEl   Fragment collection
+	 * @return {Object} Object created
+	 * @private
+	 * */
+	addToClasses(model: State, fragmentEl?: DocumentFragment): HTMLElement;
+	/**
+	 * Render the collection of classes
+	 * @private
+	 */
+	renderClasses(): void;
+	/**
+	 * Return classes element
+	 * @return {HTMLElement}
+	 * @private
+	 */
+	getClasses(): JQuery<HTMLElement>;
+	/**
+	 * Return states element
+	 * @return {HTMLElement}
+	 * @private
+	 */
+	getStates(): JQuery<HTMLElement>;
+	/**
+	 * Return states container element
+	 * @return {HTMLElement}
+	 * @private
+	 */
+	getStatesC(): JQuery<HTMLElement>;
+	renderStates(): void;
+	render(): this;
 }
 export type SelectorEvent = "selector:add" | "selector:remove" | "selector:update" | "selector:state" | "selector";
 declare const selectorEvents: {
@@ -9391,15 +9297,10 @@ declare const ParserCss: (em?: EditorModel, config?: ParserConfig) => {
 	 */
 	checkNode(node: CssRuleJSON | ParsedCssRule): CssRuleJSON[];
 };
-export type StringObject = Record<string, string>;
-export type HTMLParseResult = {
-	html: ComponentDefinitionDefined | ComponentDefinitionDefined[];
-	css?: CssRuleJSON[];
-};
 declare const ParserHtml: (em?: EditorModel, config?: ParserConfig & {
 	returnArray?: boolean;
 }) => {
-	compTypes: string;
+	compTypes: ComponentStackItem[];
 	modelAttrStart: string;
 	getPropAttribute(attrName: string, attrValue?: string): {
 		name: string;
@@ -9412,7 +9313,7 @@ declare const ParserHtml: (em?: EditorModel, config?: ParserConfig & {
 	 */
 	splitPropsFromAttr(attr?: ObjectAny): {
 		props: ObjectAny;
-		attrs: StringObject;
+		attrs: ObjectStrings;
 	};
 	/**
 	 * Parse style string to object
@@ -9434,12 +9335,15 @@ declare const ParserHtml: (em?: EditorModel, config?: ParserConfig & {
 	 * // ['test1', 'test2', 'test3']
 	 */
 	parseClass(str: string): string[];
+	parseNodeAttr(node: HTMLElement, result?: ComponentDefinitionDefined): ComponentDefinitionDefined;
+	detectNode(node: HTMLElement, opts?: ParseNodeOptions): ComponentDefinitionDefined;
+	parseNode(node: HTMLElement, opts?: ParseNodeOptions): ComponentDefinitionDefined;
 	/**
 	 * Get data from the node element
 	 * @param  {HTMLElement} el DOM element to traverse
 	 * @return {Array<Object>}
 	 */
-	parseNode(el: HTMLElement, opts?: ObjectAny): ComponentDefinitionDefined[];
+	parseNodes(el: HTMLElement, opts?: ParseNodeOptions): ComponentDefinitionDefined[];
 	/**
 	 * Parse HTML string to a desired model object
 	 * @param  {string} str HTML string
@@ -9447,7 +9351,7 @@ declare const ParserHtml: (em?: EditorModel, config?: ParserConfig & {
 	 * @return {Object}
 	 */
 	parse(str: string, parserCss?: any, opts?: HTMLParserOptions): HTMLParseResult;
-	__clearUnsafeAttr(node: HTMLElement): void;
+	__sanitizeNode(node: HTMLElement, opts: HTMLParserOptions): void;
 };
 declare class ParserModule extends Module<ParserConfig & {
 	name?: string;
@@ -9480,10 +9384,7 @@ declare class ParserModule extends Module<ParserConfig & {
 	 * });
 	 * // This will preserve the original format as, from the XML point of view, is a valid format
 	 */
-	parseHtml(input: string, options?: HTMLParserOptions): {
-		html: ComponentDefinitionDefined | ComponentDefinitionDefined[];
-		css?: CssRuleJSON[] | undefined;
-	};
+	parseHtml(input: string, options?: HTMLParserOptions): HTMLParseResult;
 	/**
 	 * Parse CSS string and return an array of valid definition objects for CSSRules
 	 * @param  {String} input CSS string to parse
@@ -9495,13 +9396,122 @@ declare class ParserModule extends Module<ParserConfig & {
 	parseCss(input: string): CssRuleJSON[];
 	destroy(): void;
 }
-export type StorageEvent = "storage:start" | "storage:start:store" | "storage:start:load" | "storage:load" | "storage:store" | "storage:end" | "storage:end:store" | "storage:end:load" | "storage:error" | "storage:error:store" | "storage:error:load";
+declare enum StorageEvents {
+	/**
+	 * @event `storage:start` Storage request start.
+	 * @example
+	 * editor.on('storage:start', (type) => {
+	 *  console.log('Storage start');
+	 * });
+	 */
+	start = "storage:start",
+	/**
+	 * @event `storage:start:store` Storage store request start.
+	 * The project JSON object to store is passed as an argument (which you can edit).
+	 * @example
+	 * editor.on('storage:start:store', (data) => {
+	 *  console.log('Storage start store');
+	 * });
+	 */
+	startStore = "storage:start:store",
+	/**
+	 * @event `storage:start:load` Storage load request start.
+	 * @example
+	 * editor.on('storage:start:load', () => {
+	 *  console.log('Storage start load');
+	 * });
+	 */
+	startLoad = "storage:start:load",
+	/**
+	 * @event `storage:load` Storage loaded the project.
+	 * The loaded project is passed as an argument.
+	 * @example
+	 * editor.on('storage:load', (data, res) => {
+	 *  console.log('Storage loaded the project');
+	 * });
+	 */
+	load = "storage:load",
+	/**
+	 * @event `storage:store` Storage stored the project.
+	 * The stored project is passed as an argument.
+	 * @example
+	 * editor.on('storage:store', (data, res) => {
+	 *  console.log('Storage stored the project');
+	 * });
+	 */
+	store = "storage:store",
+	/**
+	 * @event `storage:after` Storage request completed.
+	 * Triggered right after `storage:load`/`storage:store`.
+	 * @example
+	 * editor.on('storage:after', (type) => {
+	 *  console.log('Storage request completed');
+	 * });
+	 */
+	after = "storage:after",
+	afterStore = "storage:after:store",
+	afterLoad = "storage:after:load",
+	/**
+	 * @event `storage:end` Storage request ended.
+	 * This event triggers also in case of errors.
+	 * @example
+	 * editor.on('storage:end', (type) => {
+	 *  console.log('Storage request ended');
+	 * });
+	 */
+	end = "storage:end",
+	/**
+	 * @event `storage:end:store` Storage store request ended.
+	 * This event triggers also in case of errors.
+	 * @example
+	 * editor.on('storage:end:store', () => {
+	 *  console.log('Storage store request ended');
+	 * });
+	 */
+	endStore = "storage:end:store",
+	/**
+	 * @event `storage:end:load` Storage load request ended.
+	 * This event triggers also in case of errors.
+	 * @example
+	 * editor.on('storage:end:load', () => {
+	 *  console.log('Storage load request ended');
+	 * });
+	 */
+	endLoad = "storage:end:load",
+	/**
+	 * @event `storage:error` Error on storage request.
+	 * @example
+	 * editor.on('storage:error', (err, type) => {
+	 *  console.log('Storage error');
+	 * });
+	 */
+	error = "storage:error",
+	/**
+	 * @event `storage:error:store` Error on store request.
+	 * @example
+	 * editor.on('storage:error:store', (err) => {
+	 *  console.log('Error on store');
+	 * });
+	 */
+	errorStore = "storage:error:store",
+	/**
+	 * @event `storage:error:load` Error on load request.
+	 * @example
+	 * editor.on('storage:error:load', (err) => {
+	 *  console.log('Error on load');
+	 * });
+	 */
+	errorLoad = "storage:error:load"
+}
+export type StorageEvent = `${StorageEvents}`;
+export type StorageEventType = "store" | "load";
 declare class StorageManager extends Module<StorageManagerConfig & {
 	name?: string;
 	_disable?: boolean;
 	currentStorage?: string;
 }> {
 	storages: Record<string, IStorage>;
+	events: typeof StorageEvents;
 	constructor(em: EditorModel);
 	/**
 	 * Get configuration object
@@ -9603,22 +9613,22 @@ declare class StorageManager extends Module<StorageManagerConfig & {
 	 * On start callback
 	 * @private
 	 */
-	onStart(ctx: string, data?: ProjectData): void;
+	onStart(type: StorageEventType, data?: ProjectData): void;
 	/**
 	 * On after callback (before passing data to the callback)
 	 * @private
 	 */
-	onAfter(ctx: string, data: ProjectData, response: any): void;
+	onAfter(type: StorageEventType, data: ProjectData, response: any): void;
 	/**
 	 * On end callback
 	 * @private
 	 */
-	onEnd(ctx: string, data: ProjectData): void;
+	onEnd(type: StorageEventType, data: ProjectData, response?: any): void;
 	/**
 	 * On error callback
 	 * @private
 	 */
-	onError(ctx: string, data: any): void;
+	onError(type: StorageEventType, error: any): void;
 	/**
 	 * Check if autoload is possible
 	 * @return {Boolean}
@@ -9626,397 +9636,6 @@ declare class StorageManager extends Module<StorageManagerConfig & {
 	 * */
 	canAutoload(): boolean;
 	destroy(): void;
-}
-declare class DomainViews extends View {
-	config?: any;
-	items: any[];
-	ns?: string;
-	itemView?: any;
-	itemsView: string;
-	itemType: string;
-	reuseView: boolean;
-	constructor(opts?: any, config?: any, autoAdd?: boolean);
-	/**
-	 * Add new model to the collection
-	 * @param {Model} model
-	 * @private
-	 * */
-	addTo(model: any): void;
-	itemViewNotFound(type: string): void;
-	/**
-	 * Render new model inside the view
-	 * @param {Model} model
-	 * @param {Object} fragment Fragment collection
-	 * @private
-	 * */
-	add(model: any, fragment?: DocumentFragment): void;
-	render(): this;
-	onRender(): void;
-	onRemoveBefore(items?: any, opts?: any): void;
-	onRemove(items?: any, opts?: any): void;
-	remove(opts?: {}): this;
-	clearItems(): void;
-}
-declare class TraitsView extends DomainViews {
-	reuseView: boolean;
-	em: EditorModel;
-	pfx: string;
-	ppfx: string;
-	constructor(o: any, itemsView: any);
-	/**
-	 * Update view collection
-	 * @private
-	 */
-	updatedCollection(): void;
-}
-export interface ITraitView {
-	noLabel?: TraitView["noLabel"];
-	eventCapture?: TraitView["eventCapture"];
-	templateInput?: TraitView["templateInput"];
-	onEvent?: TraitView["onEvent"];
-	onUpdate?: TraitView["onUpdate"];
-	createInput?: TraitView["createInput"];
-	createLabel?: TraitView["createLabel"];
-}
-export type CustomTrait<T> = ITraitView & T & ThisType<T & TraitView>;
-declare class TraitManager extends Module<TraitManagerConfig & {
-	pStylePrefix?: string;
-}> {
-	view?: TraitsView;
-	types: {
-		[id: string]: {
-			new (o: any): TraitView;
-		};
-	};
-	model: Model;
-	__ctn?: any;
-	TraitsView: typeof TraitsView;
-	events: {
-		all: string;
-		custom: string;
-	};
-	/**
-	 * Get configuration object
-	 * @name getConfig
-	 * @function
-	 * @return {Object}
-	 */
-	/**
-	 * Initialize module
-	 * @private
-	 */
-	constructor(em: EditorModel);
-	__upSel(): void;
-	__onUp(): void;
-	select(component?: Component): void;
-	getSelected(): Component | undefined;
-	/**
-	 * Get traits from the currently selected component.
-	 */
-	getCurrent(): Trait[];
-	__trgCustom(opts?: any): void;
-	postRender(): void;
-	/**
-	 *
-	 * Get Traits viewer
-	 * @private
-	 */
-	getTraitsViewer(): TraitsView | undefined;
-	/**
-	 * Add new trait type
-	 * @param {string} name Type name
-	 * @param {Object} methods Object representing the trait
-	 */
-	addType<T>(name: string, trait: CustomTrait<T>): void;
-	/**
-	 * Get trait type
-	 * @param {string} name Type name
-	 * @return {Object}
-	 */
-	getType(name: string): new (o: any) => TraitView;
-	/**
-	 * Get all trait types
-	 * @returns {Object}
-	 */
-	getTypes(): {
-		[id: string]: new (o: any) => TraitView;
-	};
-	render(): HTMLElement;
-	destroy(): void;
-}
-declare class ItemsView extends View {
-	items: ItemView[];
-	opt: any;
-	config: any;
-	parentView: ItemView;
-	constructor(opt?: any);
-	removeChildren(removed: Component): void;
-	/**
-	 * Add to collection
-	 * @param Object Model
-	 *
-	 * @return Object
-	 * */
-	addTo(model: Component): void;
-	/**
-	 * Add new object to collection
-	 * @param  Object  Model
-	 * @param  Object   Fragment collection
-	 * @param  integer  Index of append
-	 *
-	 * @return Object Object created
-	 * */
-	addToCollection(model: Component, fragmentEl: DocumentFragment | null, index?: number): any;
-	remove(...args: [
-	]): this;
-	render(): this;
-}
-export type ItemViewProps = ViewOptions & {
-	ItemView: ItemView;
-	level: number;
-	config: any;
-	opened: {};
-	model: Component;
-	module: LayerManager;
-	sorter: any;
-	parentView: ItemView;
-};
-declare class ItemView extends View {
-	events(): {
-		"mousedown [data-toggle-move]": string;
-		"touchstart [data-toggle-move]": string;
-		"click [data-toggle-visible]": string;
-		"click [data-toggle-open]": string;
-		"click [data-toggle-select]": string;
-		"mouseover [data-toggle-select]": string;
-		"mouseout [data-toggle-select]": string;
-		"dblclick [data-name]": string;
-		"keydown [data-name]": string;
-		"focusout [data-name]": string;
-	};
-	template(model: Component): string;
-	get em(): EditorModel;
-	get ppfx(): string;
-	get pfx(): string;
-	opt: any;
-	module: any;
-	config: any;
-	sorter: any;
-	/** @ts-ignore */
-	model: Component;
-	parentView: ItemView;
-	items?: ItemsView;
-	inputNameCls: string;
-	clsTitleC: string;
-	clsTitle: string;
-	clsCaret: string;
-	clsCount: string;
-	clsMove: string;
-	clsChildren: string;
-	clsNoChild: string;
-	clsEdit: string;
-	clsNoEdit: string;
-	_rendered?: boolean;
-	eyeEl?: JQuery<HTMLElement>;
-	caret?: JQuery<HTMLElement>;
-	inputName?: HTMLElement;
-	cnt?: HTMLElement;
-	constructor(opt: ItemViewProps);
-	initComponent(): void;
-	updateName(): void;
-	getVisibilityEl(): JQuery<HTMLElement>;
-	updateVisibility(): void;
-	/**
-	 * Toggle visibility
-	 * @param	Event
-	 *
-	 * @return 	void
-	 * */
-	toggleVisibility(ev?: MouseEvent): void;
-	/**
-	 * Handle the edit of the component name
-	 */
-	handleEdit(ev?: MouseEvent): void;
-	handleEditKey(ev: KeyboardEvent): void;
-	/**
-	 * Handle with the end of editing of the component name
-	 */
-	handleEditEnd(ev?: KeyboardEvent): void;
-	setName(name: string, { propName }: {
-		propName: string;
-		component?: Component;
-	}): void;
-	/**
-	 * Get the input containing the name of the component
-	 * @return {HTMLElement}
-	 */
-	getInputName(): HTMLElement;
-	/**
-	 * Update item opening
-	 *
-	 * @return void
-	 * */
-	updateOpening(): void;
-	/**
-	 * Toggle item opening
-	 * @param {Object}	e
-	 *
-	 * @return void
-	 * */
-	toggleOpening(ev?: MouseEvent): void;
-	/**
-	 * Handle component selection
-	 */
-	handleSelect(event?: MouseEvent): void;
-	/**
-	 * Handle component selection
-	 */
-	handleHover(ev?: MouseEvent): void;
-	handleHoverOut(ev?: MouseEvent): void;
-	/**
-	 * Delegate to sorter
-	 * @param	Event
-	 * */
-	startSort(ev: MouseEvent): void;
-	/**
-	 * Update item on status change
-	 * @param	Event
-	 * */
-	updateStatus(): void;
-	/**
-	 * Update item aspect after children changes
-	 *
-	 * @return void
-	 * */
-	checkChildren(): void;
-	getCaret(): JQuery<HTMLElement>;
-	setRoot(el: Component | string): void;
-	updateLayerable(): void;
-	__clearItems(): void;
-	remove(...args: [
-	]): this;
-	render(): this;
-	__render(): void;
-}
-export interface LayerData {
-	name: string;
-	open: boolean;
-	selected: boolean;
-	hovered: boolean;
-	visible: boolean;
-	locked: boolean;
-	components: Component[];
-}
-declare class LayerManager extends Module<LayerManagerConfig> {
-	model: ModuleModel;
-	__ctn?: HTMLElement;
-	view?: View;
-	events: {
-		all: string;
-		root: string;
-		component: string;
-		custom: string;
-	};
-	constructor(em: EditorModel);
-	onLoad(): void;
-	/**
-	 * Update the root layer with another component.
-	 * @param {[Component]|String} component Component to be set as root
-	 * @return {[Component]}
-	 * @example
-	 * const component = editor.getSelected();
-	 * layers.setRoot(component);
-	 */
-	setRoot(component: Component | string): Component;
-	/**
-	 * Get the current root layer.
-	 * @return {[Component]}
-	 * @example
-	 * const layerRoot = layers.getRoot();
-	 */
-	getRoot(): Component;
-	/**
-	 * Get valid layer child components (eg. excludes non layerable components).
-	 * @param {[Component]} component Component from which you want to get child components
-	 * @returns {Array<[Component]>}
-	 * @example
-	 * const component = editor.getSelected();
-	 * const components = layers.getComponents(component);
-	 * console.log(components);
-	 */
-	getComponents(component: Component): Component[];
-	/**
-	 * Update the layer open state of the component.
-	 * @param {[Component]} component Component to update
-	 * @param {Boolean} value
-	 */
-	setOpen(component: Component, value: boolean): void;
-	/**
-	 * Check the layer open state of the component.
-	 * @param {[Component]} component
-	 * @returns {Boolean}
-	 */
-	isOpen(component: Component): boolean;
-	/**
-	 * Update the layer visibility state of the component.
-	 * @param {[Component]} component Component to update
-	 * @param {Boolean} value
-	 */
-	setVisible(component: Component, value: boolean): void;
-	/**
-	 * Check the layer visibility state of the component.
-	 * @param {[Component]} component
-	 * @returns {Boolean}
-	 */
-	isVisible(component: Component): boolean;
-	/**
-	 * Update the layer locked state of the component.
-	 * @param {[Component]} component Component to update
-	 * @param {Boolean} value
-	 */
-	setLocked(component: Component, value: boolean): void;
-	/**
-	 * Check the layer locked state of the component.
-	 * @param {[Component]} component
-	 * @returns {Boolean}
-	 */
-	isLocked(component: Component): boolean;
-	/**
-	 * Update the layer name of the component.
-	 * @param {[Component]} component Component to update
-	 * @param {String} value New name
-	 */
-	setName(component: Component, value: string): void;
-	/**
-	 * Get the layer name of the component.
-	 * @param {[Component]} component
-	 * @returns {String} Component layer name
-	 */
-	getName(component: Component): any;
-	/**
-	 * Get layer data from a component.
-	 * @param {[Component]} component Component from which you want to read layer data.
-	 * @returns {Object} Object containing the layer data.
-	 * @example
-	 * const component = editor.getSelected();
-	 * const layerData = layers.getLayerData(component);
-	 * console.log(layerData);
-	 */
-	getLayerData(component: Component): LayerData;
-	setLayerData(component: Component, data: Partial<Omit<LayerData, "components">>, opts?: {}): void;
-	/**
-	 * Triggered when the selected component is changed
-	 * @private
-	 */
-	componentChanged(sel?: Component, opts?: {}): void;
-	getAll(): View | undefined;
-	render(): HTMLElement;
-	destroy(): void;
-	__onRootChange(): void;
-	__onComponent(component: Component): void;
-	__isLayerable(cmp: Component): boolean;
-	__trgCustom(opts?: any): void;
-	updateLayer(component: Component, opts?: any): void;
 }
 /**
  * @property {String} type Asset type, eg. `'image'`.
@@ -10069,6 +9688,82 @@ export declare class Asset extends Model {
 }
 declare const TypeableCollectionExt: any;
 export declare class Assets extends TypeableCollectionExt<Asset> {
+}
+export type AssetEvent = `${AssetsEvents}`;
+export interface AssetOpenOptions {
+	select?: (asset: Asset, complete: boolean) => void;
+	types?: string[];
+	accept?: string;
+	target?: any;
+}
+declare enum AssetsEvents {
+	/**
+	 * @event `asset:add` New asset added to the collection. The [Asset] is passed as an argument to the callback.
+	 * @example
+	 * editor.on('asset:add', (asset) => { ... });
+	 */
+	add = "asset:add",
+	/**
+	 * @event `asset:remove` Asset removed from the collection. The [Asset] is passed as an argument to the callback.
+	 * @example
+	 * editor.on('asset:remove', (asset) => { ... });
+	 */
+	remove = "asset:remove",
+	removeBefore = "asset:remove:before",
+	/**
+	 * @event `asset:update` Asset updated. The [Asset] and the object containing changes are passed as arguments to the callback.
+	 * @example
+	 * editor.on('asset:update', (asset, updatedProps) => { ... });
+	 */
+	update = "asset:update",
+	/**
+	 * @event `asset:open` Asset Manager opened.
+	 * @example
+	 * editor.on('asset:open', () => { ... });
+	 */
+	open = "asset:open",
+	/**
+	 * @event `asset:close` Asset Manager closed.
+	 * @example
+	 * editor.on('asset:close', () => { ... });
+	 */
+	close = "asset:close",
+	/**
+	 * @event `asset:upload:start` Asset upload start.
+	 * @example
+	 * editor.on('asset:upload:start', () => { ... });
+	 */
+	uploadStart = "asset:upload:start",
+	/**
+	 * @event `asset:upload:end` Asset upload end.
+	 * @example
+	 * editor.on('asset:upload:end', (result) => { ... });
+	 */
+	uploadEnd = "asset:upload:end",
+	/**
+	 * @event `asset:upload:error` Asset upload error.
+	 * @example
+	 * editor.on('asset:upload:error', (error) => { ... });
+	 */
+	uploadError = "asset:upload:error",
+	/**
+	 * @event `asset:upload:response` Asset upload response.
+	 * @example
+	 * editor.on('asset:upload:response', (res) => { ... });
+	 */
+	uploadResponse = "asset:upload:response",
+	/**
+	 * @event `asset:custom` Event to use in case of [custom Asset Manager UI](https://grapesjs.com/docs/modules/Assets.html#customization).
+	 * @example
+	 * editor.on('asset:custom', ({ container, assets, ... }) => { ... });
+	 */
+	custom = "asset:custom",
+	/**
+	 * @event `asset` Catch-all event for all the events mentioned above. An object containing all the available data about the triggered event is passed as an argument to the callback.
+	 * @example
+	 * editor.on('asset', ({ event, model, ... }) => { ... });
+	 */
+	all = "asset"
 }
 declare class AssetsView extends View {
 	options: any;
@@ -10144,7 +9839,7 @@ declare class FileUploaderView extends View {
 	pfx: string;
 	ppfx: string;
 	em: EditorModel;
-	module: any;
+	module: AssetManager;
 	target: any;
 	uploadId: string;
 	disabled: boolean;
@@ -10194,29 +9889,7 @@ declare class FileUploaderView extends View {
 	render(): this;
 	static embedAsBase64(e: DragEvent, clb?: () => void): Promise<void> | undefined;
 }
-export type AssetEvent = "asset" | "asset:open" | "asset:close" | "asset:add" | "asset:remove" | "asset:update" | "asset:custom" | "asset:upload:start" | "asset:upload:end" | "asset:upload:error" | "asset:upload:response";
-declare const assetEvents: {
-	all: string;
-	select: string;
-	update: string;
-	add: string;
-	remove: string;
-	removeBefore: string;
-	custom: string;
-	open: string;
-	close: string;
-	uploadStart: string;
-	uploadEnd: string;
-	uploadError: string;
-	uploadResponse: string;
-};
 export type AssetProps = Record<string, any>;
-export type OpenOptions = {
-	select?: (asset: Asset, complete: boolean) => void;
-	types?: string[];
-	accept?: string;
-	target?: any;
-};
 declare class AssetManager extends ItemManagerModule<AssetManagerConfig, Assets> {
 	storageKey: string;
 	Asset: typeof Asset;
@@ -10225,26 +9898,13 @@ declare class AssetManager extends ItemManagerModule<AssetManagerConfig, Assets>
 	am?: AssetsView;
 	fu?: FileUploaderView;
 	_bhv?: any;
-	events: typeof assetEvents;
+	events: typeof AssetsEvents;
 	/**
 	 * Initialize module
 	 * @param {Object} config Configurations
 	 * @private
 	 */
 	constructor(em: EditorModel);
-	__propEv(ev: string, ...data: any[]): void;
-	__trgCustom(): void;
-	__customData(): {
-		am: AssetManager;
-		open: boolean;
-		assets: any;
-		types: any;
-		container: any;
-		close: () => void;
-		remove: (asset: string | Asset, opts?: Record<string, any>) => any;
-		select: (asset: Asset, complete: boolean) => void;
-		options: any;
-	};
 	/**
 	 * Open the asset manager.
 	 * @param {Object} [options] Options for the asset manager.
@@ -10265,7 +9925,7 @@ declare class AssetManager extends ItemManagerModule<AssetManagerConfig, Assets>
 	 * // with your custom types (you should have assets with those types declared)
 	 * assetManager.open({ types: ['doc'], ... });
 	 */
-	open(options?: OpenOptions): void;
+	open(options?: AssetOpenOptions): void;
 	/**
 	 * Close the asset manager.
 	 * @example
@@ -10298,7 +9958,7 @@ declare class AssetManager extends ItemManagerModule<AssetManagerConfig, Assets>
 	 * });
 	 * assetManager.add([{ src: 'img2.jpg' }, { src: 'img2.png' }]);
 	 */
-	add(asset: string | AssetProps | (string | AssetProps)[], opts?: Record<string, any>): any;
+	add(asset: string | AssetProps | (string | AssetProps)[], opts?: AddOptions): any;
 	/**
 	 * Return asset by URL
 	 * @param  {String} src URL of the asset
@@ -10327,9 +9987,9 @@ declare class AssetManager extends ItemManagerModule<AssetManagerConfig, Assets>
 	 * const asset = assetManager.get('http://img.jpg');
 	 * assetManager.remove(asset);
 	 */
-	remove(asset: string | Asset, opts?: Record<string, any>): any;
+	remove(asset: string | Asset, opts?: RemoveOptions): any;
 	store(): any;
-	load(data: Record<string, any>): any;
+	load(data: ProjectData): any;
 	/**
 	 * Return the Asset Manager Container
 	 * @returns {HTMLElement}
@@ -10361,7 +10021,7 @@ declare class AssetManager extends ItemManagerModule<AssetManagerConfig, Assets>
 		collection: Assets;
 		globalCollection: Assets;
 		config: AssetManagerConfig & {
-			pStylePrefix?: string | undefined;
+			pStylePrefix?: string;
 		};
 		module: AssetManager;
 		fu: any;
@@ -10423,6 +10083,19 @@ declare class AssetManager extends ItemManagerModule<AssetManagerConfig, Assets>
 	 * @private
 	 */
 	onDblClick(func: any): void;
+	__propEv(ev: string, ...data: any[]): void;
+	__trgCustom(): void;
+	__customData(): {
+		am: AssetManager;
+		open: boolean;
+		assets: any;
+		types: any;
+		container: any;
+		close: () => void;
+		remove: (asset: string | Asset, opts?: Record<string, any>) => any;
+		select: (asset: Asset, complete: boolean) => void;
+		options: any;
+	};
 	__behaviour(opts?: {}): any;
 	__getBehaviour(opts?: {}): any;
 	destroy(): void;
@@ -10564,10 +10237,134 @@ declare class DeviceManager extends ItemManagerModule<DeviceManagerConfig & {
 	render(): HTMLElement;
 	destroy(): void;
 }
+export declare class Pages extends Collection<Page> {
+	constructor(models: any, em: EditorModel);
+	onReset(m: Page, opts?: {
+		previousModels?: Pages;
+	}): void;
+	onRemove(removed?: Page): void;
+}
+declare class PageManager extends ItemManagerModule<PageManagerConfig, Pages> {
+	events: typeof PagesEvents;
+	storageKey: string;
+	get pages(): Pages;
+	model: ModuleModel;
+	getAll(): Page[];
+	/**
+	 * Get all pages
+	 * @name getAll
+	 * @function
+	 * @returns {Array<[Page]>}
+	 * @example
+	 * const arrayOfPages = pageManager.getAll();
+	 */
+	/**
+	 * Initialize module
+	 * @hideconstructor
+	 * @param {Object} config Configurations
+	 */
+	constructor(em: EditorModel);
+	__onChange(event: string, page: Page, coll: Pages, opts?: any): void;
+	onLoad(): void;
+	_onPageChange(m: any, page: Page, opts: any): void;
+	postLoad(): void;
+	/**
+	 * Add new page
+	 * @param {Object} props Page properties
+	 * @param {Object} [opts] Options
+	 * @returns {[Page]}
+	 * @example
+	 * const newPage = pageManager.add({
+	 *  id: 'new-page-id', // without an explicit ID, a random one will be created
+	 *  styles: `.my-class { color: red }`, // or a JSON of styles
+	 *  component: '<div class="my-class">My element</div>', // or a JSON of components
+	 * });
+	 */
+	add(props: PageProperties, opts?: AddOptions & SelectableOption & AbortOption): Page | undefined;
+	/**
+	 * Remove page
+	 * @param {String|[Page]} page Page or page id
+	 * @returns {[Page]} Removed Page
+	 * @example
+	 * const removedPage = pageManager.remove('page-id');
+	 * // or by passing the page
+	 * const somePage = pageManager.get('page-id');
+	 * pageManager.remove(somePage);
+	 */
+	remove(page: string | Page, opts?: RemoveOptions & AbortOption): false | Page | undefined;
+	/**
+	 * Get page by id
+	 * @param {String} id Page id
+	 * @returns {[Page]}
+	 * @example
+	 * const somePage = pageManager.get('page-id');
+	 */
+	get(id: string): Page | undefined;
+	/**
+	 * Get main page (the first one available)
+	 * @returns {[Page]}
+	 * @example
+	 * const mainPage = pageManager.getMain();
+	 */
+	getMain(): Page;
+	/**
+	 * Get wrapper components (aka body) from all pages and frames.
+	 * @returns {Array<[Component]>}
+	 * @example
+	 * const wrappers = pageManager.getAllWrappers();
+	 * // Get all `image` components from the project
+	 * const allImages = wrappers.map(wrp => wrp.findType('image')).flat();
+	 */
+	getAllWrappers(): ComponentWrapper[];
+	/**
+	 * Change the selected page. This will switch the page rendered in canvas
+	 * @param {String|[Page]} page Page or page id
+	 * @returns {this}
+	 * @example
+	 * pageManager.select('page-id');
+	 * // or by passing the page
+	 * const somePage = pageManager.get('page-id');
+	 * pageManager.select(somePage);
+	 */
+	select(page: string | Page, opts?: SetOptions): this;
+	/**
+	 * Get the selected page
+	 * @returns {[Page]}
+	 * @example
+	 * const selectedPage = pageManager.getSelected();
+	 */
+	getSelected(): Page | undefined;
+	destroy(): void;
+	store(): any;
+	load(data: any): any;
+	_initPage(): Page;
+	_createId(): string;
+}
 export type Messages = Required<I18nConfig>["messages"];
+declare enum I18nEvents {
+	/**
+	 * @event `i18n:add` New set of messages is added.
+	 * @example
+	 * editor.on('i18n:add', (messages) => { ... });
+	 */
+	add = "i18n:add",
+	/**
+	 * @event `i18n:update` The set of messages is updated.
+	 * @example
+	 * editor.on('i18n:update', (messages) => { ... });
+	 */
+	update = "i18n:update",
+	/**
+	 * @event `i18n:locale` Locale changed.
+	 * @example
+	 * editor.on('i18n:locale', ({ value, valuePrev }) => { ... });
+	 */
+	locale = "i18n:locale"
+}
 declare class I18nModule extends Module<I18nConfig & {
 	stylePrefix?: string;
 }> {
+	events: typeof I18nEvents;
 	/**
 	 * Initialize module
 	 * @param {Object} config Configurations
@@ -10592,7 +10389,7 @@ declare class I18nModule extends Module<I18nConfig & {
 	 * Get current locale
 	 * @returns {String} Current locale value
 	 */
-	getLocale(): string | undefined;
+	getLocale(): string;
 	/**
 	 * Get all messages
 	 * @param {String} [lang] Specify the language of messages to return
@@ -10605,7 +10402,7 @@ declare class I18nModule extends Module<I18nConfig & {
 	 * i18n.getMessages('en');
 	 * // -> { hello: '...' }
 	 */
-	getMessages(lang: string, opts?: {}): any;
+	getMessages(lang?: string, opts?: {}): any;
 	/**
 	 * Set new set of messages
 	 * @param {Object} msg Set of messages
@@ -10974,6 +10771,8 @@ declare class UtilsModule extends Module {
 	Resizer: typeof Resizer;
 	Dragger: typeof Dragger;
 	helpers: {
+		isBultInMethod: (key: string) => boolean;
+		normalizeKey: (key: string) => string;
 		wait: (mls?: number) => Promise<unknown>;
 		isDef: (value: any) => boolean;
 		hasWin: () => boolean;
@@ -10987,24 +10786,26 @@ declare class UtilsModule extends Module {
 			[x: string]: any;
 		};
 		isComponent: (obj: any) => obj is Component;
-		getComponentView: (el?: Node | undefined) => ComponentView | undefined;
-		getComponentModel: (el?: Node | undefined) => Component | undefined;
+		getComponentView: (el?: Node) => ComponentView<Component> | undefined;
+		getComponentModel: (el?: Node) => Component | undefined;
 		buildBase64UrlFromSvg: (svg: string) => string;
 		hasDnd: (em: EditorModel) => boolean;
 		upFirst: (value: string) => string;
 		matches: any;
-		getModel: (el: any, $?: any) => any;
+		getModel: (el: HTMLElement & {
+			__cashData?: any;
+		}, $?: any) => Component | undefined;
 		camelCase: (value: string) => string;
 		getElement: (el: HTMLElement) => any;
 		shallowDiff: (objOrig: ObjectAny, objNew: ObjectAny) => ObjectAny;
 		normalizeFloat: (value: any, step?: number, valueDef?: number) => any;
 		getUnitFromValue: (value: any) => any;
 		capitalize: (str?: string) => string;
-		getViewEl: <T extends unknown>(el?: Node | undefined) => T | undefined;
+		getViewEl: <T extends unknown>(el?: Node) => T | undefined;
 		setViewEl: (el: any, view: any) => void;
 		appendStyles: (styles: {}, opts?: {
-			unique?: boolean | undefined;
-			prepand?: boolean | undefined;
+			unique?: boolean;
+			prepand?: boolean;
 		}) => void;
 		isObject: (val: any) => val is ObjectAny;
 		isEmptyObj: (val: ObjectAny) => boolean;
@@ -11013,29 +10814,6 @@ declare class UtilsModule extends Module {
 	};
 	constructor(em: EditorModel);
 	destroy(): void;
-}
-export interface Keymap {
-	id: string;
-	keys: string;
-	handler: string | CommandFunction;
-}
-export interface KeymapOptions {
-	/**
-	 * Force the handler to be executed.
-	 */
-	force?: boolean;
-	/**
-	 * Prevent default of the original triggered event.
-	 */
-	prevent?: boolean;
-}
-export interface KeymapsConfig {
-	/**
-	 * Default keymaps.
-	 */
-	defaults?: Record<string, Omit<Keymap, "id"> & {
-		opts?: KeymapOptions;
-	}>;
 }
 export type KeymapEvent = "keymap:add" | "keymap:remove" | "keymap:emit" | `keymap:emit:${string}`;
 declare class KeymapsModule extends Module<KeymapsConfig & {
@@ -11549,6 +11327,14 @@ declare class UndoManagerModule extends Module<UndoManagerConfig & {
 	 * @private
 	 */
 	getStackGroup(): any;
+	/**
+	 * Execute the provided callback temporarily stopping tracking changes
+	 * @param clb The callback to execute with changes tracking stopped
+	 * @example
+	 * um.skip(() => {
+	 *  // Do stuff without tracking
+	 * });
+	 */
 	skip(clb: Function): void;
 	getGroupedStack(): UndoGroup[];
 	goToGroup(group: UndoGroup): void;
@@ -11563,6 +11349,66 @@ declare class UndoManagerModule extends Module<UndoManagerConfig & {
 	getInstance(): any;
 	destroy(): void;
 }
+declare enum CommandsEvents {
+	/**
+	 * @event `command:run` Triggered on run of any command.
+	 * @example
+	 * editor.on('command:run', ({ id, result, options }) => {
+	 *  console.log('Command id', id, 'command result', result);
+	 * });
+	 */
+	run = "command:run",
+	_run = "run",
+	/**
+	 * @event `command:run:COMMAND_ID` Triggered on run of a specific command.
+	 * @example
+	 * editor.on('command:run:my-command', ({ result, options }) => { ... });
+	 */
+	runCommand = "command:run:",
+	_runCommand = "run:",
+	/**
+	 * @event `command:run:before:COMMAND_ID` Triggered before the command is called.
+	 * @example
+	 * editor.on('command:run:before:my-command', ({ options }) => { ... });
+	 */
+	runBeforeCommand = "command:run:before:",
+	/**
+	 * @event `command:abort:COMMAND_ID` Triggered when the command execution is aborted.
+	 * @example
+	 * editor.on('command:abort:my-command', ({ options }) => { ... });
+	 *
+	 * // The command could be aborted during the before event
+	 * editor.on('command:run:before:my-command', ({ options }) => {
+	 *  if (someCondition) {
+	 *    options.abort = true;
+	 *  }
+	 * });
+	 */
+	abort = "command:abort:",
+	_abort = "abort:",
+	/**
+	 * @event `command:stop` Triggered on stop of any command.
+	 * @example
+	 * editor.on('command:stop', ({ id, result, options }) => {
+	 *  console.log('Command id', id, 'command result', result);
+	 * });
+	 */
+	stop = "command:stop",
+	_stop = "stop",
+	/**
+	 * @event `command:stop:COMMAND_ID` Triggered on stop of a specific command.
+	 * @example
+	 * editor.on('command:run:my-command', ({ result, options }) => { ... });
+	 */
+	stopCommand = "command:stop:",
+	_stopCommand = "stop:",
+	/**
+	 * @event `command:stop:before:COMMAND_ID` Triggered before the command is called to stop.
+	 * @example
+	 * editor.on('command:stop:before:my-command', ({ options }) => { ... });
+	 */
+	stopBeforeCommand = "command:stop:before:"
+}
 export type CommandEvent = "run" | "stop" | `run:${string}` | `stop:${string}` | `abort:${string}`;
 declare class CommandsModule extends Module<CommandsConfig & {
 	pStylePrefix?: string;
@@ -11571,6 +11417,7 @@ declare class CommandsModule extends Module<CommandsConfig & {
 	defaultCommands: Record<string, Command>;
 	commands: Record<string, CommandObject>;
 	active: Record<string, any>;
+	events: typeof CommandsEvents;
 	/**
 	 * @private
 	 */
@@ -11692,6 +11539,8 @@ declare class CommandsModule extends Module<CommandsConfig & {
 	 * @private
 	 * */
 	create(command: CommandObject): any;
+	__onRun(id: string, clb: () => void): void;
+	__onStop(id: string, clb: () => void): void;
 	destroy(): void;
 }
 export interface EditorLoadOptions {
@@ -11772,7 +11621,7 @@ declare class EditorModel extends Model {
 	 * and there are unsaved changes
 	 * @private
 	 */
-	updateChanges(): void;
+	updateChanges(m: any, v: any, opts: ObjectAny): void;
 	/**
 	 * Load generic module
 	 */
@@ -11818,35 +11667,35 @@ declare class EditorModel extends Model {
 	getSelectedAll(): Component[];
 	/**
 	 * Select a component
-	 * @param  {Component|HTMLElement} el Component to select
+	 * @param  {Component} el Component to select
 	 * @param  {Object} [opts={}] Options, optional
 	 * @public
 	 */
 	setSelected(el?: Component | Component[], opts?: any): void;
 	/**
 	 * Add component to selection
-	 * @param  {Component|HTMLElement} el Component to select
+	 * @param  {Component|Array<Component>} component Component to select
 	 * @param  {Object} [opts={}] Options, optional
 	 * @public
 	 */
-	addSelected(el: Component | Component[], opts?: any): void;
+	addSelected(component: Component | Component[], opts?: any): void;
 	/**
 	 * Remove component from selection
-	 * @param  {Component|HTMLElement} el Component to select
+	 * @param  {Component|Array<Component>} component Component to select
 	 * @param  {Object} [opts={}] Options, optional
 	 * @public
 	 */
-	removeSelected(el: Component | Component[], opts?: {}): void;
+	removeSelected(component: Component | Component[], opts?: {}): void;
 	/**
 	 * Toggle component selection
-	 * @param  {Component|HTMLElement} el Component to select
+	 * @param  {Component|Array<Component>} component Component to select
 	 * @param  {Object} [opts={}] Options, optional
 	 * @public
 	 */
-	toggleSelected(el: Component | Component[], opts?: any): void;
+	toggleSelected(component: Component | Component[], opts?: any): void;
 	/**
 	 * Hover a component
-	 * @param  {Component|HTMLElement} cmp Component to select
+	 * @param  {Component|Array<Component>} cmp Component to select
 	 * @param  {Object} [opts={}] Options, optional
 	 * @private
 	 */
@@ -12026,6 +11875,517 @@ declare class EditorModel extends Model {
 	 */
 	data(el: any, name: string, value: any): any;
 }
+export interface SelectorProps {
+	name: string;
+	label?: string;
+	type?: number;
+	active?: boolean;
+	private?: boolean;
+	protected?: boolean;
+}
+export interface SelectorPropsCustom extends SelectorProps {
+	[key: string]: unknown;
+}
+export interface SelectorOptions {
+	config?: SelectorManagerConfig;
+	em?: EditorModel;
+}
+/**
+ * @typedef Selector
+ * @property {String} name Selector name, eg. `my-class`
+ * @property {String} label Selector label, eg. `My Class`
+ * @property {Number} [type=1] Type of the selector. 1 (class) | 2 (id)
+ * @property {Boolean} [active=true] If not active, it's not selectable by the Style Manager.
+ * @property {Boolean} [private=false] If true, it can't be seen by the Style Manager, but it will be rendered in the canvas and in export code.
+ * @property {Boolean} [protected=false] If true, it can't be removed from the attached component.
+ */
+export declare class Selector extends Model<SelectorPropsCustom> {
+	defaults(): {
+		name: string;
+		label: string;
+		type: number;
+		active: boolean;
+		private: boolean;
+		protected: boolean;
+		_undo: boolean;
+	};
+	static readonly TYPE_CLASS = 1;
+	static readonly TYPE_ID = 2;
+	em?: EditorModel;
+	/**
+	 * @hideconstructor
+	 */
+	constructor(props: SelectorPropsCustom, opts?: SelectorOptions);
+	isId(): boolean;
+	isClass(): boolean;
+	getFullName(opts?: any): string;
+	/**
+	 * Get selector as a string.
+	 * @returns {String}
+	 * @example
+	 * // Given such selector: { name: 'my-selector', type: 2 }
+	 * console.log(selector.toString());
+	 * // -> `#my-selector`
+	 */
+	toString(): string;
+	/**
+	 * Get selector name.
+	 * @returns {String}
+	 * @example
+	 * // Given such selector: { name: 'my-selector', label: 'My selector' }
+	 * console.log(selector.getName());
+	 * // -> `my-selector`
+	 */
+	getName(): string;
+	/**
+	 * Get selector label.
+	 * @returns {String}
+	 * @example
+	 * // Given such selector: { name: 'my-selector', label: 'My selector' }
+	 * console.log(selector.getLabel());
+	 * // -> `My selector`
+	 */
+	getLabel(): string;
+	/**
+	 * Update selector label.
+	 * @param {String} label New label
+	 * @example
+	 * // Given such selector: { name: 'my-selector', label: 'My selector' }
+	 * selector.setLabel('New Label')
+	 * console.log(selector.getLabel());
+	 * // -> `New Label`
+	 */
+	setLabel(label: string): this;
+	/**
+	 * Get selector active state.
+	 * @returns {Boolean}
+	 */
+	getActive(): boolean;
+	/**
+	 * Update selector active state.
+	 * @param {Boolean} value New active state
+	 */
+	setActive(value: boolean): this;
+	toJSON(opts?: {}): any;
+	/**
+	 * Escape string
+	 * @param {string} name
+	 * @return {string}
+	 * @private
+	 */
+	static escapeName(name: string): string;
+}
+export interface FullNameOptions {
+	combination?: boolean;
+	array?: boolean;
+}
+export declare class Selectors extends Collection<Selector> {
+	modelId(attr: any): string;
+	getStyleable(): Selector[];
+	getValid({ noDisabled }?: any): Selector[];
+	getFullString(collection?: Selector[] | null, opts?: {
+		sort?: boolean;
+	}): string;
+	getFullName<T extends FullNameOptions>(opts?: T): T["array"] extends true ? string[] : string;
+}
+export type StyleProps = Record<string, string | string[]>;
+export type UpdateStyleOptions = SetOptions & {
+	partial?: boolean;
+	addStyle?: StyleProps;
+	inline?: boolean;
+	noEvent?: boolean;
+};
+declare class StyleableModel<T extends ObjectHash = any> extends Model<T> {
+	/**
+	 * Forward style string to `parseStyle` to be parse to an object
+	 * @param  {string} str
+	 * @returns
+	 */
+	parseStyle(str: string): Record<string, string | string[]>;
+	/**
+	 * To trigger the style change event on models I have to
+	 * pass a new object instance
+	 * @param {Object} prop
+	 * @return {Object}
+	 */
+	extendStyle(prop: ObjectAny): ObjectAny;
+	/**
+	 * Get style object
+	 * @return {Object}
+	 */
+	getStyle(prop?: string | ObjectAny): StyleProps;
+	/**
+	 * Set new style object
+	 * @param {Object|string} prop
+	 * @param {Object} opts
+	 * @return {Object} Applied properties
+	 */
+	setStyle(prop?: string | ObjectAny, opts?: UpdateStyleOptions): {
+		[x: string]: any;
+	};
+	/**
+	 * Add style property
+	 * @param {Object|string} prop
+	 * @param {string} value
+	 * @example
+	 * this.addStyle({color: 'red'});
+	 * this.addStyle('color', 'blue');
+	 */
+	addStyle(prop: string | ObjectAny, value?: any, opts?: UpdateStyleOptions): void;
+	/**
+	 * Remove style property
+	 * @param {string} prop
+	 */
+	removeStyle(prop: string): void;
+	/**
+	 * Returns string of style properties
+	 * @param {Object} [opts={}] Options
+	 * @return {String}
+	 */
+	styleToString(opts?: ObjectAny): string;
+	getSelectors(): Selectors;
+	getSelectorsString(opts?: ObjectAny): any;
+}
+/** @private */
+export interface CssRuleProperties {
+	/**
+	 * Array of selectors
+	 */
+	selectors: Selector[];
+	/**
+	 * Object containing style definitions
+	 * @default {}
+	 */
+	style?: Record<string, any>;
+	/**
+	 * Additional string css selectors
+	 * @default ''
+	 */
+	selectorsAdd?: string;
+	/**
+	 * Type of at-rule, eg. `media`, 'font-face'
+	 * @default ''
+	 */
+	atRuleType?: string;
+	/**
+	 * At-rule value, eg. `(max-width: 1000px)`
+	 * @default ''
+	 */
+	mediaText?: string;
+	/**
+	 * This property is used only on at-rules, like 'page' or 'font-face', where the block containes only style declarations.
+	 * @default false
+	 */
+	singleAtRule?: boolean;
+	/**
+	 * State of the rule, eg: `hover`, `focused`
+	 * @default ''
+	 */
+	state?: string;
+	/**
+	 * If true, sets `!important` on all properties. You can also pass an array to specify properties on which to use important.
+	 * @default false
+	 */
+	important?: boolean | string[];
+	/**
+	 * Indicates if the rule is stylable from the editor.
+	 * @default true
+	 */
+	stylable?: boolean | string[];
+	/**
+	 * Group for rules.
+	 * @default ''
+	 */
+	group?: string;
+	/**
+	 * If true, the rule won't be stored in JSON or showed in CSS export.
+	 * @default false
+	 */
+	shallow?: boolean;
+}
+export interface CssRuleJSON extends Omit<CssRuleProperties, "selectors"> {
+	selectors: (string | SelectorProps)[];
+}
+/**
+ * @typedef CssRule
+ * @property {Array<Selector>} selectors Array of selectors
+ * @property {Object} style Object containing style definitions
+ * @property {String} [selectorsAdd=''] Additional string css selectors
+ * @property {String} [atRuleType=''] Type of at-rule, eg. `media`, 'font-face'
+ * @property {String} [mediaText=''] At-rule value, eg. `(max-width: 1000px)`
+ * @property {Boolean} [singleAtRule=false] This property is used only on at-rules, like 'page' or 'font-face', where the block containes only style declarations
+ * @property {String} [state=''] State of the rule, eg: `hover`, `focused`
+ * @property {Boolean|Array<String>} [important=false] If true, sets `!important` on all properties. You can also pass an array to specify properties on which use important
+ * @property {Boolean} [stylable=true] Indicates if the rule is stylable from the editor
+ *
+ * [Device]: device.html
+ * [State]: state.html
+ * [Component]: component.html
+ */
+export declare class CssRule extends StyleableModel<CssRuleProperties> {
+	config: CssRuleProperties;
+	em?: EditorModel;
+	opt: any;
+	defaults(): {
+		selectors: never[];
+		selectorsAdd: string;
+		style: {};
+		mediaText: string;
+		state: string;
+		stylable: boolean;
+		atRuleType: string;
+		singleAtRule: boolean;
+		important: boolean;
+		group: string;
+		shallow: boolean;
+		_undo: boolean;
+	};
+	constructor(props: CssRuleProperties, opt?: any);
+	__onChange(m: CssRule, opts: any): void;
+	clone(): CssRule;
+	ensureSelectors(m: any, c: any, opts: any): void;
+	/**
+	 * Returns the at-rule statement when exists, eg. `@media (...)`, `@keyframes`
+	 * @returns {String}
+	 * @example
+	 * const cssRule = editor.Css.setRule('.class1', { color: 'red' }, {
+	 *  atRuleType: 'media',
+	 *  atRuleParams: '(min-width: 500px)'
+	 * });
+	 * cssRule.getAtRule(); // "@media (min-width: 500px)"
+	 */
+	getAtRule(): string;
+	/**
+	 * Return selectors of the rule as a string
+	 * @param {Object} [opts] Options
+	 * @param {Boolean} [opts.skipState] Skip state from the result
+	 * @returns {String}
+	 * @example
+	 * const cssRule = editor.Css.setRule('.class1:hover', { color: 'red' });
+	 * cssRule.selectorsToString(); // ".class1:hover"
+	 * cssRule.selectorsToString({ skipState: true }); // ".class1"
+	 */
+	selectorsToString(opts?: ObjectAny): string;
+	/**
+	 * Get declaration block (without the at-rule statement)
+	 * @param {Object} [opts={}] Options (same as in `selectorsToString`)
+	 * @returns {String}
+	 * @example
+	 * const cssRule = editor.Css.setRule('.class1', { color: 'red' }, {
+	 *  atRuleType: 'media',
+	 *  atRuleParams: '(min-width: 500px)'
+	 * });
+	 * cssRule.getDeclaration() // ".class1{color:red;}"
+	 */
+	getDeclaration(opts?: ObjectAny): string;
+	/**
+	 * Get the Device the rule is related to.
+	 * @returns {[Device]|null}
+	 * @example
+	 * const device = rule.getDevice();
+	 * console.log(device?.getName());
+	 */
+	getDevice(): Device;
+	/**
+	 * Get the State the rule is related to.
+	 * @returns {[State]|null}
+	 * @example
+	 * const state = rule.getState();
+	 * console.log(state?.getLabel());
+	 */
+	getState(): State;
+	/**
+	 * Returns the related Component (valid only for component-specific rules).
+	 * @returns {[Component]|null}
+	 * @example
+	 * const cmp = rule.getComponent();
+	 * console.log(cmp?.toHTML());
+	 */
+	getComponent(): Component | null;
+	/**
+	 * Return the CSS string of the rule
+	 * @param {Object} [opts={}] Options (same as in `getDeclaration`)
+	 * @return {String} CSS string
+	 * @example
+	 * const cssRule = editor.Css.setRule('.class1', { color: 'red' }, {
+	 *  atRuleType: 'media',
+	 *  atRuleParams: '(min-width: 500px)'
+	 * });
+	 * cssRule.toCSS() // "@media (min-width: 500px){.class1{color:red;}}"
+	 */
+	toCSS(opts?: ObjectAny): string;
+	toJSON(...args: any): any;
+	/**
+	 * Compare the actual model with parameters
+	 * @param {Object} selectors Collection of selectors
+	 * @param {String} state Css rule state
+	 * @param {String} width For which device this style is oriented
+	 * @param {Object} ruleProps Other rule props
+	 * @returns  {Boolean}
+	 * @private
+	 */
+	compare(selectors: any, state?: string, width?: string, ruleProps?: Partial<CssRuleProperties>): boolean;
+}
+export interface ParsedCssRule {
+	selectors: string | string[];
+	style: Record<string, string>;
+	atRule?: string;
+	params?: string;
+}
+export type CustomParserCss = (input: string, editor: Editor) => ParsedCssRule[];
+export type CustomParserHtml = (input: string, options: HTMLParserOptions) => HTMLElement;
+export interface HTMLParseResult {
+	html: ComponentDefinitionDefined | ComponentDefinitionDefined[];
+	css?: CssRuleJSON[];
+	doctype?: string;
+	root?: ComponentDefinitionDefined;
+	head?: ComponentDefinitionDefined;
+}
+export interface ParseNodeOptions extends HTMLParserOptions {
+	inSvg?: boolean;
+	skipChildren?: boolean;
+}
+export interface HTMLParserOptions extends OptionAsDocument {
+	/**
+	 * DOMParser mime type.
+	 * If you use the `text/html` parser, it will fix the invalid syntax automatically.
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/parseFromString
+	 * @default 'text/html'
+	 */
+	htmlType?: DOMParserSupportedType;
+	/**
+	 * Allow <script> tags.
+	 * @default false
+	 */
+	allowScripts?: boolean;
+	/**
+	 * Allow unsafe HTML attributes (eg. `on*` inline event handlers).
+	 * @default false
+	 */
+	allowUnsafeAttr?: boolean;
+	/**
+	 * Allow unsafe HTML attribute values (eg. `src="javascript:..."`).
+	 * @default false
+	 */
+	allowUnsafeAttrValue?: boolean;
+	/**
+	 * When false, removes empty text nodes when parsed, unless they contain a space.
+	 * @default false
+	 */
+	keepEmptyTextNodes?: boolean;
+	/**
+	 * Custom transformer to run before passing the input HTML to the parser.
+	 * A common use case might be to sanitize the input string.
+	 * @example
+	 * preParser: htmlString => DOMPurify.sanitize(htmlString)
+	 */
+	preParser?: (input: string, opts: {
+		editor: Editor;
+	}) => string;
+}
+export interface ParserConfig {
+	/**
+	 * Let the editor know which HTML tags should be treated as part of the text component.
+	 * @default ['br', 'b', 'i', 'u', 'a', 'ul', 'ol']
+	 */
+	textTags?: string[];
+	/**
+	 * Let the editor know which Component types should be treated as part of the text component.
+	 * @default ['text', 'textnode', 'comment']
+	 */
+	textTypes?: string[];
+	/**
+	 * Custom CSS parser.
+	 * @see https://grapesjs.com/docs/guides/Custom-CSS-parser.html
+	 */
+	parserCss?: CustomParserCss;
+	/**
+	 * Custom HTML parser.
+	 * At the moment, the custom HTML parser should rely on DOM Node instance as the result.
+	 * @example
+	 * // The return should be an instance of an Node as the root to traverse
+	 * // https://developer.mozilla.org/en-US/docs/Web/API/Node
+	 * // Here the result will be XMLDocument, which extends Node.
+	 * parserHtml: (input, opts = {}) => (new DOMParser()).parseFromString(input, 'text/xml')
+	 */
+	parserHtml?: CustomParserHtml;
+	/**
+	 * Default HTML parser options (used in `parserModule.parseHtml('<div...', options)`).
+	 */
+	optionsHtml?: HTMLParserOptions;
+}
+export interface NOOP {
+}
+export type Debounced = Function & {
+	cancel(): void;
+};
+export type SetOptions = Backbone.ModelSetOptions & {
+	avoidStore?: boolean;
+};
+export type AddOptions = Backbone.AddOptions & {
+	temporary?: boolean;
+	action?: string;
+};
+export type DisableOptions = {
+	fromMove?: boolean;
+};
+export type LocaleOptions = {
+	locale?: boolean;
+};
+export type WithHTMLParserOptions = {
+	parserOptions?: HTMLParserOptions;
+};
+export type RemoveOptions = Backbone.Silenceable;
+export type EventHandler = Backbone.EventHandler;
+export type ObjectHash = Backbone.ObjectHash;
+export type ObjectAny = Record<string, any>;
+export type ObjectStrings = Record<string, string>;
+export type Nullable = undefined | null | false;
+export interface OptionAsDocument {
+	/**
+	 * Treat the HTML string as document (option valid on the root component, eg. will include doctype, html, head, etc.).
+	 */
+	asDocument?: boolean;
+}
+export type LiteralUnion<T, U> = T | (U & NOOP);
+export type Position = {
+	x: number;
+	y: number;
+};
+export interface Coordinates {
+	x: number;
+	y: number;
+}
+export interface Dimensions {
+	height: number;
+	width: number;
+}
+export interface BoxRect extends Coordinates, Dimensions {
+}
+export type ElementRect = {
+	top: number;
+	left: number;
+	width: number;
+	height: number;
+};
+export type CombinedModelConstructorOptions<E, M extends Model<any, any, E> = Model> = Backbone.ModelConstructorOptions<M> & E;
+export interface ViewOptions<TModel extends Model | undefined = Model, TElement extends Element = HTMLElement> extends Backbone.ViewOptions<TModel, TElement> {
+}
+declare class Model<T extends ObjectHash = any, S = SetOptions, E = any> extends Backbone.Model<T, S, E> {
+}
+declare class Collection<T extends Model = Model> extends Backbone.Collection<T> {
+}
+declare class View<T extends Model | undefined = Model, E extends Element = HTMLElement> extends Backbone.View<T, E> {
+}
+export type PickMatching<T, V> = {
+	[K in keyof T as T[K] extends V ? K : never]: T[K];
+};
+export type ExtractMethods<T> = PickMatching<T, Function>;
+declare enum CoordinatesTypes {
+	Screen = "screen",
+	World = "world"
+}
+export type PrevToNewIdMap = Record<string, string>;
 export interface IModule<TConfig extends ModuleConfig = ModuleConfig> extends IBaseModule<TConfig> {
 	destroy(): void;
 	postLoad(key: any): any;
@@ -12055,16 +12415,18 @@ declare abstract class Module<T extends ModuleConfig = ModuleConfig> implements 
 	private _em;
 	private _config;
 	private _name;
+	debounced: Debounced[];
+	collections: Collection[];
 	cls: any[];
+	state?: Model;
 	events: any;
 	model?: any;
 	view?: any;
 	constructor(em: EditorModel, moduleName: string, defaults?: T);
 	get em(): EditorModel;
 	get config(): T & {
-		pStylePrefix?: string | undefined;
+		pStylePrefix?: string;
 	};
-	abstract destroy(): void;
 	render(opts?: any): HTMLElement | JQuery<HTMLElement> | void;
 	postLoad(key: any): void;
 	get name(): string;
@@ -12073,6 +12435,8 @@ declare abstract class Module<T extends ModuleConfig = ModuleConfig> implements 
 	};
 	__logWarn(str: string, opts?: {}): void;
 	postRender?(view: any): void;
+	destroy(): void;
+	__destroy(): void;
 	/**
 	 * Move the main DOM element of the module.
 	 * To execute only post editor render (in postRender)
@@ -12098,7 +12462,7 @@ declare abstract class ItemManagerModule<TConf extends ModuleConfig = ModuleConf
 		reset?: boolean;
 	}): any;
 	clear(opts?: {}): this;
-	getAll(): any;
+	getAll(): TCollection | any;
 	getAllMap(): {
 		[key: string]: TCollection extends Collection<infer C> ? C : unknown;
 	};
@@ -12598,16 +12962,12 @@ export declare class PropertyRadio extends PropertySelect {
 export declare class PropertySlider extends PropertyNumber {
 	defaults(): any;
 }
-export declare const usePlugin: <P extends string | Plugin<any>>(plugin: P, opts?: (P extends Plugin<infer C extends {
-	[x: string]: any;
-}> ? C : {}) | undefined) => (editor: Editor) => void;
+export declare const usePlugin: <P extends Plugin<any> | string>(plugin: P, opts?: P extends Plugin<infer C> ? C : {}) => (editor: Editor) => void;
 export declare const grapesjs: {
 	$: any;
 	editors: Editor[];
 	plugins: PluginManager;
-	usePlugin: <P extends string | Plugin<any>>(plugin: P, opts?: (P extends Plugin<infer C extends {
-		[x: string]: any;
-	}> ? C : {}) | undefined) => (editor: Editor) => void;
+	usePlugin: <P extends Plugin<any> | string>(plugin: P, opts?: P extends Plugin<infer C> ? C : {}) => (editor: Editor) => void;
 	version: any;
 	/**
 	 * Initialize the editor with passed options
@@ -12629,6 +12989,7 @@ export declare const grapesjs: {
 };
 
 export {
+	CategoryProperties as BlockCategoryProperties,
 	grapesjs as default,
 };
 
