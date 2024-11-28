@@ -110,7 +110,7 @@ function FormDataSet(result) {
     FormDataClear();
     keyId = result.id;
     co.Form.insertData(result.object, "PageForm");
-    TagDataSet(result.object.tags);
+    $Tags.TagDataSet(result.object.tags);
 }
 
 function paletteButtonClicked(e) {
