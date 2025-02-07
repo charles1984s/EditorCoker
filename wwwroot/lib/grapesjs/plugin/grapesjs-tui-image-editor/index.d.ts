@@ -1,9 +1,9 @@
-import grapesjs from 'grapesjs';
+import { Component, Plugin } from 'grapesjs';
+import tuiImageEditor from 'tui-image-editor';
 
-export declare type Component = grapesjs.Component;
-export declare type ImageEditor = tuiImageEditor.ImageEditor;
-export declare type IOptions = tuiImageEditor.IOptions;
-export declare type PluginOptions = {
+export type ImageEditor = tuiImageEditor.ImageEditor;
+export type IOptions = tuiImageEditor.IOptions;
+export type PluginOptions = {
 	/**
 	 * TOAST UI's configurations
 	 * https://nhn.github.io/tui.image-editor/latest/ImageEditor
@@ -84,7 +84,7 @@ export declare type PluginOptions = {
 	 */
 	style?: string[];
 };
-declare const plugin: grapesjs.Plugin<PluginOptions>;
+declare const plugin: Plugin<PluginOptions>;
 
 export {
 	plugin as default,

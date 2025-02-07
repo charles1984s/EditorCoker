@@ -1,6 +1,6 @@
-import grapesjs from 'grapesjs';
+import { Plugin } from 'grapesjs';
 
-export declare type PluginOptions = {
+export type PluginOptions = {
 	/**
 	 * Which blocks to add.
 	 * @default ['column1', 'column2', 'column3', 'column3-7', 'text', 'link', 'image', 'video', 'map']
@@ -77,7 +77,7 @@ export declare type PluginOptions = {
 	 */
 	rowHeight?: number;
 };
-declare const plugin: grapesjs.Plugin<PluginOptions>;
+declare const plugin: Plugin<PluginOptions>;
 
 export {
 	plugin as default,

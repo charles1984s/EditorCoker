@@ -1,6 +1,6 @@
-import grapesjs from 'grapesjs';
+import { Editor, Plugin } from 'grapesjs';
 
-export declare type PluginOptions = {
+export type PluginOptions = {
 	/**
 	 * Which blocks to add.
 	 * @default ['link-block', 'quote', 'text-basic']
@@ -33,7 +33,7 @@ export declare type PluginOptions = {
 	 * @default ''
 	 * @example editor => editor.getHtml()
 	 */
-	modalImportContent?: string | ((editor: grapesjs.Editor) => string);
+	modalImportContent?: string | ((editor: Editor) => string);
 	/**
 	 * Code viewer (eg. CodeMirror) options.
 	 * @default {}
@@ -55,8 +55,8 @@ export declare type PluginOptions = {
 	 */
 	useCustomTheme?: boolean;
 };
-export declare type RequiredPluginOptions = Required<PluginOptions>;
-declare const plugin: grapesjs.Plugin<PluginOptions>;
+export type RequiredPluginOptions = Required<PluginOptions>;
+declare const plugin: Plugin<PluginOptions>;
 
 export {
 	plugin as default,
