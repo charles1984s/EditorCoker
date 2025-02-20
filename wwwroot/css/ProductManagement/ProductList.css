@@ -389,6 +389,13 @@ textarea.minHeight {
     width: 100%;
     height: 50px; /* 可根據需要調整 */
 }
+#ProdFiles > ul > li .material-symbols-outlined {
+    font-size: 1rem;
+}
+#ProdFiles .serNoTool > .material-symbols-outlined {
+    font-size: 1rem;
+    margin-right: 0.5rem;
+}
 
 .sortable-placeholder {
     background: #f0f0f0;
@@ -399,6 +406,8 @@ textarea.minHeight {
 
 .serNoTool {
     cursor: move;
+    display: flex;
+    align-items: center;
 }
 
 @media only screen and (max-width: 1900px) {
