@@ -173,6 +173,9 @@ input[type="number"] {
                 display: flex;
                 gap: 10px;
             }
+            #Spec_Frame > .specList > .btn_spec_add {
+                width: 150px;
+            }
 
     #Spec_Frame .spec {
         display: flex;
