@@ -138,25 +138,36 @@ input[type="number"] {
         table-layout: fixed; /* 固定表格寬度 */
         border-collapse: collapse;
     }
-        #Spec_Frame > .specList > .specHeader > div:not(.spec) {
+        #Spec_Frame > .specList > .specHeader > div:not(.spec), #Spec_Frame > .specList > .ui-sortable-helper > div:not(.specs) {
             width: 100px;
         }
 
-        #Spec_Frame > .specList > .specHeader > div.serNo {
+        #Spec_Frame > .specList > .specHeader > div.serNo, #Spec_Frame > .specList > .ui-sortable-helper > div.serNo {
             width: 100px;
         }
 
-        #Spec_Frame > .specList > .specHeader > div.price {
+        #Spec_Frame > .specList > .specHeader > div.price, #Spec_Frame > .specList > .ui-sortable-helper > div.price {
             width: 200px;
         }
 
-        #Spec_Frame > .specList > .specHeader > div.del {
+        #Spec_Frame > .specList > .specHeader > div.del, #Spec_Frame > .specList > .ui-sortable-helper > div.del {
             width: 75px;
         }
-
+        #Spec_Frame > .specList > .ui-sortable-helper > .specs,
+        #Spec_Frame > .specList > .ui-sortable-helper > .specs > div {
+            width: 42rem;
+        }
         #Spec_Frame > .specList > li {
             display: table-row;
         }
+            #Spec_Frame > .specList > li.ui-sortable-helper {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+                overflow: visible;
+                padding: 0 !important;
+            }
 
             #Spec_Frame > .specList > li > * {
                 display: table-cell;
@@ -428,7 +439,14 @@ textarea.minHeight {
 }
 
 @media only screen and (max-width: 1400px) {
-    #Spec_Frame .specs > div{
+    #Spec_Frame > .specList > .ui-sortable-helper > .specs, #Spec_Frame > .specList > .ui-sortable-helper > .specs > div {
+        width:unset;
+    }
+    #Spec_Frame > .specList > .ui-sortable-helper > .specs, #Spec_Frame > .specList > .ui-sortable-helper > .input-group {
+        display: flex;
+        align-items: center;
+    }
+    #Spec_Frame .specs > div {
         flex-direction: column;
     }
     .sidebar:not(.collapsed) + .content-area #Spec_Frame > .specList > .specHeader > div.serNo {
