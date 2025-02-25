@@ -277,7 +277,7 @@ input[type="number"] {
         text-align:center;
     }
 
-#ProductForm > .date > input {
+#ProductForm .date > input {
     padding-left: 9.5rem;
 }
 
