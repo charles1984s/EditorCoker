@@ -12,7 +12,7 @@
     padding-left: 3rem;
 }
 
-.tag > textarea {
+.tag > textarea, .tag > input {
     padding-left: 4.5rem;
     height: 2rem;
 }
