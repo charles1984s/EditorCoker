@@ -8,6 +8,9 @@
     ".NETCoreApp,Version=v6.0": {
       "EtheriT.Coker.Web.MVC/1.0.0": {
         "dependencies": {
+          "AspNet.Security.OAuth.Apple": "6.0.15",
+          "AspNet.Security.OAuth.Instagram": "6.0.15",
+          "AspNet.Security.OAuth.Line": "6.0.15",
           "BuildBundlerMinifier": "3.2.449",
           "DevExpress.Xpo": "21.2.14",
           "DevExtreme.AspNet.Core": "21.2.14",
@@ -19,6 +22,8 @@
           "Hangfire.AspNetCore": "1.8.17",
           "Hangfire.SqlServer": "1.8.17",
           "HtmlAgilityPack": "1.11.72",
+          "Microsoft.AspNetCore.Authentication.Facebook": "6.0.36",
+          "Microsoft.AspNetCore.Authentication.Google": "6.0.36",
           "Microsoft.AspNetCore.Http": "2.3.0",
           "Microsoft.AspNetCore.Mvc.Core": "2.3.0",
           "Microsoft.Data.SqlClient": "5.2.2",
@@ -39,6 +44,33 @@
         },
         "runtime": {
           "EtheriT.Coker.Web.MVC.dll": {}
+        }
+      },
+      "AspNet.Security.OAuth.Apple/6.0.15": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.35.0"
+        },
+        "runtime": {
+          "lib/net6.0/AspNet.Security.OAuth.Apple.dll": {
+            "assemblyVersion": "6.0.15.0",
+            "fileVersion": "6.0.1523.21638"
+          }
+        }
+      },
+      "AspNet.Security.OAuth.Instagram/6.0.15": {
+        "runtime": {
+          "lib/net6.0/AspNet.Security.OAuth.Instagram.dll": {
+            "assemblyVersion": "6.0.15.0",
+            "fileVersion": "6.0.1523.21638"
+          }
+        }
+      },
+      "AspNet.Security.OAuth.Line/6.0.15": {
+        "runtime": {
+          "lib/net6.0/AspNet.Security.OAuth.Line.dll": {
+            "assemblyVersion": "6.0.15.0",
+            "fileVersion": "6.0.1523.21638"
+          }
         }
       },
       "AutoMapper/13.0.1": {
@@ -363,6 +395,22 @@
           "Microsoft.AspNetCore.Authentication.Abstractions": "2.3.0",
           "Microsoft.AspNetCore.Http": "2.3.0",
           "Microsoft.AspNetCore.Http.Extensions": "2.3.0"
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Facebook/6.0.36": {
+        "runtime": {
+          "lib/net6.0/Microsoft.AspNetCore.Authentication.Facebook.dll": {
+            "assemblyVersion": "6.0.36.0",
+            "fileVersion": "6.0.3624.51604"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Google/6.0.36": {
+        "runtime": {
+          "lib/net6.0/Microsoft.AspNetCore.Authentication.Google.dll": {
+            "assemblyVersion": "6.0.36.0",
+            "fileVersion": "6.0.3624.51604"
+          }
         }
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer/6.0.10": {
@@ -2651,6 +2699,27 @@
       "serviceable": false,
       "sha512": ""
     },
+    "AspNet.Security.OAuth.Apple/6.0.15": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KV1ON0Xrp5xErDDTvK3DaTrYZ8t4T4VVPNk/AUoklLXHjoS9k4ork4qi8TZ9kquyi4m1K9SsiChf0f5BPvN87w==",
+      "path": "aspnet.security.oauth.apple/6.0.15",
+      "hashPath": "aspnet.security.oauth.apple.6.0.15.nupkg.sha512"
+    },
+    "AspNet.Security.OAuth.Instagram/6.0.15": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NdLOcbgs3Xz7BteKOSSc01DsqB8R9S98Voy7Zj/Inaxe1vIjoJ/4HYKansunKIXoPzu0wN7tJ62kBGicNopGig==",
+      "path": "aspnet.security.oauth.instagram/6.0.15",
+      "hashPath": "aspnet.security.oauth.instagram.6.0.15.nupkg.sha512"
+    },
+    "AspNet.Security.OAuth.Line/6.0.15": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kCT4ylMeFcXJqkYLgp+0EYrOQG4OHI/QdK9EjiZt6RVGTfXNDlTsMQaJrO6iimZwKHHsOl2o4MC9mFuq3BtR7w==",
+      "path": "aspnet.security.oauth.line/6.0.15",
+      "hashPath": "aspnet.security.oauth.line.6.0.15.nupkg.sha512"
+    },
     "AutoMapper/13.0.1": {
       "type": "package",
       "serviceable": true,
@@ -2804,6 +2873,20 @@
       "sha512": "sha512-gnLnKGawBjqBnU9fEuel3VcYAARkjyONAliaGDfMc8o8HBtfh+HrOPEoR8Xx4b2RnMb7uxdBDOvEAC7sul79ig==",
       "path": "microsoft.aspnetcore.authentication.core/2.3.0",
       "hashPath": "microsoft.aspnetcore.authentication.core.2.3.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Facebook/6.0.36": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+Sc6C/3ZYkUC0qxVSUrRy/vc+GcL1KQlzUUutIOroh8SZ1kjhVyKPtJ1SPcsiatEVro1QCFWO7WXqadEDLQ8Ug==",
+      "path": "microsoft.aspnetcore.authentication.facebook/6.0.36",
+      "hashPath": "microsoft.aspnetcore.authentication.facebook.6.0.36.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Google/6.0.36": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NNg7Ce9GC+UprcUIYPZlRwyNm/QBMbtOIyX+LgO3/Z4bAtmg7ZpNLMDGhwDeNWFqMaTPXtW2HQOb3hcV1Oja1A==",
+      "path": "microsoft.aspnetcore.authentication.google/6.0.36",
+      "hashPath": "microsoft.aspnetcore.authentication.google.6.0.36.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/6.0.10": {
       "type": "package",
