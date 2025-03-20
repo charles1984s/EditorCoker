@@ -12,6 +12,7 @@
           "AspNet.Security.OAuth.Instagram": "6.0.15",
           "AspNet.Security.OAuth.Line": "6.0.15",
           "BuildBundlerMinifier": "3.2.449",
+          "DevExpress.AspNetCore.Reporting": "21.2.14",
           "DevExpress.Xpo": "21.2.14",
           "DevExtreme.AspNet.Core": "21.2.14",
           "DevExtreme.AspNet.Data": "2.8.6",
@@ -128,6 +129,126 @@
         }
       },
       "BuildBundlerMinifier/3.2.449": {},
+      "DevExpress.AspNetCore.Common/21.2.14": {
+        "dependencies": {
+          "DevExpress.AspNetCore.Core": "21.2.14",
+          "DevExpress.Data": "21.2.14",
+          "Microsoft.AspNetCore.Mvc.ViewFeatures": "2.0.0",
+          "NETStandard.Library": "2.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.AspNetCore.Common.v21.2.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.AspNetCore.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.Office.Core": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "Microsoft.AspNetCore.Mvc.ViewFeatures": "2.0.0",
+          "Microsoft.Extensions.Caching.Abstractions": "9.0.1",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.AspNetCore.Core.v21.2.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.AspNetCore.Reporting/21.2.14": {
+        "dependencies": {
+          "DevExpress.AspNetCore.Common": "21.2.14",
+          "DevExpress.AspNetCore.Core": "21.2.14",
+          "DevExpress.AspNetCore.Resources": "21.2.14",
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.DataAccess": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "DevExpress.Reporting.Core": "21.2.14",
+          "DevExpress.Web.Reporting.Common": "21.2.14",
+          "Microsoft.AspNetCore.DataProtection.Abstractions": "2.0.0",
+          "Microsoft.AspNetCore.Hosting.Abstractions": "2.3.0",
+          "Microsoft.AspNetCore.Html.Abstractions": "2.0.0",
+          "Microsoft.AspNetCore.Mvc.Abstractions": "2.3.0",
+          "Microsoft.AspNetCore.Mvc.Core": "2.3.0",
+          "Microsoft.AspNetCore.Mvc.ViewFeatures": "2.0.0",
+          "Microsoft.Extensions.Configuration": "2.0.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.1",
+          "Microsoft.Extensions.Configuration.FileExtensions": "2.0.0",
+          "Microsoft.Extensions.Configuration.Json": "2.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.1",
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "NETStandard.Library": "2.0.3",
+          "System.CodeDom": "4.4.0",
+          "System.Diagnostics.PerformanceCounter": "4.5.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.AspNetCore.Reporting.v21.2.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.AspNetCore.Resources/21.2.14": {
+        "dependencies": {
+          "DevExpress.AspNetCore.Core": "21.2.14",
+          "DevExpress.Data": "21.2.14",
+          "Microsoft.AspNetCore.Mvc": "2.0.0",
+          "NETStandard.Library": "2.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.AspNetCore.Resources.v21.2.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Charts/21.2.14": {
+        "dependencies": {
+          "DevExpress.Charts.Core": "21.2.14",
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.DataVisualization.Core": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.XtraCharts.v21.2.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Charts.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "NETStandard.Library": "2.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.Charts.v21.2.Core.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.CodeParser/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.CodeDom": "4.4.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.CodeParser.v21.2.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
       "DevExpress.Data/21.2.14": {
         "dependencies": {
           "Microsoft.Win32.Registry": "4.5.0",
@@ -142,6 +263,233 @@
         },
         "runtime": {
           "lib/netstandard2.0/DevExpress.Data.v21.2.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.DataAccess/21.2.14": {
+        "dependencies": {
+          "DevExpress.CodeParser": "21.2.14",
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.Office.Core": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "DevExpress.RichEdit.Core": "21.2.14",
+          "DevExpress.Xpo": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Configuration.ConfigurationManager": "6.0.1",
+          "System.Data.SqlClient": "4.9.0",
+          "System.Drawing.Common": "6.0.0",
+          "System.Reflection.Emit": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.DataAccess.v21.2.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.DataVisualization.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "NETStandard.Library": "2.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.DataVisualization.v21.2.Core.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Gauges.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.XtraGauges.v21.2.Core.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Office.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.Pdf.Core": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0",
+          "System.Security.Cryptography.Xml": "9.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.Office.v21.2.Core.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Pdf.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0",
+          "System.Reflection.Emit": "4.3.0",
+          "System.Security.Cryptography.Pkcs": "9.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.Pdf.v21.2.Core.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Pdf.Drawing/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.Pdf.Core": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.Pdf.v21.2.Drawing.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.PivotGrid.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0",
+          "System.Reflection.Emit": "4.3.0",
+          "System.Reflection.Emit.Lightweight": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.PivotGrid.v21.2.Core.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Printing.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.Pdf.Core": "21.2.14",
+          "DevExpress.Pdf.Drawing": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.ComponentModel.Annotations": "5.0.0",
+          "System.Drawing.Common": "6.0.0",
+          "System.Security.Cryptography.Pkcs": "9.0.1",
+          "System.ServiceModel.Http": "4.5.3",
+          "System.Text.Encoding.CodePages": "4.4.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.Printing.v21.2.Core.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Reporting.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Charts": "21.2.14",
+          "DevExpress.Charts.Core": "21.2.14",
+          "DevExpress.CodeParser": "21.2.14",
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.DataAccess": "21.2.14",
+          "DevExpress.Gauges.Core": "21.2.14",
+          "DevExpress.Office.Core": "21.2.14",
+          "DevExpress.Pdf.Core": "21.2.14",
+          "DevExpress.Pdf.Drawing": "21.2.14",
+          "DevExpress.PivotGrid.Core": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "DevExpress.RichEdit.Core": "21.2.14",
+          "DevExpress.RichEdit.Export": "21.2.14",
+          "DevExpress.Sparkline.Core": "21.2.14",
+          "DevExpress.Xpo": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.CodeDom": "4.4.0",
+          "System.Collections.Immutable": "6.0.0",
+          "System.Configuration.ConfigurationManager": "6.0.1",
+          "System.Drawing.Common": "6.0.0",
+          "System.Runtime.Loader": "4.3.0",
+          "System.Security.Permissions": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.XtraReports.v21.2.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.RichEdit.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.Office.Core": "21.2.14",
+          "DevExpress.Pdf.Core": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.RichEdit.v21.2.Core.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.RichEdit.Export/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.Office.Core": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "DevExpress.RichEdit.Core": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.RichEdit.v21.2.Export.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Sparkline.Core/21.2.14": {
+        "dependencies": {
+          "DevExpress.Data": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.Sparkline.v21.2.Core.dll": {
+            "assemblyVersion": "21.2.14.0",
+            "fileVersion": "21.2.14.0"
+          }
+        }
+      },
+      "DevExpress.Web.Reporting.Common/21.2.14": {
+        "dependencies": {
+          "DevExpress.Charts": "21.2.14",
+          "DevExpress.Charts.Core": "21.2.14",
+          "DevExpress.Data": "21.2.14",
+          "DevExpress.DataAccess": "21.2.14",
+          "DevExpress.Gauges.Core": "21.2.14",
+          "DevExpress.PivotGrid.Core": "21.2.14",
+          "DevExpress.Printing.Core": "21.2.14",
+          "DevExpress.Reporting.Core": "21.2.14",
+          "DevExpress.Sparkline.Core": "21.2.14",
+          "NETStandard.Library": "2.0.3",
+          "System.CodeDom": "4.4.0",
+          "System.Drawing.Common": "6.0.0",
+          "System.Threading.AccessControl": "4.4.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DevExpress.XtraReports.v21.2.Web.dll": {
             "assemblyVersion": "21.2.14.0",
             "fileVersion": "21.2.14.0"
           }
@@ -988,6 +1336,11 @@
           }
         }
       },
+      "Microsoft.Extensions.Configuration/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.1"
+        }
+      },
       "Microsoft.Extensions.Configuration.Abstractions/9.0.1": {
         "dependencies": {
           "Microsoft.Extensions.Primitives": "9.0.1"
@@ -1008,6 +1361,19 @@
             "assemblyVersion": "9.0.0.0",
             "fileVersion": "9.0.124.61010"
           }
+        }
+      },
+      "Microsoft.Extensions.Configuration.FileExtensions/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "2.0.0",
+          "Microsoft.Extensions.FileProviders.Physical": "2.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Json/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "2.0.0",
+          "Microsoft.Extensions.Configuration.FileExtensions": "2.0.0",
+          "Newtonsoft.Json": "13.0.3"
         }
       },
       "Microsoft.Extensions.DependencyInjection/9.0.0": {
@@ -1072,6 +1438,12 @@
       "Microsoft.Extensions.FileProviders.Composite/2.0.0": {
         "dependencies": {
           "Microsoft.Extensions.FileProviders.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.FileProviders.Physical/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.FileProviders.Abstractions": "9.0.0",
+          "Microsoft.Extensions.FileSystemGlobbing": "2.0.0"
         }
       },
       "Microsoft.Extensions.FileSystemGlobbing/2.0.0": {},
@@ -1628,6 +2000,14 @@
           }
         }
       },
+      "System.CodeDom/4.4.0": {
+        "runtime": {
+          "lib/netstandard2.0/System.CodeDom.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.6.25519.3"
+          }
+        }
+      },
       "System.Collections/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.1.0",
@@ -2173,6 +2553,13 @@
           "System.Runtime.Handles": "4.3.0"
         }
       },
+      "System.Runtime.Loader/4.3.0": {
+        "dependencies": {
+          "System.IO": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Runtime": "4.3.1"
+        }
+      },
       "System.Runtime.Numerics/4.3.0": {
         "dependencies": {
           "System.Globalization": "4.3.0",
@@ -2468,6 +2855,26 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
+      "System.Threading.AccessControl/4.4.0": {
+        "dependencies": {
+          "System.Security.AccessControl": "6.0.0",
+          "System.Security.Principal.Windows": "4.5.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Threading.AccessControl.dll": {
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.6.25519.3"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netstandard2.0/System.Threading.AccessControl.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.6.25519.3"
+          }
+        }
+      },
       "System.Threading.Tasks/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.1.0",
@@ -2597,6 +3004,7 @@
       "EtheriT.Coker.Application/1.0.0": {
         "dependencies": {
           "AutoMapper": "13.0.1",
+          "DevExpress.Reporting.Core": "21.2.14",
           "DevExtreme.AspNet.Core": "21.2.14",
           "DevExtreme.AspNet.Data": "2.8.6",
           "EtheriT.Coker.Application.Shared": "1.0.0",
@@ -2755,12 +3163,152 @@
       "path": "buildbundlerminifier/3.2.449",
       "hashPath": "buildbundlerminifier.3.2.449.nupkg.sha512"
     },
+    "DevExpress.AspNetCore.Common/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6n34GuiEjmx7lYQXfbpPZYxTs3RPCa9byEGIX/n+qGP8EijbEV8ZXTEQ72hAB+8exhAsv2vwJMTyQXHm+KxbJQ==",
+      "path": "devexpress.aspnetcore.common/21.2.14",
+      "hashPath": "devexpress.aspnetcore.common.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.AspNetCore.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xbcz80Lpq5VQ3Qb5y1ad2xR5oOZ7zVaxL3faW6/vGX882LXd4vRMa4ctk5SLFbmV8kcFBV8Wpa+RrA24DyurJg==",
+      "path": "devexpress.aspnetcore.core/21.2.14",
+      "hashPath": "devexpress.aspnetcore.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.AspNetCore.Reporting/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2pqn7fV2/aY4fjzRIQWTtGG1ze3uu4tHoA3uEaQ2DFzKxnLvt7yLMIUvzGZvusmD48WkahBjxiq8HxFB87sRDg==",
+      "path": "devexpress.aspnetcore.reporting/21.2.14",
+      "hashPath": "devexpress.aspnetcore.reporting.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.AspNetCore.Resources/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UlgcWnpVeht1v+XPkK0z2Ci4z/agglLqs/2/BJeylPcxHmUqo6FaKqSva42GSnCd3v6Fb9i4tyUdbfp4IP09fw==",
+      "path": "devexpress.aspnetcore.resources/21.2.14",
+      "hashPath": "devexpress.aspnetcore.resources.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Charts/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yKQDN6VjOeaKyv3wtE3FbIUSxNrKSbgb2t9ElSdv6n9PcWsOtK2r4jI6qFU38gu8RHlIz9EqKzLJnLiTrGqbfA==",
+      "path": "devexpress.charts/21.2.14",
+      "hashPath": "devexpress.charts.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Charts.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wk9qBLGLmU/CbxM5XW2NkJ+JKBIUod0pnHGOBzcJkQvoaOPTVUw9EJSInA4Wu97g13piKz6QFHtXZi0sRhaArw==",
+      "path": "devexpress.charts.core/21.2.14",
+      "hashPath": "devexpress.charts.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.CodeParser/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uVzW+YnhTfWP9ETkYarMN60ma+sSnXTtofGzBZ+oolmCXwS+JaNPNSer4c+9EdjPHX+cDtjSPAU18x2sMqjHaw==",
+      "path": "devexpress.codeparser/21.2.14",
+      "hashPath": "devexpress.codeparser.21.2.14.nupkg.sha512"
+    },
     "DevExpress.Data/21.2.14": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-xSpt2LsjrbfTLnJ/Rd+C5RkDWKkThg19y8wzyqfcv7kU4LUmufIbTIJUUjkgdehEX0YmKtq944fPXF4k8fH73w==",
       "path": "devexpress.data/21.2.14",
       "hashPath": "devexpress.data.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.DataAccess/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kcYasaRBf4YGObBx2rOJUc/m8TxrXWpNMXRsOVvsECWjMgUVVtiFNeSFJq49o4AKrXsjXWKB5tpsqbflwHK5sQ==",
+      "path": "devexpress.dataaccess/21.2.14",
+      "hashPath": "devexpress.dataaccess.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.DataVisualization.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-msc0TVDsJbSvP4z31I8GQAXfQ/ZlmJHNUjhf8zvXM5kRbDiOiKGQpbSFExAl2+wX4PvU/yzxXNYMsbqYDEtV4Q==",
+      "path": "devexpress.datavisualization.core/21.2.14",
+      "hashPath": "devexpress.datavisualization.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Gauges.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GpEWKhOyP4aX6/M6xyDlLJ1oCtwmJG0MyoROsPDBgJDizUrIdaGeQ+RXEJMLGo/KuN5VU6cj/oDlJUaL/+igRg==",
+      "path": "devexpress.gauges.core/21.2.14",
+      "hashPath": "devexpress.gauges.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Office.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-S7gos4NbHXnN5036lscTT7H2ZPOAxhIexqDvKtIRKhW7/SfJM3OU2f/EUQdjXmKTJ7NmJ+p+Nk18+BZt3HSN3g==",
+      "path": "devexpress.office.core/21.2.14",
+      "hashPath": "devexpress.office.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Pdf.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-miAdk6Ktuk8pMgJasmaaF8jd/ZMkc05tatvhQwgLpa5VBKGkoRVp9oO8UdEeB2U8gmE6c0HOYIeZeSg1WvDGxg==",
+      "path": "devexpress.pdf.core/21.2.14",
+      "hashPath": "devexpress.pdf.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Pdf.Drawing/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WVX6HU3neO2a2hhxO51U8ccwZzR9gLx0h0BAwyGvngOe0n28408VTYUeFcrJHw66L6l8TAoxtgifoGTkT2lm9w==",
+      "path": "devexpress.pdf.drawing/21.2.14",
+      "hashPath": "devexpress.pdf.drawing.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.PivotGrid.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xHefv7GNLpHtBHw0cNj7+2Vc6WDbrxAKIeb0DwZzkiMbPhOpQHvsJGPQzd68eALp35wT+xEwGNOI9RO/aiDLDw==",
+      "path": "devexpress.pivotgrid.core/21.2.14",
+      "hashPath": "devexpress.pivotgrid.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Printing.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tq1m44fJ0bPH4wMuHFDI2mM3s11Sz2T8iBueIRg7dnNdvBq2J2Wmxn/Z+MYm6tuW+l2m0HW+xQGW2n84YA33Ww==",
+      "path": "devexpress.printing.core/21.2.14",
+      "hashPath": "devexpress.printing.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Reporting.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-f6aglv2y9a7AxsIt+nhHTuQWZ+LILWAQReHaiHEHfygh8F3gf6she/8QnPLy5/we0rvK5aPp+sMYpY50y5OxKQ==",
+      "path": "devexpress.reporting.core/21.2.14",
+      "hashPath": "devexpress.reporting.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.RichEdit.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AkFMtZ5JIdaYUHTSeicFsVSWpF07O+gMsijb61zwn/5zMprYp/RHZd747EcRouITgwYukyBM47XCxXoHMtUh7w==",
+      "path": "devexpress.richedit.core/21.2.14",
+      "hashPath": "devexpress.richedit.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.RichEdit.Export/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lsitDmvZZZ5S71nzfrIumiai/HpJSQZ/4ZtxojEv2oeNN93qQQJK/zTMxNHAM91rY+dF7L2GOGVsq5776wXVCw==",
+      "path": "devexpress.richedit.export/21.2.14",
+      "hashPath": "devexpress.richedit.export.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Sparkline.Core/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qbATY4RIrRwKIfctar4dQ5Wg4DNKZtsgrKYIZgRba2IyIyYF77RAh5Ku11QlPGOnBGMInBvuoS0UGDz8C2DM5g==",
+      "path": "devexpress.sparkline.core/21.2.14",
+      "hashPath": "devexpress.sparkline.core.21.2.14.nupkg.sha512"
+    },
+    "DevExpress.Web.Reporting.Common/21.2.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-PXciFrGJCYnKU2O7oq68x6l/Q92FKbkRmS/aEBhQnGnudUQKWEjYN3mUWUjXfaYgrqHJX2Hub9m1ff5pVCTn8A==",
+      "path": "devexpress.web.reporting.common/21.2.14",
+      "hashPath": "devexpress.web.reporting.common.21.2.14.nupkg.sha512"
     },
     "DevExpress.Xpo/21.2.14": {
       "type": "package",
@@ -3294,6 +3842,13 @@
       "path": "microsoft.extensions.caching.memory/9.0.1",
       "hashPath": "microsoft.extensions.caching.memory.9.0.1.nupkg.sha512"
     },
+    "Microsoft.Extensions.Configuration/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SsI4RqI8EH00+cYO96tbftlh87sNUv1eeyuBU1XZdQkG0RrHAOjWgl7P0FoLeTSMXJpOnfweeOWj2d1/5H3FxA==",
+      "path": "microsoft.extensions.configuration/2.0.0",
+      "hashPath": "microsoft.extensions.configuration.2.0.0.nupkg.sha512"
+    },
     "Microsoft.Extensions.Configuration.Abstractions/9.0.1": {
       "type": "package",
       "serviceable": true,
@@ -3307,6 +3862,20 @@
       "sha512": "sha512-w7kAyu1Mm7eParRV6WvGNNwA8flPTub16fwH49h7b/yqJZFTgYxnOVCuiah3G2bgseJMEq4DLjjsyQRvsdzRgA==",
       "path": "microsoft.extensions.configuration.binder/9.0.1",
       "hashPath": "microsoft.extensions.configuration.binder.9.0.1.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.FileExtensions/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ebFbu+vsz4rzeAICWavk9a0FutWVs7aNZap5k/IVxVhu2CnnhOp/H/gNtpzplrqjYDaNYdmv9a/DoUvH2ynVEQ==",
+      "path": "microsoft.extensions.configuration.fileextensions/2.0.0",
+      "hashPath": "microsoft.extensions.configuration.fileextensions.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Json/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-thPz4SckRGNqeLbdvJ619YxRFSkWuL1K5QqTMb3TVdEwjQj4O39yfUtjtI/XlWJiY7JKK4MUKAiQZVYc8ohKKg==",
+      "path": "microsoft.extensions.configuration.json/2.0.0",
+      "hashPath": "microsoft.extensions.configuration.json.2.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.DependencyInjection/9.0.0": {
       "type": "package",
@@ -3349,6 +3918,13 @@
       "sha512": "sha512-/Q95H1pFJuss7np9Pp6mKxg4ornSrBnrYwNkgHnW+YRqhjfaQLVgL+X+LN95M9YeGPNA4QHJDkbrqQ/n+jYc9g==",
       "path": "microsoft.extensions.fileproviders.composite/2.0.0",
       "hashPath": "microsoft.extensions.fileproviders.composite.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.FileProviders.Physical/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DKO2j2socZbHNCCVEWsLVpB3AQIIzKYFNyITVeWdA1jQ829GJIQf4MUD04+1c+Q2kbK03pIKQZmEy4CGIfgDZw==",
+      "path": "microsoft.extensions.fileproviders.physical/2.0.0",
+      "hashPath": "microsoft.extensions.fileproviders.physical.2.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.FileSystemGlobbing/2.0.0": {
       "type": "package",
@@ -3826,6 +4402,13 @@
       "path": "system.clientmodel/1.0.0",
       "hashPath": "system.clientmodel.1.0.0.nupkg.sha512"
     },
+    "System.CodeDom/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2sCCb7doXEwtYAbqzbF/8UAeDRMNmPaQbU2q50Psg1J9KzumyVVCgKQY8s53WIPTufNT0DpSe9QRvVjOzfDWBA==",
+      "path": "system.codedom/4.4.0",
+      "hashPath": "system.codedom.4.4.0.nupkg.sha512"
+    },
     "System.Collections/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -4183,6 +4766,13 @@
       "path": "system.runtime.interopservices/4.3.0",
       "hashPath": "system.runtime.interopservices.4.3.0.nupkg.sha512"
     },
+    "System.Runtime.Loader/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DHMaRn8D8YCK2GG2pw+UzNxn/OHVfaWx7OTLBD/hPegHZZgcZh3H6seWegrC4BYwsfuGrywIuT+MQs+rPqRLTQ==",
+      "path": "system.runtime.loader/4.3.0",
+      "hashPath": "system.runtime.loader.4.3.0.nupkg.sha512"
+    },
     "System.Runtime.Numerics/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -4357,6 +4947,13 @@
       "sha512": "sha512-VkUS0kOBcUf3Wwm0TSbrevDDZ6BlM+b/HRiapRFWjM5O0NS0LviG0glKmFK+hhPDd1XFeSdU1GmlLhb2CoVpIw==",
       "path": "system.threading/4.3.0",
       "hashPath": "system.threading.4.3.0.nupkg.sha512"
+    },
+    "System.Threading.AccessControl/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CbywegComLpet8Q/Cfre7qmu5NybfN8d6iyTuZRC/xqOILs1Jz2ao8erOyC1XjuIG/TDQEZATwkD0/4DWeikGw==",
+      "path": "system.threading.accesscontrol/4.4.0",
+      "hashPath": "system.threading.accesscontrol.4.4.0.nupkg.sha512"
     },
     "System.Threading.Tasks/4.3.0": {
       "type": "package",
