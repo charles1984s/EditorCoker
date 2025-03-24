@@ -1,7 +1,7 @@
 /**
 * DevExpress HTML/JS Reporting (dist\css\dx-webdocumentviewer.css)
-* Version:  21.2.15
-* Build date: Dec 12, 2023
+* Version:  21.2.14
+* Build date: Jun 20, 2023
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * License: https://www.devexpress.com/Support/EULAs/universal.xml
 */
@@ -1874,6 +1874,10 @@
   margin-top: 17px;
 }
 .dx-designer-viewport .dxrd-menu-parameters-popup .dx-popup-content .dxrdp-parameters-mobile.dxrv-preview-date-range-mobile-popup .dxrdp-parameters-scroll .dx-fieldset .dx-field .dxrv-daterange-editor-item {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 80px;
   margin: 0;
 }
 .dx-report-viewer.dx-accessibility .dx-menu-base {
@@ -3998,4 +4002,7 @@
   height:0.125rem;
   margin-left:-0.8125rem;
   margin-top:1.0625rem;
+}
+.dx-designer-viewport.dx-report-viewer.dx-accessibility .dxrd-menu-parameters-popup .dx-popup-content .dxrdp-parameters-mobile.dxrv-preview-date-range-mobile-popup .dxrdp-parameters-scroll .dx-fieldset .dx-field .dxrv-daterange-editor-item{
+  top:5rem;
 }

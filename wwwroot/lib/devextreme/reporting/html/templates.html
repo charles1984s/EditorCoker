@@ -2976,25 +2976,21 @@
             <div class="dx-field">
                 <div class="dx-fieldset-column">
                     <div class="dx-fieldset-header" data-bind="text: $root.getLocalization('From','AnalyticsCoreStringId.Mobile_DateRange_From')"></div>
-                    <div class="dxrv-daterange-editor-button" data-bind="css: { 'dx-button-default': popupModel.startButton.focused }, dxButton: popupModel.startButton"></div>
+                    <div data-bind="css: popupModel._dateButtonEditorClassName, dxButton: { text: startDate && popupModel.getStringDate(startDate) || $root.getLocalization('Start Date','AnalyticsCoreStringId.Mobile_DateRange_StartDate'), stylingMode: 'contained', onClick: popupModel.focusButton, focusStateEnabled: false, activeStateEnabled: false }"></div>
+                    <div data-bind="css: popupModel._dateEditorClassName">
+                        <!-- ko template: { name: 'dxrv-daterange-calendar', data: _createTemplateData(startDate, undefined) } -->
+                        <!-- /ko -->
+                    </div>                    
                 </div>
                 <div class="dx-fieldset-column dx-fieldset-column-right">
                     <div class="dx-fieldset-header" data-bind="text: $root.getLocalization('Until','AnalyticsCoreStringId.Mobile_DateRange_Until')"></div>
                     <div class="dxd-back-secondary dx-fieldset-column-separator"></div>
-                    <div class="dxrv-daterange-editor-button" data-bind="css: { 'dx-button-default': popupModel.endButton.focused }, dxButton: popupModel.endButton"></div>
+                    <div data-bind="css: popupModel._dateButtonEditorClassName, dxButton: { text: endDate && popupModel.getStringDate(endDate) || $root.getLocalization('End Date','AnalyticsCoreStringId.Mobile_DateRange_EndDate'), stylingMode: 'contained', type:'default', onClick: popupModel.focusButton, focusStateEnabled: false, activeStateEnabled: false }"></div>
+                    <div data-bind="css: popupModel._dateEditorClassName">
+                        <!-- ko template: { name: 'dxrv-daterange-calendar', data: _createTemplateData(endDate, startDate) } -->
+                        <!-- /ko -->
+                    </div>
                 </div>
-            </div>
-            <div class="dx-field">
-                <div class="dxrv-daterange-editor-item">
-                    <!-- ko if: popupModel.startButton.focused -->
-                    <!-- ko template: { name: 'dxrv-daterange-calendar', data: _createTemplateData(startDate, undefined) } -->
-                    <!-- /ko -->
-                    <!-- /ko -->
-                    <!-- ko if: popupModel.endButton.focused -->
-                    <!-- ko template: { name: 'dxrv-daterange-calendar', data: _createTemplateData(endDate, startDate) } -->
-                    <!-- /ko -->
-                    <!-- /ko -->
-                </div>        
             </div>
         </div>
     </div>
@@ -3585,7 +3581,7 @@
 </script>
 
 <script type="text/html" id="dxrv-daterange-calendar">
-    <div tabIndex="0" class="dx-accessibility-calendar-item dx-accessibility-daterange-item" data-bind="dxCalendar: { value: value, cellTemplate: 'select_cell', height: height, min: min }">
+    <div tabIndex="0" class="dx-accessibility-calendar-item dx-accessibility-daterange-item" data-bind="dxCalendar: { value: value, cellTemplate: 'select_cell', height: '100%', min: min }">
         <div class="dxrv-daterange-cell" data-options="dxTemplate:{ name:'select_cell' }">
             <div class="dxrv-daterange-cell-text" data-bind="text: text"></div>
             <div data-bind="css: { 'dxd-back-accented': $parent.inRange(date) }"></div>
