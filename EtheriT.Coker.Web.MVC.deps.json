@@ -3038,6 +3038,7 @@
         "dependencies": {
           "DevExtreme.AspNet.Core": "21.2.14",
           "DevExtreme.AspNet.Data": "2.8.6",
+          "HtmlAgilityPack": "1.11.72",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.10",
           "Microsoft.AspNetCore.Http": "2.3.0",
           "Microsoft.AspNetCore.Mvc.Core": "2.3.0",
